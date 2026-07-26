@@ -1,4 +1,4 @@
-﻿// Infrastructure/Persistence/ApplicationDbContext.cs
+// Infrastructure/Persistence/ApplicationDbContext.cs
 using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
 using Pos.Domain.Constants;
@@ -133,7 +133,8 @@ public class ApplicationDbContext : DbContext
             new Role { Id = SystemGuids.Roles.BranchManager, Name = "BranchManager" },
             new Role { Id = SystemGuids.Roles.Accountant, Name = "Accountant" },
             new Role { Id = SystemGuids.Roles.Vendor, Name = "Vendor" },
-            new Role { Id = SystemGuids.Roles.PurchaserManager, Name = "PurchaserManager" }
+            new Role { Id = SystemGuids.Roles.PurchaserManager, Name = "PurchaserManager" },
+            new Role { Id = SystemGuids.Roles.StockClerk, Name = "StockClerk" }
         );
 
         // Seed Default Shift Types

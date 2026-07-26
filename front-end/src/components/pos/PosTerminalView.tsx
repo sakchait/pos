@@ -361,7 +361,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
                   </span>
                   <div className="flex justify-between items-end mt-auto">
                     <span className="text-orange-600 font-extrabold text-base">
-                      ${product.price.toFixed(2)}
+                      {product.price.toFixed(2)} บาท
                     </span>
                     <span className="text-[10px] font-mono text-slate-400">SKU: {product.sku}</span>
                   </div>
@@ -476,7 +476,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
                         {item.product.name}
                       </span>
                       <span className="font-extrabold text-xs text-slate-900 dark:text-slate-100">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        {(item.product.price * item.quantity).toFixed(2)} บาท
                       </span>
                     </div>
 
@@ -498,7 +498,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
                       </div>
 
                       <span className="text-[10px] text-slate-400 font-mono">
-                        @ ${item.product.price.toFixed(2)} ea
+                        @ {item.product.price.toFixed(2)} บาท ea
                       </span>
                     </div>
 
@@ -589,25 +589,25 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
           <div className="space-y-1.5 text-xs">
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
               <span>Subtotal</span>
-              <span className="font-mono font-semibold">${subtotal.toFixed(2)}</span>
+              <span className="font-mono font-semibold">{subtotal.toFixed(2)} บาท</span>
             </div>
 
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
               <span>VAT 7% ({isVatInclusive ? 'incl.' : 'add.'})</span>
-              <span className="font-mono font-semibold">${vatAmount.toFixed(2)}</span>
+              <span className="font-mono font-semibold">{vatAmount.toFixed(2)} บาท</span>
             </div>
 
             {couponDiscount > 0 && (
               <div className="flex justify-between text-emerald-600 font-bold">
                 <span>Coupon Discount ({appliedCoupon?.code})</span>
-                <span className="font-mono">-${couponDiscount.toFixed(2)}</span>
+                <span className="font-mono">-{couponDiscount.toFixed(2)} บาท</span>
               </div>
             )}
 
             <div className="flex justify-between items-baseline pt-2 border-t border-slate-200 dark:border-slate-800">
               <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">Grand Total</span>
               <span className="font-['Manrope'] font-extrabold text-3xl text-orange-600">
-                ${grandTotal.toFixed(2)}
+                {grandTotal.toFixed(2)} บาท
               </span>
             </div>
           </div>
@@ -656,10 +656,8 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
               <div className="space-y-1 py-1">
                 {lastCompletedOrder.items.map((it, i) => (
                   <div key={i} className="flex justify-between">
-                    <span>
-                      {it.quantity}x {it.product.name}
-                    </span>
-                    <span>${(it.product.price * it.quantity).toFixed(2)}</span>
+                    <span>{it.quantity}x {it.product.name}</span>
+                    <span>{(it.product.price * it.quantity).toFixed(2)} บาท</span>
                   </div>
                 ))}
               </div>
@@ -667,7 +665,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
               <div className="border-t pt-2 space-y-1 font-sans">
                 <div className="flex justify-between font-bold text-sm text-slate-900 dark:text-slate-100">
                   <span>Grand Total</span>
-                  <span className="text-orange-600">${lastCompletedOrder.grandTotal.toFixed(2)}</span>
+                  <span className="text-orange-600">{lastCompletedOrder.grandTotal.toFixed(2)} บาท</span>
                 </div>
                 {lastCompletedOrder.memberName && (
                   <p className="text-[10px] text-amber-600 font-semibold">

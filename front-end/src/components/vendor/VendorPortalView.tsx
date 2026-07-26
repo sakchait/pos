@@ -231,7 +231,7 @@ export const VendorPortalView: React.FC<VendorPortalViewProps> = ({ userRole }) 
             </div>
 
             <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Proposed Unit Cost ($)</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Proposed Unit Cost (บาท)</label>
               <input
                 type="number"
                 step="0.01"
@@ -295,9 +295,9 @@ export const VendorPortalView: React.FC<VendorPortalViewProps> = ({ userRole }) 
                     {po.items.map((it, idx) => (
                       <div key={idx} className="flex justify-between text-xs">
                         <span>
-                          {it.productName} ({it.proposedQty} units @ ${it.unitCost.toFixed(2)})
+                          {it.productName} ({it.proposedQty} units @ {it.unitCost.toFixed(2)} บาท)
                         </span>
-                        <span className="font-bold">${(it.proposedQty * it.unitCost).toFixed(2)}</span>
+                        <span className="font-bold">{(it.proposedQty * it.unitCost).toFixed(2)} บาท</span>
                       </div>
                     ))}
                   </div>
@@ -348,7 +348,7 @@ export const VendorPortalView: React.FC<VendorPortalViewProps> = ({ userRole }) 
                     <td className="p-3 font-extrabold text-slate-800 dark:text-slate-200">
                       {sb.qtyRemaining} / {sb.qtyReceived}
                     </td>
-                    <td className="p-3 font-mono">${sb.unitCost.toFixed(2)}</td>
+                    <td className="p-3 font-mono">{sb.unitCost.toFixed(2)} บาท</td>
                   </tr>
                 ))}
               </tbody>

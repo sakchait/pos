@@ -193,10 +193,10 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">
-                  Opening Cash Float ($)
+                  Opening Cash Float (บาท)
                 </label>
                 <div className="relative">
-                  <DollarSign className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Banknote className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="number"
                     step="0.01"
@@ -224,7 +224,7 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
                 <div>
                   <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100">Blind Count Reconciliation</h3>
                   <p className="text-xs text-slate-500">
-                    Opened at {new Date(activeShift.openingTime).toLocaleTimeString()} • Float: ${activeShift.openingCash.toFixed(2)}
+                    Opened at {new Date(activeShift.openingTime).toLocaleTimeString()} • Float: {activeShift.openingCash.toFixed(2)} บาท
                   </p>
                 </div>
               </div>
@@ -241,10 +241,10 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
 
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">
-                  Actual Physical Cash Counted ($)
+                  Actual Physical Cash Counted (บาท)
                 </label>
                 <div className="relative">
-                  <DollarSign className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Banknote className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="number"
                     step="0.01"
@@ -259,7 +259,7 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Paid In ($)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Paid In (บาท)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -269,7 +269,7 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Paid Out ($)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Paid Out (บาท)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -279,7 +279,7 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Safe Drop ($)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Safe Drop (บาท)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -315,13 +315,13 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase">System Expected</p>
                   <p className="font-extrabold text-lg text-slate-800 dark:text-slate-200">
-                    ${closingSummary.expectedCash.toFixed(2)}
+                    {closingSummary.expectedCash.toFixed(2)} บาท
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase">Actual Counted</p>
                   <p className="font-extrabold text-lg text-purple-600">
-                    ${closingSummary.actualCounted.toFixed(2)}
+                    {closingSummary.actualCounted.toFixed(2)} บาท
                   </p>
                 </div>
                 <div>
@@ -335,7 +335,7 @@ export const ShiftManagementView: React.FC<ShiftManagementViewProps> = ({
                         : 'text-rose-600'
                     }`}
                   >
-                    {closingSummary.difference >= 0 ? '+' : ''}${closingSummary.difference.toFixed(2)}
+                    {closingSummary.difference >= 0 ? '+' : ''}{closingSummary.difference.toFixed(2)} บาท
                   </p>
                 </div>
               </div>

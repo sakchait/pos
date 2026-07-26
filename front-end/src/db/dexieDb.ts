@@ -13,6 +13,7 @@ import {
   RoleRoutePermission,
   AttendanceRecord,
   LeaveRecord,
+  UserAccount,
 } from '../types/pos';
 
 export class OmniPOSDatabase extends Dexie {
@@ -29,6 +30,7 @@ export class OmniPOSDatabase extends Dexie {
   roleRoutes!: Table<RoleRoutePermission, string>;
   attendance!: Table<AttendanceRecord, string>;
   leaves!: Table<LeaveRecord, string>;
+  users!: Table<UserAccount, string>;
 
   constructor() {
     super('OmniPOS_Enterprise_DB');
@@ -46,6 +48,7 @@ export class OmniPOSDatabase extends Dexie {
       roleRoutes: 'role',
       attendance: 'id, employeeId, date',
       leaves: 'id, employeeId, leaveType',
+      users: 'id, username, email, role',
     });
   }
 }
@@ -56,6 +59,10 @@ export const db = new OmniPOSDatabase();
  * Initial Seed Data for Offline First Dexie Storage
  */
 export async function seedInitialDataIfNeeded() {
+  // Enforce user and role route seeding check even if other data already exists
+  await seedUsersIfNeeded();
+  await seedRoleRoutesIfNeeded();
+
   const productCount = await db.products.count();
   if (productCount > 0) return;
 
@@ -255,6 +262,10 @@ export async function seedInitialDataIfNeeded() {
     {
       role: 'PurchaserManager',
       routes: ['/vendor', '/inventory', '/profile'],
+    },
+    {
+      role: 'StockClerk',
+      routes: ['/inventory', '/profile'],
     },
     {
       role: 'Admin',
@@ -457,7 +468,143 @@ export async function seedInitialDataIfNeeded() {
     },
   ];
   await db.leaves.bulkAdd(initialLeaves);
+
+  // 12. Seed User Accounts
+  await seedUsersIfNeeded();
 }
+
+export async function seedUsersIfNeeded() {
+  const userCount = await db.users.count();
+  if (userCount === 0) {
+    const initialUsers: UserAccount[] = [
+      {
+        id: 'emp-101',
+        username: 'sarah.jenkins',
+        fullName: 'Sarah Jenkins',
+        email: 'sarah.jenkins@omnipos.com',
+        phone: '+1 (555) 234-5678',
+        role: 'BranchManager',
+        passwordHash: 'password123',
+        pin: '1234',
+        avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+        lastLoginAt: new Date().toISOString(),
+        department: 'Store Management',
+        employeeCode: 'EMP-00101',
+      },
+      {
+        id: 'emp-102',
+        username: 'alex.rivera',
+        fullName: 'Alex Rivera',
+        email: 'alex.rivera@omnipos.com',
+        phone: '+1 (555) 876-5432',
+        role: 'Cashier',
+        passwordHash: 'password123',
+        pin: '1111',
+        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        lastLoginAt: new Date().toISOString(),
+        department: 'Front POS Terminal',
+        employeeCode: 'EMP-00102',
+      },
+      {
+        id: 'emp-103',
+        username: 'mark.tanaka',
+        fullName: 'Mark Tanaka',
+        email: 'mark.tanaka@omnipos.com',
+        phone: '+1 (555) 345-6789',
+        role: 'StockClerk',
+        passwordHash: 'password123',
+        pin: '2222',
+        avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        lastLoginAt: new Date().toISOString(),
+        department: 'Inventory & Receiving',
+        employeeCode: 'EMP-00103',
+      },
+      {
+        id: 'emp-104',
+        username: 'purchaser.admin',
+        fullName: 'Elena Rostova',
+        email: 'elena.rostova@omnipos.com',
+        phone: '+1 (555) 901-2345',
+        role: 'PurchaserManager',
+        passwordHash: 'password123',
+        pin: '3333',
+        avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+        lastLoginAt: new Date().toISOString(),
+        department: 'Procurement & Purchasing',
+        employeeCode: 'EMP-00104',
+      },
+      {
+        id: 'emp-105',
+        username: 'admin',
+        fullName: 'System Administrator',
+        email: 'admin@omnipos.com',
+        phone: '+1 (555) 999-0000',
+        role: 'Admin',
+        passwordHash: 'admin123',
+        pin: '9999',
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+        lastLoginAt: new Date().toISOString(),
+        department: 'IT Security & Admin',
+        employeeCode: 'EMP-00001',
+      },
+    ];
+    await db.users.bulkAdd(initialUsers);
+  } else {
+    // Migration: Update Mark Tanaka to StockClerk if he is currently Admin
+    const mark = await db.users.get('emp-103');
+    if (mark && mark.role !== 'StockClerk') {
+      await db.users.update('emp-103', { role: 'StockClerk', department: 'Inventory & Receiving' });
+    }
+  }
+}
+
+export async function seedRoleRoutesIfNeeded() {
+  const count = await db.roleRoutes.count();
+  if (count < 7) {
+    await db.roleRoutes.clear();
+    const initialRoleRoutes: RoleRoutePermission[] = [
+      {
+        role: 'Cashier',
+        routes: ['/pos', '/shifts', '/profile'],
+      },
+      {
+        role: 'BranchManager',
+        routes: ['/pos', '/shifts', '/reports', '/profile'],
+      },
+      {
+        role: 'Accountant',
+        routes: ['/reports', '/vendor', '/profile'],
+      },
+      {
+        role: 'Vendor',
+        routes: ['/vendor', '/profile'],
+      },
+      {
+        role: 'PurchaserManager',
+        routes: ['/vendor', '/inventory', '/profile'],
+      },
+      {
+        role: 'StockClerk',
+        routes: ['/inventory', '/profile'],
+      },
+      {
+        role: 'Admin',
+        routes: [
+          '/pos',
+          '/shifts',
+          '/shifts/schedule',
+          '/vendor',
+          '/inventory',
+          '/reports',
+          '/admin/roles',
+          '/profile',
+        ],
+      },
+    ];
+    await db.roleRoutes.bulkAdd(initialRoleRoutes);
+  }
+}
+
 
 /**
  * Coupon Validation Helper against Dexie `coupons` table
@@ -510,7 +657,7 @@ export async function validateCouponCode(
       isValid: false,
       coupon,
       calculatedDiscount: 0,
-      message: `Minimum order amount of $${coupon.minOrderAmount.toFixed(2)} required.`,
+      message: `Minimum order amount of ${coupon.minOrderAmount.toFixed(2)} บาท required.`,
     };
   }
 

@@ -4,6 +4,7 @@ export type UserRole =
   | 'Accountant'
   | 'Vendor'
   | 'PurchaserManager'
+  | 'StockClerk'
   | 'Admin';
 
 export interface Product {
@@ -196,4 +197,19 @@ export interface LeaveRecord {
   endDate: string;
   daysCount: number;
   status: 'APPROVED' | 'PENDING' | 'REJECTED';
+}
+
+export interface UserAccount {
+  id: string;
+  username: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  role: UserRole | string;
+  passwordHash: string;
+  pin: string;
+  avatarUrl?: string;
+  lastLoginAt?: string;
+  department?: string;
+  employeeCode?: string;
 }

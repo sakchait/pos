@@ -116,13 +116,13 @@ export const SplitPaymentModal: React.FC<SplitPaymentModalProps> = ({
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Grand Total</p>
               <p className="font-['Manrope'] text-2xl font-extrabold text-slate-900 dark:text-slate-100">
-                ${grandTotal.toFixed(2)}
+                {grandTotal.toFixed(2)} บาท
               </p>
             </div>
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Paid</p>
               <p className="font-['Manrope'] text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
-                ${totalPaid.toFixed(2)}
+                {totalPaid.toFixed(2)} บาท
               </p>
             </div>
             <div>
@@ -132,7 +132,7 @@ export const SplitPaymentModal: React.FC<SplitPaymentModalProps> = ({
                   remaining > 0 ? 'text-orange-600' : 'text-slate-400'
                 }`}
               >
-                ${remaining.toFixed(2)}
+                {remaining.toFixed(2)} บาท
               </p>
             </div>
           </div>
@@ -171,7 +171,7 @@ export const SplitPaymentModal: React.FC<SplitPaymentModalProps> = ({
                   onClick={() => handleQuickAmount(1)}
                   className="px-2.5 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-xs font-bold rounded-lg text-slate-700 dark:text-slate-200"
                 >
-                  Full (${remaining.toFixed(2)})
+                  Full ({remaining.toFixed(2)} บาท)
                 </button>
                 <button
                   type="button"
@@ -185,7 +185,7 @@ export const SplitPaymentModal: React.FC<SplitPaymentModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="sm:col-span-2 relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">฿</span>
                 <input
                   type="number"
                   step="0.01"
@@ -209,7 +209,7 @@ export const SplitPaymentModal: React.FC<SplitPaymentModalProps> = ({
               <div className="p-3 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 rounded-xl flex items-center gap-3">
                 <QrCode className="w-8 h-8 text-purple-600 shrink-0" />
                 <p className="text-xs text-purple-900 dark:text-purple-200">
-                  Dynamic PromptPay QR generated for <strong>${(parseFloat(amountInput) || remaining).toFixed(2)}</strong>.
+                  Dynamic PromptPay QR generated for <strong>{(parseFloat(amountInput) || remaining).toFixed(2)} บาท</strong>.
                   Scan on terminal display to auto-confirm.
                 </p>
               </div>
@@ -242,7 +242,7 @@ export const SplitPaymentModal: React.FC<SplitPaymentModalProps> = ({
 
                     <div className="flex items-center gap-3">
                       <span className="font-extrabold text-sm text-slate-900 dark:text-slate-100">
-                        ${payment.amount.toFixed(2)}
+                        {payment.amount.toFixed(2)} บาท
                       </span>
                       <button
                         onClick={() => handleRemovePayment(payment.id)}
@@ -274,7 +274,7 @@ export const SplitPaymentModal: React.FC<SplitPaymentModalProps> = ({
               <p className="font-bold text-xs">
                 {isFullyPaid
                   ? 'Split Payment Verification Passed (Total Paid Matches Order)'
-                  : `Incomplete Payment: $${remaining.toFixed(2)} remaining before order can be finalized.`}
+                  : `Incomplete Payment: ${remaining.toFixed(2)} บาท remaining before order can be finalized.`}
               </p>
               <p className="text-[10px] opacity-80 mt-0.5 flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3" />

@@ -1,4 +1,4 @@
-﻿// Domain/Constants/SystemGuids.cs
+// Domain/Constants/SystemGuids.cs
 namespace Pos.Domain.Constants;
 
 public static class SystemGuids
@@ -11,6 +11,7 @@ public static class SystemGuids
         public static readonly Guid Accountant = Guid.Parse("44444444-4444-4444-4444-444444444444");
         public static readonly Guid Vendor = Guid.Parse("55555555-5555-5555-5555-555555555555");
         public static readonly Guid PurchaserManager = Guid.Parse("66666666-6666-6666-6666-666666666666");
+        public static readonly Guid StockClerk = Guid.Parse("77777777-7777-7777-7777-777777777777");
     }
 
     public static class Branches

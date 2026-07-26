@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Lock, CheckCircle, Save, Key, UserCog } from 'lucide-react';
 import { apiService } from '../../services/apiService';
 import { RoleRoutePermission } from '../../types/pos';
+import { db } from '../../db/dexieDb';
 
 interface RoleManagementViewProps {
   currentRole: string;
@@ -25,7 +26,8 @@ export const RoleManagementView: React.FC<RoleManagementViewProps> = ({
   }, []);
 
   const loadRolePermissions = async () => {
-    const list = await apiService.getRoleRoutes();
+    //const list = await apiService.getRoleRoutes();
+    const list = await db.roleRoutes.toArray();
     setRolePermissions(list);
   };
 
@@ -34,8 +36,10 @@ export const RoleManagementView: React.FC<RoleManagementViewProps> = ({
     { path: '/shifts', label: '2. Shift Reconciliation & Blind Count' },
     { path: '/shifts/schedule', label: '3. Shift Scheduling & Swaps' },
     { path: '/vendor', label: '4. Vendor Portal & FIFO Purchasing' },
-    { path: '/reports', label: '5. Audit & HR Reporting Module' },
-    { path: '/admin/roles', label: '6. Role Management & Middleware' },
+    { path: '/inventory', label: '5. Warehouse Inventory Stock Control' },
+    { path: '/reports', label: '6. Audit & HR Reporting Module' },
+    { path: '/admin/roles', label: '7. Role Management & Middleware' },
+    { path: '/profile', label: '8. User Profile & Password' },
   ];
 
   const handleToggleRoutePermission = (role: string, routePath: string) => {
@@ -62,6 +66,7 @@ export const RoleManagementView: React.FC<RoleManagementViewProps> = ({
         // Save to Dexie / Server
         for (const rp of rolePermissions) {
           await apiService.updateRoleRoute(rp.role, rp.routes);
+          await db.roleRoutes.put(rp);
         }
         setSaveSuccess('Role Route Permissions (ROLE_ROUTES) saved successfully!');
         setTimeout(() => setSaveSuccess(''), 4000);

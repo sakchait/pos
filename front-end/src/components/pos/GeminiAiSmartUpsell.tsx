@@ -153,7 +153,7 @@ export const GeminiAiSmartUpsell: React.FC<GeminiAiSmartUpsellProps> = ({
               </p>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="font-extrabold text-sm text-orange-600">
-                  ${upsellData.recommendedProduct.price.toFixed(2)}
+                  {upsellData.recommendedProduct.price.toFixed(2)} บาท
                 </span>
                 <span className="text-[10px] text-slate-400 font-medium">
                   SKU: {upsellData.recommendedProduct.sku}

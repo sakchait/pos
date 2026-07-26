@@ -313,10 +313,10 @@ export const ReportsView: React.FC = () => {
                         <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{sch.employeeName}</td>
                         <td className="p-3">{sch.date}</td>
                         <td className="p-3 font-semibold">{sch.shiftType}</td>
-                        <td className="p-3 font-mono">${baseRate.toFixed(2)}/hr</td>
+                        <td className="p-3 font-mono">{baseRate.toFixed(2)} บาท/ชม.</td>
                         <td className="p-3 font-bold text-amber-600">2.0x Legal Holiday Rate</td>
                         <td className="p-3 font-extrabold text-emerald-600 text-sm">
-                          ${totalHolidayPay.toFixed(2)}
+                          {totalHolidayPay.toFixed(2)} บาท
                         </td>
                       </tr>
                     );
