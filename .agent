@@ -1,0 +1,379 @@
+# Role & Identity
+You are an expert full-stack AI Developer specializing in building enterprise-grade E-commerce platforms. You write highly optimized, clean, and secure code following the specific stack below.
+
+# Technical Stack
+- **Front-end:** Next.js 14+ (App Router), React 18+, Tailwind CSS, TypeScript. State management: Zustand or React Context.
+- **Back-end:** .NET Core 8 Web API / GraphQL (HotChocolate), Entity Framework Core 8, PostgreSQL.
+- **Authentication:** NextAuth.js (Front-end) + JWT/Identity Server (.NET Core).
+- **Payment Gateway:** Stripe API Integration.
+
+---
+
+## 1. Core Rules & Architectural Guidelines 
+
+
+### Front-end (Next.js & Tailwind)
+- **Directory Structure:** Use App Router (`app/` directory). Keep components modular (`components/ui` for primitives, `components/ecommerce` for business logic).
+- **Rendering Strategy:** Use Server Components (RSC) by default for SEO-critical pages (Product Listing, Detail Pages). Use `'use client'` strictly for interactive elements (Cart, Checkout Form).
+- **Styling:** Use Tailwind CSS natively. Rely on Shadcn UI components where applicable. Avoid inline styles.
+- **Type Safety:** 100% TypeScript compliance. No `any` types allowed.
+
+### Back-end (.NET Core 8)
+- **Architecture:** Clean Architecture or CQRS Pattern with MediatR. Separate API, Application, Domain, and Infrastructure layers.
+- **API Design:** Hybrid approach. Use REST API for Auth, File Uploads, and Webhooks (e.g., Stripe). Use GraphQL (HotChocolate) for Product Catalog querying, Filtering, and Cart operations.
+- **Database:** EF Core 8 with Code-First approach. All entity configurations must use `IEntityTypeConfiguration<T>`.
+- **Security:** Implement Rate Limiting, CORS policies, Global Exception Handling middleware, and Strict Input Validation using FluentValidation.
+
+---
+
+## 2. Agent Skills
+
+### Skill 1: E-commerce Performance Optimization
+- Optimize Next.js images using `<Image>` component with correct sizing.
+- Implement GraphQL DataLoaders in .NET Core to prevent N+1 query performance problems.
+- Implement Redis Caching layer for Product Catalog and Pricing data.
+
+### Skill 2: Cart & Checkout Lifecycle
+- Maintain Cart state efficiently (Persisted Zustand state on Client + Sync to Redis/SQL Server via GraphQL Mutation when user logs in).
+- Handle Stripe Webhooks securely in .NET Core to process orders (update DB status to `Paid` only after validating webhook signatures).
+
+### Skill 3: Authentication & Authorization
+- Implement robust authentication using ASP.NET Core Identity & JWT tokens.
+- Implement GraphQL Role-Based Access Control (RBAC) to restrict access to admin queries/mutations.
+
+---
+
+## 3. Development Workflows
+
+Follow this sequential workflow when asked to build or expand the application:
+
+### Step 1: Database Schema & Domain Model
+1. Define Domain Entities first in the .NET Core Domain Layer (Product, Category, Order, OrderItem, Cart, User).
+2. Generate EF Core Migrations and review the database schema.
+
+### Entity Fields & Relationships Specification
+
+When generating Domain Entities in the .NET Core Domain Layer, you MUST adhere to the following fields, data types, and navigation properties. 
+
+#### 1. Category (ProductCategory Table) Entity
+- **Fields:**
+  - `CategoryTypeID` (int, Required)
+  - `CategoryID` (int, Required, Primary Key)
+  - `Level` (byte, Required)
+  - `ParentCategoryID` (int, Optional)
+  - `Description` (string, Max 100, Required)
+  - `ImageFileName` (string, Max 50, Required)
+  - `CreationDate` (DateTime, Required)
+  - `RevisionDate` (DateTime, Required)
+  - `UpdatedBy` (string, Max 15, Required)
+  - `Sort` (int, Required)
+- **Relationships:**
+  - One-to-Many with `Product` (A category can have many products).
+  - Self-referencing relationship for Sub-categories: `ParentCategoryID` (int, Optional).
+
+#### 2. Product (Product Table) Entity
+- **Fields:**
+  - `ProdCode` (string, Max 13, Required, Primary Key)
+  - `ProdName` (string, Max 100, Required)
+  - `ProdDesc` (string, Max 500, Required)
+  - `CompanyID` (int, Required)
+  - `ItemTypeID` (byte, Required)
+  - `SellingMargin` (int, Required)
+  - `ConsumedQty` (int, Required)
+  - `AvailableQty` (int, Required)
+  - `Threshold` (int, Required)
+  - `AllowBackOrder` (bool, Required)
+  - `ProdLink` (string, Max 400, Required)
+  - `ImageFileName` (string, Max 50, Required)
+  - `IsShipRequired` (byte, Required)
+  - `CreationDate` (DateTime, Required)
+  - `RevisionDate` (DateTime, Required)
+  - `UpdatedBy` (string, Max 15, Required)
+  - `Available` (int, Required)
+  - `IsAlertOn` (byte, Required)
+
+#### 3. ProductCategory (ProdPerCategory Table) Entity
+- **Fields:**
+  - `CategoryID` (int, Required, Primary Key)
+  - `ProdCode` (string, Max 5, Required, Primary Key)
+  - `SortOrder` (int, Required)
+  - `DateAdded` (DateTime, Required)
+  - `LastUpdate` (DateTime, Required)
+  - `UpdateBy` (string, Max 8, Required)
+- **Relationships:**
+  - Many-to-One with `ProductCategory` (`CategoryID` is Required).
+  - Many-to-One with `Product` (`ProdCode` is Required).
+
+#### 4. User (TCOwner Table) Entity
+- **Fields:**
+  - `TCO` (string, Max 8, Required, Primary Key)
+  - `TCOStatus` (byte, Required)
+  - `Nature` (string, Max 1, Required)
+  - `ValidID_Type` (string, Max 3, Required)
+  - `ValidID` (string, Max 60, Required)
+  - `Email` (string, Max 200, Required, Unique Index)
+  - `Email2` (string, Max 200, Required)
+  - `NatCode` (string, Max 3, Required)
+  - `Gender` (string, Max 1, Required)
+  - `BirthDate` (DateTime, Required)
+  - `Age` (byte, Required)
+  - `CivilStat` (string, Max 1, Required)
+  - `SpouseName` (string, Max 380, Required)
+  - `SpouseBirthdate` (DateTime, Required)
+  - `Referrer` (string, Max 8, Required)
+  - `DateApplied` (DateTime, Required)
+  - `AuditBy` (string, Max 60, Required)
+  - `MLName` (string, Max 240, Required)
+  - `OnAcctAmount` (decimal, Required)
+  - `DateChanged` (DateTime, Required)
+  - `DateDeleted` (DateTime, Required)
+  - `DateCreated` (DateTime, Required)
+  - `ChangedBy` (string, Max 120, Required)
+  - `MaxExtension` (short, Required)
+  - `FName` (string, Max 180, Required)
+  - `ShipContactName` (string, Max 380, Required)
+  - `ShipEmailAddr` (string, Max 200, Required)
+  - `TCOClass` (int, Required)
+  - `IsMigrated` (byte, Required)
+  - `InnerLock` (int, Required)
+  - `Activated` (short, Required)
+  - `DateActivated` (DateTime, Required)
+  - `ActDLNo` (int, Required)
+  - `Rank` (short, Required)
+  - `UniReferrer` (string, Max 8, Required)
+  - `IsF2Allowed` (byte, Required)
+  - `NextRegRenewalDate` (DateTime, Required)
+  - `1stFridayAfterRegExpire` (DateTime, Required)
+  - `TCOAlias` (string, Max 40, Required)
+  - `IsQ2Allowed` (short, Required)
+  - `Q2Rank` (short, Required)
+  - `QPlusPaidAsRank` (short, Required)
+  - `QPlusAdvancementRank` (short, Required)
+  - `AdvancementRank` (short, Required)
+- **Relationships:**
+  - One-to-Many with `OrderHeader` (A user can place many orders).
+  - One-to-One with `TMPOrders` (A user has one active cart).
+
+#### 5. CartItem (TMPOrders Table) Entities
+- **CartItem Fields:**
+  - `ID` (int, Required, Primary Key)
+  - `TranDate` (DateTime, Required)
+  - `TransType` (string, Max 50, Required)
+  - `TCO` (string, Max 8, Required)
+  - `OrderNo` (string, Max 10, Required)
+  - `ProdCode` (string, Max 13, Required)
+  - `ProdName` (string, Max 120, Required)
+  - `Quantity` (int, Required)
+  - `PaidPrice` (decimal, Required)
+  - `ShipFee` (decimal, Required)
+  - `Tax` (decimal, Required)
+  - `TotalAmt` (decimal, Required)
+  - `PromoCode` (string, Max 5, Required)
+  - `FullPrice` (decimal, Required)
+  - `FullDiscPrice` (decimal, Required)
+  - `PartialPrice` (decimal, Required)
+  - `PartialDiscPrice` (decimal, Required)
+  - `PBCtr` (byte, Required)
+  - `BalanceAmt` (decimal, Required)
+  - `Currency` (string, Max 3, Required)
+  - `PayCurrency` (string, Max 3, Required)
+  - `ExRate` (decimal, Required)
+  - `AutoDebitCC` (byte, Required)
+  - `PaymentMode` (string, Max 3, Required)
+  - `NoOfPayments` (int, Required)
+  - `FirstPayment` (decimal, Required)
+  - `NextPayment` (decimal, Required)
+  - `PayOtherInfo` (string, Max 200, Required)
+  - `ReceivedBy` (string, Max 10, Required)
+  - `ConvProduct` (string, Max 5, Required)
+  - `IPAddress` (string, Max 50, Required)
+  - `PriceSchemeID` (int, Required)
+  - `ServiceID` (int, Required)
+  - `ProdCode_BK` (string, Max 13, Required)
+  - `ComboPriceSchemeID` (int, Required)
+  - `ItemID` (int, Required)
+  - `Point` (decimal, Required)
+
+
+#### 6. Order & OrderItem Entities
+- **Order (OrderHeader Table) Fields:**
+  - `OrderNo` (string, Max 10, Required, Primary Key)
+  - `OrderDate` (DateTime, Required)
+  - `RequiredDate` (DateTime, Required)
+  - `TCO` (string, Max 8, Required)
+  - `RepOffCode` (string, Max 10, Required)
+  - `TCOName` (string, Max 360, Required)
+  - `UserID` (string, Max 10, Required)
+  - `DateEncoded` (DateTime, Required)
+  - `OrderStatus` (byte, Required)
+  - `Authorizedby` (string, Max 10, Required)
+  - `TransactionOrderID` (string, Max 30, Required)
+  - `GatewayTransactionNo` (string, Max 15, Required)
+  - `GatewayAuthNumber` (string, Max 15, Required)
+  - `Currency` (string, Max 3, Required)
+- **OrderItem (OrderDetail Table) Fields:**
+  - `OrderNo` (string, Max 10, Required, Primary Key)
+  - `ItemNo` (int, Required, Primary Key)
+  - `TCO` (string, Max 8, Required)
+  - `TCExt` (string, Max 3, Required)
+  - `TCSubExt` (string, Max 3, Required)
+  - `OrderItemNo` (decimal, Required)
+  - `FullPrice` (decimal, Required)
+  - `FullDiscPrice` (decimal, Required)
+  - `PartialPrice` (decimal, Required)
+  - `PartialDiscPrice` (decimal, Required)
+  - `ShipFee` (decimal, Required)
+  - `NoOfPayments` (int, Required)
+  - `FirstPayment` (decimal, Required)
+  - `NextPayment` (decimal, Required)
+  - `OrderStatus` (byte, Required)
+  - `OrderQty` (byte, Required)
+  - `WaiveShipFee` (string, Max 1, Required)
+  - `PromoID` (decimal, Required)
+  - `AutoDebitCC` (byte, Required)
+  - `FullAmt` (decimal, Required)
+  - `RemainBalAmt` (decimal, Required)
+  - `TCType` (int, Required)
+  - `ProdGrp` (int, Required)
+  - `Note` (string, Max 500, Required)
+  - `IsFixed` (byte, Required)
+  - `UV` (decimal, Required)
+  - `BVol` (int, Required)
+  - `OD_ID` (long, Required)
+  - `PriceSchemeID` (int, Required)
+  - `ServiceID` (int, Required)
+  - `ProdCode_BK` (string, Max 13, Required)
+  - `SubProdCode_BK` (string, Max 13, Required)
+  - `ProdCode` (string, Max 13, Required)
+  - `SubProdCode` (string, Max 13, Required)
+  - `ComboPriceSchemeID` (int, Required)
+  - `ComboProdCode` (string, Max 13, Required)
+  - `ItemID` (int, Required)
+  - `EarnedQUV` (decimal, Required)
+  - `QPlusBV` (decimal, Required)
+  - `Point` (decimal, Required)
+  - `SAPFullPrice` (decimal, Required)
+  - `RSP` (decimal, Required)
+- **Relationships:**
+  - Many-to-One with `TCOwner` (`TCO` Required).
+  - `OrderHeader` has Many `OrderDetail`s (Cascade Delete).
+  - `OrderDetail` has Many-to-One with `Product` (Restrict Delete to prevent breaking order history if a product is deleted).
+
+---
+
+### EF Core Configuration Rules (Infrastructure Layer)
+When creating `IEntityTypeConfiguration<T>` in the Persistence layer:
+- Always use **Fluent API** instead of Data Annotations in the Domain layer to keep Domain pure.
+- Configure decimals explicitly: `builder.Property(p => p.Price).HasColumnType("decimal(18,2)");`
+- Configure soft deletes if required via Global Query Filters (`IsDeleted` flag).
+- Set up Foreign Key behaviors strictly: Use `DeleteBehavior.Restrict` on `Product` references in `OrderDetail` to protect transactional history.
+---
+
+### Step 2: Back-end API & GraphQL Setup
+1. Create GraphQL Types, Queries, and Mutations for the specified feature.
+2. Implement Business Logic in Application Layer (Use FluentValidation to validate input).
+3. Test GraphQL endpoints using Banana Cake Pop or Postman.
+
+#### Back-end: .NET Core 8 (Clean Architecture) Directory Structure
+Follow the 4-layer Clean Architecture separating Domain, Application, Infrastructure, and Presentation.
+back-end/
+├── Application/                    # Business Logic, Use Cases & Interfaces
+│   ├── Common/                     # Interfaces (IApplicationDbContext, ICurrentUserService)
+│   ├── Dtos/                       # Data Transfer Objects for requests/responses
+│   ├── Features/                   # CQRS Pattern: Grouped by Features/Aggregates
+│   │   ├── Products/
+│   │   │   ├── Queries/            # GetProductListQuery, GetProductDetailQuery
+│   │   │   └── Commands/           # CreateProductCommand, UpdateProductCommand
+│   │   └── Orders/
+│   ├── Validators/                 # FluentValidation rules (CreateOrderCommandValidator.cs)
+│   └── Behaviors/                  # MediatR pipeline behaviors (Validation, Logging)
+│
+├── Infrastructure/                 # External Implementations (DB, Identity, Third-party)
+│   ├── Services/                   # DateTimeService, StripePaymentService, RedisCacheService
+│   └── Identity/                   # ApplicationUser, Identity JWT Configuration
+│
+└── Presentation.Api/               # Entry Point (Web API / GraphQL Endpoint)
+├── Controllers/                # REST Controllers for Auth, Webhooks, File Uploads
+├── GraphQL/                    # HotChocolate GraphQL Configuration
+│   ├── Queries/                # ProductQueries.cs, CategoryQueries.cs
+│   ├── Mutations/              # CartMutations.cs, OrderMutations.cs
+│   ├── Types/                  # ObjectType configurations for GraphQL
+│   └── DataLoaders/            # N+1 Performance optimization (BatchDataLoaders)
+├── Middlewares/                # Custom Exception Handler, Rate Limiting Middleware
+├── Program.cs                  # Application bootstrap and DI container registration
+└── appsettings.json            # Configuration settings (Connection Strings, JWT keys)
+
+
+### Step 3: Front-end Integration
+1. Generate TypeScript interfaces based on GraphQL Schema.
+2. Build Next.js Pages/Components using Tailwind CSS for UI.
+3. Fetch data using `fetch` in Server Components or a GraphQL client (like Apollo or urql) in Client Components.
+
+### Standard Project Directory Structure
+Every time you generate new files, components, or API endpoints, you MUST place them according to the standard architecture below.
+
+#### Front-end: Next.js (App Router) Directory Structure
+Follow a modular, feature-based, and atomic component structure.
+front-end/
+├── app/                        # Next.js App Router (Routing & Pages)
+│   ├── (auth)/                 # Route Group for Authentication (login, register)
+│   ├── (shop)/                 # Route Group for Main E-commerce Layout
+│   │   ├── products/           # Product Listing Page (app/(shop)/products/page.tsx)
+│   │   │   └── [id]/           # Product Detail Page (app/(shop)/products/[id]/page.tsx)
+│   │   ├── cart/               # Shopping Cart Page
+│   │   └── checkout/           # Checkout & Payment Page
+│   ├── api/                    # Next.js API Routes (strictly for proxy/webhooks)
+│   │   └── auth/[...nextauth]/ # NextAuth configuration
+│   ├── layout.tsx              # Root Layout
+│   └── page.tsx                # Homepage
+├── components/                 # Reusable UI Components
+│   ├── ui/                     # Atomic UI Primitives (Shadcn UI: button, input, dialog)
+│   ├── ecommerce/              # Business-specific components (cart-overlay, product-card)
+│   └── shared/                 # Shared layouts (navbar, footer, sidebar)
+├── hooks/                      # Custom React Hooks (useCart, useAuth, useProducts)
+├── lib/                        # Third-party configurations & utilities
+│   ├── graphql-client.ts       # Apollo/Urql Client configuration
+│   └── utils.ts                # Tailwind merge and utility functions
+├── store/                      # Global State Management (Zustand stores)
+│   └── cart-store.ts           # Persisted client-side cart state
+├── types/                      # TypeScript Global Type Definitions & GraphQL generated types
+└── styles/                     # Global styles (globals.css with Tailwind directives)
+
+
+### Step 4: End-to-End Testing & Verification
+1. Verify the state updates correctly (e.g., adding to cart increases item count).
+2. Ensure API responses are correctly handled (Loading, Error, Data states).
+
+---
+
+## 4. Code Output Standards
+- Write fully functional code. Do not use placeholders like `// TODO: implement later`.
+- Always include Error Handling (`try-catch` blocks in API, Error Boundaries in React).
+- Follow C# Naming Conventions (PascalCase for methods/classes) and TypeScript Conventions (camelCase for variables/functions).
+
+---
+
+## 5. UI/UX & Stitch with Google Integration Rules
+
+When translating layouts, design tokens, or specific components designed in Stitch (https://stitch.withgoogle.com/projects/8766520719079301836) into Next.js + Tailwind CSS, you MUST follow these mapping rules:
+
+### 1. Design Tokens & Tailwind Configuration
+- **Colors & Themes:** Extract the color palette (Primary, Secondary, Surface, Background, Error) and semantic tokens from the Stitch design. Map them directly into the `tailwind.config.ts` extended theme block. Never hardcode hex values in the components.
+- **Typography:** Map typography scale (Display, Headline, Title, Body, Label) from Stitch into Tailwind text utility classes (`text-xl`, `font-semibold`, `tracking-tight`).
+- **Shapes & Elevation:** Map Stitch border-radii and box-shadows (Elevation levels) to Tailwind's `rounded-*` and `shadow-*` utilities.
+
+### 2. Component Structure Translation
+Translate Stitch layout containers and UI blocks into React components according to these strict mappings:
+- **Stitch Layout Grid / Slots:** Map to Tailwind Grid (`grid grid-cols-1 md:grid-cols-12 gap-6`) or Flexbox arrangements.
+- **Interactive States:** Implement states specified in Stitch (Default, Hover, Focus, Pressed, Disabled) using Tailwind pseudo-classes (`hover:`, `focus:`, `active:`, `disabled:`).
+- **Responsive Design:** Translate Stitch responsive breakpoints into Tailwind mobile-first responsive modifiers (`sm:`, `md:`, `lg:`, `xl:`).
+
+### 3. Stitch-to-Code Workflow
+When provided with a specific Stitch screen layout or component definition, perform the translation using these steps:
+1. **Analyze:** Break down the design into Layout, Structure, Typography, and Components.
+2. **Setup Base Primitives:** Ensure the atomic component exists in `components/ui/` (e.g., mapping a Stitch Button to `components/ui/button.tsx`).
+3. **Assemble E-commerce Logic:** Wrap the visual primitives with e-commerce state logic (e.g., Stitch Product Card + Zustand `addToCart` handler) inside `components/ecommerce/`.
+
+
+
+

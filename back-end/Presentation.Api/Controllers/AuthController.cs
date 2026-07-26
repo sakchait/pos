@@ -1,0 +1,95 @@
+﻿// Controllers/AuthController.cs
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Pos.Application.Repositories;
+using Pos.Domain.Entities;
+
+namespace Pos.Api.Controllers;
+
+[ApiController]
+[Route("external/[controller]")]
+public class AuthController : ControllerBase
+{
+    private readonly IRepository<User> _usersRepo;
+    private readonly IConfiguration _config;
+
+    public AuthController(IRepository<User> usersRepo, IConfiguration config)
+    {
+        _usersRepo = usersRepo;
+        _config = config;
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest dto)
+    {
+        var user = await _usersRepo.GetAll()
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Username == dto.Username && u.IsActive);
+
+        // ตรวจสอบ Password (ควรใช้ BCrypt/Argon2 Verify)
+        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            return Unauthorized(new { message = "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง" });
+
+        // สร้าง JWT Claims
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_config["Jwt:SecretKey"] ?? "SUPER_SECRET_KEY_POS_SYSTEM_2026_SECURITY_TOKEN");
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.FullName),
+            new(ClaimTypes.Role, user.Role.Name),
+        };
+
+        if (user.BranchId.HasValue) claims.Add(new Claim("BranchId", user.BranchId.ToString()!));
+        if (user.VendorId.HasValue) claims.Add(new Claim("VendorId", user.VendorId.ToString()!));
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddHours(12), // Session 12 ชม.
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return Ok(new
+        {
+            token = tokenHandler.WriteToken(token),
+            user = new
+            {
+                user.Id,
+                user.FullName,
+                role = user.Role.Name,
+                user.BranchId,
+                user.VendorId
+            }
+        });
+    }
+
+    /// <summary>
+    /// ยืนยัน PIN ผู้จัดการขณะหน้าร้านกด Void/Refund
+    /// </summary>
+    [HttpPost("verify-manager-pin")]
+    public async Task<IActionResult> VerifyManagerPin([FromBody] VerifyPinRequest dto)
+    {
+        var manager = await _usersRepo.GetAll()
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Role.Name == "BranchManager" && u.BranchId == dto.BranchId && u.IsActive);
+
+        if (manager == null || string.IsNullOrEmpty(manager.PinHash))
+            return BadRequest(new { message = "ไม่พบข้อมูลผู้จัดการในสาขานี้" });
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.Pin, manager.PinHash))
+            return Unauthorized(new { message = "รหัส PIN ผู้จัดการไม่ถูกต้อง" });
+
+        return Ok(new { managerId = manager.Id, managerName = manager.FullName });
+    }
+}
+
+public record LoginRequest(string Username, string Password);
+public record VerifyPinRequest(Guid BranchId, string Pin);

@@ -1,0 +1,6 @@
+{
+  "name": "OmniPOS Enterprise",
+  "description": "Offline-First Enterprise POS Application with Cashier Terminal, Shift Management, Inventory & AI Upsell",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

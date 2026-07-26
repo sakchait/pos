@@ -1,0 +1,11 @@
+﻿namespace Pos.Domain.Entities;
+
+public class Warehouse
+{
+    public Guid Id { get; set; }
+    public Guid BranchId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public bool IsMainWarehouse { get; set; } = true;
+
+    public Branch? Branch { get; set; }
+}
