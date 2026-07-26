@@ -4,7 +4,7 @@ using Pos.Domain.Entities;
 using Pos.Application.Repositories;
 
 [ApiController]
-[Route("external/[controller]")]
+[Route("api/external/[controller]")]
 public class PerformanceController : ControllerBase
 {
     private readonly IRepository<Order> _ordersRepo;

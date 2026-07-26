@@ -6,7 +6,7 @@ using Pos.Infrastructure.Services;
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("external/[controller]")]
+[Route("api/external/[controller]")]
 public class ReportsController : ControllerBase
 {
     private readonly IReportsService _reportsService;

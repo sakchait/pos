@@ -1,4 +1,4 @@
-﻿// Controllers/AuthController.cs
+// Controllers/AuthController.cs
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,7 +11,7 @@ using Pos.Domain.Entities;
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("external/[controller]")]
+[Route("api/external/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IRepository<User> _usersRepo;
@@ -79,7 +79,7 @@ public class AuthController : ControllerBase
     {
         var manager = await _usersRepo.GetAll()
             .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Role.Name == "BranchManager" && u.BranchId == dto.BranchId && u.IsActive);
+            .FirstOrDefaultAsync(u => (u.Role.Name == "BranchManager" || u.Role.Name == "Admin") && u.IsActive);
 
         if (manager == null || string.IsNullOrEmpty(manager.PinHash))
             return BadRequest(new { message = "ไม่พบข้อมูลผู้จัดการในสาขานี้" });
@@ -87,7 +87,7 @@ public class AuthController : ControllerBase
         if (!BCrypt.Net.BCrypt.Verify(dto.Pin, manager.PinHash))
             return Unauthorized(new { message = "รหัส PIN ผู้จัดการไม่ถูกต้อง" });
 
-        return Ok(new { managerId = manager.Id, managerName = manager.FullName });
+        return Ok(new { isValid = true, success = true, managerId = manager.Id, managerName = manager.FullName });
     }
 }
 

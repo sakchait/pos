@@ -6,12 +6,11 @@ using Pos.Infrastructure.Interfaces;
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("external/[controller]")]
-public class SyncController : ControllerBase
+public class OrdersController : ControllerBase
 {
     private readonly ISyncService _syncService;
 
-    public SyncController(ISyncService syncService)
+    public OrdersController(ISyncService syncService)
     {
         _syncService = syncService;
     }
@@ -19,7 +18,7 @@ public class SyncController : ControllerBase
     /// <summary>
     /// รับ Batch Orders จาก PWA Offline Storage มาทำการ Sync ลง SQL Server
     /// </summary>
-    [HttpPost("orders")]
+    [HttpPost("/api/external/sync/orders")]
     public async Task<IActionResult> SyncOrders(
         [FromBody] List<CreateOrderDto> offlineOrders,
         CancellationToken cancellationToken)

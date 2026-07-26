@@ -10,7 +10,7 @@ using User = Pos.Domain.Entities.User;
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("external/admin/[controller]")]
+[Route("api/external/admin/[controller]")]
 [Authorize(Policy = "AdminOnly")]
 public class AdminUsersController : ControllerBase
 {

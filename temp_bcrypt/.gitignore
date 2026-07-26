@@ -1,0 +1,69 @@
+## Core Build Outputs
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio Cache, User and Metadata Files
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.sln.docstates
+*.suo.tmp
+*.dbmdl
+*.aps
+*.cache
+*.ncb
+*.opendb
+*.tlog
+
+## Rider / IntelliJ / WebStorm IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+
+## VS Code Settings and Cache
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+## NuGet Packages
+*.nupkg
+**/packages/
+!**/packages/build/
+
+## Publish Folder
+publish/
+*.pubxml
+*.pubxml.user
+
+## Database and Local Data Files
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+*.sdf
+
+## Environment / Config Secrets (Optional local settings)
+secrets.json
+appsettings.local.json
+appsettings.Development.local.json
+
+## OS files
+.DS_Store
+Thumbs.db
+desktop.ini

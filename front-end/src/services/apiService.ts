@@ -386,9 +386,10 @@ export const apiService = {
   async verifyManagerPin(branchId: string, pin: string): Promise<boolean> {
     if (USE_SERVICES) {
       try {
+        const guidBranchId = branchId === 'branch-1' ? 'a1111111-a111-a111-a111-a11111111111' : branchId;
         const res = await apiFetch<any>('/external/Auth/verify-manager-pin', {
           method: 'POST',
-          body: JSON.stringify({ branchId, pin })
+          body: JSON.stringify({ branchId: guidBranchId, pin })
         });
         return res.isValid === true || res.success === true;
       } catch (e) {

@@ -42,6 +42,29 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Attendances");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("88888888-8888-8888-8888-888888888801"),
+                            ClockIn = new DateTime(2026, 7, 25, 6, 8, 0, 0, DateTimeKind.Utc),
+                            ClockOut = new DateTime(2026, 7, 25, 14, 2, 0, 0, DateTimeKind.Utc),
+                            UserId = new Guid("33333333-3333-3333-3333-333333333334")
+                        },
+                        new
+                        {
+                            Id = new Guid("88888888-8888-8888-8888-888888888802"),
+                            ClockIn = new DateTime(2026, 7, 25, 14, 14, 0, 0, DateTimeKind.Utc),
+                            ClockOut = new DateTime(2026, 7, 25, 22, 5, 0, 0, DateTimeKind.Utc),
+                            UserId = new Guid("33333333-3333-3333-3333-333333333303")
+                        },
+                        new
+                        {
+                            Id = new Guid("88888888-8888-8888-8888-888888888803"),
+                            ClockIn = new DateTime(2026, 7, 25, 5, 54, 0, 0, DateTimeKind.Utc),
+                            ClockOut = new DateTime(2026, 7, 25, 14, 0, 0, 0, DateTimeKind.Utc),
+                            UserId = new Guid("33333333-3333-3333-3333-333333333302")
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.Branch", b =>
@@ -185,6 +208,56 @@ namespace Pos.Domain.Migrations
                     b.HasKey("Code");
 
                     b.ToTable("Coupons");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = "WELCOME10",
+                            ApplicableProductIdsJson = "[]",
+                            Description = "10% Welcome Discount",
+                            DiscountType = "Percentage",
+                            DiscountValue = 10m,
+                            EndDate = new DateTime(2026, 12, 31, 23, 59, 59, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            MaxDiscountAmount = 15m,
+                            MinOrderAmount = 20m,
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UsageLimit = 1000,
+                            UsedCount = 42
+                        },
+                        new
+                        {
+                            Code = "FLASH5",
+                            ApplicableProductIdsJson = "[]",
+                            Description = "$5 off on order above $30",
+                            DiscountType = "Fixed",
+                            DiscountValue = 5m,
+                            EndDate = new DateTime(2026, 12, 31, 23, 59, 59, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            MaxDiscountAmount = 5m,
+                            MinOrderAmount = 30m,
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UsageLimit = 500,
+                            UsedCount = 18
+                        },
+                        new
+                        {
+                            Code = "VIPBURGER",
+                            ApplicableProductIdsJson = "[]",
+                            Description = "20% off on Burger combos",
+                            DiscountType = "Percentage",
+                            DiscountValue = 20m,
+                            EndDate = new DateTime(2026, 12, 31, 23, 59, 59, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            MaxDiscountAmount = 10m,
+                            MinOrderAmount = 15m,
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UsageLimit = 100,
+                            UsedCount = 5
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.CouponUsage", b =>
@@ -318,6 +391,30 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("LeaveRequests");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("99999999-9999-9999-9999-999999999901"),
+                            CreatedAt = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateTime(2026, 7, 21, 0, 0, 0, 0, DateTimeKind.Utc),
+                            LeaveType = "SickLeave",
+                            Reason = "High fever and flu",
+                            StartDate = new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Approved",
+                            UserId = new Guid("33333333-3333-3333-3333-333333333304")
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-9999-9999-9999-999999999902"),
+                            CreatedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateTime(2026, 8, 5, 0, 0, 0, 0, DateTimeKind.Utc),
+                            LeaveType = "AnnualLeave",
+                            Reason = "Family vacation",
+                            StartDate = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Approved",
+                            UserId = new Guid("33333333-3333-3333-3333-333333333334")
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.Member", b =>
@@ -642,6 +739,120 @@ namespace Pos.Domain.Migrations
                         .IsUnique();
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111101"),
+                            Code = "0012",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 10,
+                            Name = "Mediterranean Salad",
+                            Price = 14.50m,
+                            StandardCost = 5.00m,
+                            StockQuantity = 35,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111102"),
+                            Code = "0054",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 15,
+                            Name = "Signature Burger",
+                            Price = 18.00m,
+                            StandardCost = 6.50m,
+                            StockQuantity = 42,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111103"),
+                            Code = "0098",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 20,
+                            Name = "Artisan Latte",
+                            Price = 5.25m,
+                            StandardCost = 1.50m,
+                            StockQuantity = 80,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111104"),
+                            Code = "0112",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 12,
+                            Name = "Glazed Donut",
+                            Price = 3.50m,
+                            StandardCost = 1.00m,
+                            StockQuantity = 50,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111105"),
+                            Code = "0087",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 8,
+                            Name = "Mixed Grill",
+                            Price = 24.00m,
+                            StandardCost = 9.00m,
+                            StockQuantity = 3,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111106"),
+                            Code = "0041",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 15,
+                            Name = "Truffle Fries",
+                            Price = 8.50m,
+                            StandardCost = 2.50m,
+                            StockQuantity = 65,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111107"),
+                            Code = "0203",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 10,
+                            Name = "Iced Matcha Latte",
+                            Price = 6.00m,
+                            StandardCost = 2.00m,
+                            StockQuantity = 2,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111108"),
+                            Code = "0319",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 12,
+                            Name = "Ribeye Steak 300g",
+                            Price = 38.00m,
+                            StandardCost = 15.00m,
+                            StockQuantity = 4,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.ProductAssociation", b =>
@@ -740,6 +951,19 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("PurchaseOrders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("66666666-6666-6666-6666-666666666601"),
+                            CreatedAt = new DateTime(2026, 7, 25, 8, 30, 0, 0, DateTimeKind.Utc),
+                            PoNumber = "PO-20260725-01",
+                            ProposedByVendor = true,
+                            Status = "Proposed",
+                            TotalAmount = 54.00m,
+                            VendorId = new Guid("d1111111-d111-d111-d111-d11111111111"),
+                            WarehouseId = new Guid("b1111111-b111-b111-b111-b11111111111")
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.PurchaseOrderItem", b =>
@@ -772,6 +996,17 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("PurchaseOrderId");
 
                     b.ToTable("PurchaseOrderItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("66666666-6666-6666-6666-666666666602"),
+                            ProductId = new Guid("11111111-1111-1111-1111-111111111102"),
+                            PurchaseOrderId = new Guid("66666666-6666-6666-6666-666666666601"),
+                            Quantity = 3,
+                            SubTotal = 54.00m,
+                            UnitPrice = 18.00m
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.Role", b =>
@@ -911,6 +1146,48 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ShiftSchedules");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444401"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            RoleInShift = "Cashier",
+                            Status = "Scheduled",
+                            ShiftTypeId = 1,
+                            UserId = new Guid("33333333-3333-3333-3333-333333333334"),
+                            WorkDate = new DateTime(2026, 7, 25, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444402"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            RoleInShift = "BranchManager",
+                            Status = "Scheduled",
+                            ShiftTypeId = 1,
+                            UserId = new Guid("33333333-3333-3333-3333-333333333302"),
+                            WorkDate = new DateTime(2026, 7, 25, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444403"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            RoleInShift = "Cashier",
+                            Status = "Scheduled",
+                            ShiftTypeId = 2,
+                            UserId = new Guid("33333333-3333-3333-3333-333333333303"),
+                            WorkDate = new DateTime(2026, 7, 25, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444404"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            RoleInShift = "Cashier",
+                            Status = "Scheduled",
+                            ShiftTypeId = 3,
+                            UserId = new Guid("33333333-3333-3333-3333-333333333304"),
+                            WorkDate = new DateTime(2026, 7, 25, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.ShiftSwapRequest", b =>
@@ -946,6 +1223,17 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("RequestorShiftId");
 
                     b.ToTable("ShiftSwapRequests");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555501"),
+                            CreatedAt = new DateTime(2026, 7, 25, 10, 30, 0, 0, DateTimeKind.Utc),
+                            Reason = "Family emergency",
+                            RequestorShiftId = new Guid("44444444-4444-4444-4444-444444444401"),
+                            Status = "PendingPeer",
+                            TargetUserId = new Guid("33333333-3333-3333-3333-333333333303")
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.ShiftType", b =>
@@ -1036,6 +1324,21 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("StockBatches");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("77777777-7777-7777-7777-777777777701"),
+                            BatchNumber = "BATCH-INITIAL-01",
+                            ExpiryDate = new DateTime(2027, 7, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            InitialQuantity = 50,
+                            ProductId = new Guid("11111111-1111-1111-1111-111111111102"),
+                            PurchaseOrderId = Guid.Empty,
+                            ReceivedDate = new DateTime(2026, 7, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            RemainingQuantity = 42,
+                            UnitCost = 6.50m,
+                            WarehouseId = new Guid("b1111111-b111-b111-b111-b11111111111")
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.StockTransaction", b =>
@@ -1166,8 +1469,65 @@ namespace Pos.Domain.Migrations
                             IsActive = true,
                             IsAdmin = true,
                             PasswordHash = "$2a$11$F8tjZZi6VF.ICf6dL20Q4uzSCZ.iJJAHjN/QMsoag0Pujm8aqzN6W",
+                            PinHash = "$2a$11$HjJ4K5vA3k9L9D/s8r5E6uOumS9h1R2D3y5G7h9i1J3k5L7m9N1O3P",
                             RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Username = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333334"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Sarah Jenkins",
+                            HourlyRate = 25.0m,
+                            IsActive = true,
+                            IsAdmin = false,
+                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
+                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            Username = "sarah.jenkins"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333302"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Alex Rivera",
+                            HourlyRate = 18.0m,
+                            IsActive = true,
+                            IsAdmin = false,
+                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
+                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Username = "alex.rivera"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333303"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Mark Tanaka",
+                            HourlyRate = 20.0m,
+                            IsActive = true,
+                            IsAdmin = false,
+                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
+                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            RoleId = new Guid("77777777-7777-7777-7777-777777777777"),
+                            Username = "mark.tanaka"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333304"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Elena Rostova",
+                            HourlyRate = 22.0m,
+                            IsActive = true,
+                            IsAdmin = false,
+                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
+                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            RoleId = new Guid("66666666-6666-6666-6666-666666666666"),
+                            Username = "purchaser.admin"
                         });
                 });
 
@@ -1203,6 +1563,18 @@ namespace Pos.Domain.Migrations
                         .IsUnique();
 
                     b.ToTable("Vendors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d1111111-d111-d111-d111-d11111111111"),
+                            ContactPerson = "Jane Smith",
+                            Email = "vendor@globalfoods.com",
+                            IsActive = true,
+                            Name = "Global Foods Co.",
+                            Phone = "0819876543",
+                            TaxId = "0105551234599"
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.VoidLog", b =>
@@ -1269,6 +1641,15 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("BranchId");
 
                     b.ToTable("Warehouses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b1111111-b111-b111-b111-b11111111111"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            IsMainWarehouse = true,
+                            Name = "Main Warehouse"
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.WarehouseInventory", b =>

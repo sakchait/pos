@@ -11,7 +11,6 @@ using System.Security.Claims;
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("external/[controller]")]
 [Authorize] // ผู้ใช้งานทุกคนที่ล็อกอินแล้วสามารถเข้าถึงได้
 public class UserProfileController : ControllerBase
 {
@@ -23,7 +22,7 @@ public class UserProfileController : ControllerBase
     }
 
     // 1. ดึงข้อมูลโปรไฟล์ของตนเอง
-    [HttpGet("me")]
+    [HttpGet("/api/members")]
     public async Task<IActionResult> GetMyProfile()
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -46,7 +45,7 @@ public class UserProfileController : ControllerBase
     }
 
     // 2. แก้ไขข้อมูลส่วนตัวของตนเอง (เปลี่ยนได้เฉพาะชื่อ-นามสกุล)
-    [HttpPut("me")]
+    [HttpPut("/api/members")]
     public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateMyProfileDto dto)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -62,7 +61,7 @@ public class UserProfileController : ControllerBase
     }
 
     // 3. เปลี่ยนรหัสผ่านของตนเอง (Self Reset Password)
-    [HttpPost("me/change-password")]
+    [HttpPost("/api/members/change-password")]
     public async Task<IActionResult> ChangeMyPassword([FromBody] ChangeMyPasswordDto dto)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

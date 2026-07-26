@@ -8,7 +8,7 @@ using Pos.Application.Repositories;
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("external/admin/[controller]")]
+[Route("api/external/admin/[controller]")]
 [Authorize(Policy = "AdminOnly")] // เฉพาะ IsAdmin = true เท่านั้นที่เข้าใช้งานได้
 public class AdminRolesController : ControllerBase
 {
