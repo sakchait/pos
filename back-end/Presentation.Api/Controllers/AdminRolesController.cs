@@ -14,6 +14,7 @@ namespace Pos.Api.Controllers;
 
 [ApiController]
 //[Authorize(Policy = "AdminOnly")] // Fallback authorization filter
+[Route("api/[controller]")]
 [ApiKey]
 public class AdminRolesController : ControllerBase
 {
@@ -29,7 +30,7 @@ public class AdminRolesController : ControllerBase
     }
 
     // 1. GET /api/external/admin/AdminRoles - Fetches role permissions matrix from C# backend
-    [HttpGet("/api/external/admin/AdminRoles")]
+    [HttpGet("/api/admin/AdminRoles")]
     [AllowAnonymous]
     public async Task<IActionResult> GetAdminRoles()
     {
@@ -70,7 +71,7 @@ public class AdminRolesController : ControllerBase
     }
 
     // 3. PUT /api/external/admin/AdminRoles/update-routes - Updates permissions matrix on C# backend
-    [HttpPut("/api/external/admin/AdminRoles/update-routes")]
+    [HttpPut("/api/admin/AdminRoles/update-routes")]
     [AllowAnonymous]
     public async Task<IActionResult> UpdateRoleRoutes([FromBody] UpdateRoleRoutesDto dto)
     {

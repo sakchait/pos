@@ -8,7 +8,7 @@ namespace Pos.Api.Controllers;
 
 [ApiController]
 [ApiKey]
-[Route("api/external/[controller]")]
+[Route("api/[controller]")]
 public class ReportsController : ControllerBase
 {
     private readonly IReportsService _reportsService;

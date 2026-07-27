@@ -27,23 +27,6 @@ public class Program
         // Options
         builder.Services.Configure<ApiKeySettings>(builder.Configuration.GetSection("ApiKeySettings"));
 
-        // API Versioning / Explorer
-        builder.Services.AddApiVersioning(options =>
-        {
-            options.DefaultApiVersion = new ApiVersion(1, 0);
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.ReportApiVersions = true;
-            options.ApiVersionReader = ApiVersionReader.Combine(
-                new UrlSegmentApiVersionReader(),
-                new HeaderApiVersionReader("X-Api-Version")
-            );
-        })
-        .AddApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
-        });
-
         // Resolve secrets (async) and configure DbContext safely
         var loggerFactory = LoggerFactory.Create(lb => lb.AddConsole());
         var tempLogger = loggerFactory.CreateLogger("Startup");
@@ -65,6 +48,16 @@ public class Program
         builder.Services.AddScoped<IVendorPurchaseService, VendorPurchaseService>();
         builder.Services.AddScoped<ISyncService, SyncService>();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
         builder.Services.AddHealthChecks();
         builder.Services.AddControllers(options =>
         {
@@ -75,17 +68,6 @@ public class Program
         // Swagger: generate one document per API version
         builder.Services.AddSwaggerGen(options =>
         {
-            var provider = builder.Services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
-            foreach (var description in provider.ApiVersionDescriptions)
-            {
-                options.SwaggerDoc(description.GroupName, new OpenApiInfo
-                {
-                    Title = "POS API",
-                    Version = description.ApiVersion.ToString(),
-                    Description = description.IsDeprecated ? "This API version has been deprecated." : "POS API."
-                });
-            }
-
             options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
             {
                 Name = "x-functions-key",
@@ -138,6 +120,7 @@ public class Program
         // Security and routing
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseCors("AllowAll");
         //app.UseAuthentication();
         app.UseAuthorization();
 

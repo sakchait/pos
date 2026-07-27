@@ -540,7 +540,7 @@ export async function seedUsersIfNeeded() {
         email: 'admin@omnipos.com',
         phone: '+1 (555) 999-0000',
         role: 'Admin',
-        passwordHash: 'admin123',
+        passwordHash: 'Admin@1234',
         pin: '9999',
         avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
         lastLoginAt: new Date().toISOString(),

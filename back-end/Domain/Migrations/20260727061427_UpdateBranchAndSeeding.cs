@@ -23,7 +23,7 @@ namespace Pos.Domain.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("99999999-9999-9999-9999-999999999999"),
                 column: "PasswordHash",
-                value: "$2a$11$8q3/p6K0iA1Xv0vG0mJ5.u8A9d1E3f5G7h9i1J3k5L7m9N1O3P5Q6");
+                value: "$2a$11$uC19S.8s3RpTb1hz7wKJouDpB766FnaRg500LzBhCb9rmVjsmSygu");
         }
 
         /// <inheritdoc />

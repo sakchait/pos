@@ -11,7 +11,7 @@ using Presentation.Api.Authorization;
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("api/external/admin/[controller]")]
+[Route("api/admin/[controller]")]
 //[Authorize(Policy = "AdminOnly")]
 [ApiKey]
 public class AdminUsersController : ControllerBase

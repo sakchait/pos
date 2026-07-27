@@ -10,7 +10,7 @@ using Presentation.Api.Authorization;
 
 [ApiController]
 [ApiKey]
-[Route("api/external/[controller]")]
+[Route("api/[controller]")]
 //[Authorize(Roles = "PurchaserManager")] // ล็อกสิทธิ์เฉพาะ PurchaserManager
 public class PurchaseOrdersController : ControllerBase
 {
@@ -74,7 +74,7 @@ public class PurchaseOrdersController : ControllerBase
 
 // ตัวอย่าง: Controller สำหรับฝ่ายบัญชี (Accountant)
 [ApiController]
-[Route("api/external/[controller]")]
+[Route("api/[controller]")]
 [Authorize(Roles = "Accountant,BranchManager")] // ให้สิทธิ์ บัญชี และ ผู้จัดการสาขา เข้าดูได้
 public class AccountingReportsController : ControllerBase
 {

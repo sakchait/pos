@@ -1,27 +1,45 @@
 "use server";
 
 import { db, validateCouponCode } from '../db/dexieDb';
-import { 
-  Product, Coupon, Member, Order, Shift, DrawerOpenLog, 
-  ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch, 
+import {
+  Product, Coupon, Member, Order, Shift, DrawerOpenLog,
+  ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch,
   RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount
 } from '../types/pos';
 
 const USE_SERVICES = import.meta.env.VITE_USE_SERVICES === 'true';
 const API_BASE = '/api';
+const X_FUNCTION_KEY = import.meta.env.VITE_API_KEY;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const url = `${BACKEND_URL}${API_BASE}${path}`;
+  let bodyLog: any = '';
+  if (options?.body) {
+    try {
+      bodyLog = JSON.parse(options.body as string);
+    } catch {
+      bodyLog = options.body;
+    }
+  }
+  console.log(`[apiFetch] Request: ${options?.method || 'GET'} ${url}`, bodyLog);
+
+  const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
+      'x-functions-key': X_FUNCTION_KEY || "",
       ...options?.headers
     },
     ...options
   });
+
   if (!res.ok) {
+    console.error(`[apiFetch] Response Error: ${res.status} ${res.statusText} for ${url}`);
     throw new Error(`API Error: ${res.statusText}`);
   }
-  return res.json();
+  const data = await res.json();
+  console.log(`[apiFetch] Response Success from ${url}:`, data);
+  return data;
 }
 
 export const apiService = {
@@ -131,7 +149,7 @@ export const apiService = {
       await apiFetch('/orders', { method: 'POST', body: JSON.stringify(order) });
       // Sync order to C# backend
       try {
-        await apiFetch('/external/Sync/orders', {
+        await apiFetch('/Sync/orders', {
           method: 'POST',
           body: JSON.stringify([{
             id: order.id,
@@ -266,7 +284,7 @@ export const apiService = {
       // Call C# Backend approve endpoint if status is APPROVED
       if (updates.status === 'APPROVED') {
         try {
-          await apiFetch(`/external/PurchaseOrders/approve/${id}`, { method: 'POST' });
+          await apiFetch(`/PurchaseOrders/approve/${id}`, { method: 'POST' });
         } catch (e) {
           console.error('Failed to call C# PO approve API:', e);
         }
@@ -296,7 +314,7 @@ export const apiService = {
   async getRoleRoutes(): Promise<RoleRoutePermission[]> {
     if (USE_SERVICES) {
       try {
-        const response = await apiFetch<any[]>('/external/admin/AdminRoles');
+        const response = await apiFetch<any[]>('/admin/AdminRoles');
         return response.map(r => ({
           role: r.roleName,
           routes: r.allowedRoutes
@@ -312,10 +330,10 @@ export const apiService = {
   async updateRoleRoute(role: string, routes: string[]): Promise<void> {
     if (USE_SERVICES) {
       try {
-        const roles = await apiFetch<any[]>('/external/admin/AdminRoles');
+        const roles = await apiFetch<any[]>('/admin/AdminRoles');
         const found = roles.find(r => r.roleName === role);
         if (found) {
-          await apiFetch('/external/admin/AdminRoles/update-routes', {
+          await apiFetch('/admin/AdminRoles/update-routes', {
             method: 'PUT',
             body: JSON.stringify({
               roleId: found.roleId,
@@ -359,25 +377,25 @@ export const apiService = {
   // C# Backend Reports
   async getAttendanceReport(branchId: string, startDate: string, endDate: string): Promise<any> {
     if (USE_SERVICES) {
-      return apiFetch(`/external/Reports/attendance?branchId=${branchId}&startDate=${startDate}&endDate=${endDate}`);
+      return apiFetch(`/Reports/attendance?branchId=${branchId}&startDate=${startDate}&endDate=${endDate}`);
     }
     return null;
   },
   async getDoubleShiftAuditReport(branchId: string, startDate: string, endDate: string): Promise<any> {
     if (USE_SERVICES) {
-      return apiFetch(`/external/Reports/double-shift-audit?branchId=${branchId}&startDate=${startDate}&endDate=${endDate}`);
+      return apiFetch(`/Reports/double-shift-audit?branchId=${branchId}&startDate=${startDate}&endDate=${endDate}`);
     }
     return null;
   },
   async getLeaveSummaryReport(branchId: string, year: number): Promise<any> {
     if (USE_SERVICES) {
-      return apiFetch(`/external/Reports/leave-summary?branchId=${branchId}&year=${year}`);
+      return apiFetch(`/Reports/leave-summary?branchId=${branchId}&year=${year}`);
     }
     return null;
   },
   async getHolidayPayReport(branchId: string, startDate: string, endDate: string): Promise<any> {
     if (USE_SERVICES) {
-      return apiFetch(`/external/Reports/holiday-pay?branchId=${branchId}&startDate=${startDate}&endDate=${endDate}`);
+      return apiFetch(`/Reports/holiday-pay?branchId=${branchId}&startDate=${startDate}&endDate=${endDate}`);
     }
     return null;
   },

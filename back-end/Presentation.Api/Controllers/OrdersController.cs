@@ -239,7 +239,7 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// รับ Batch Orders จาก PWA Offline Storage มาทำการ Sync ลง SQL Server
     /// </summary>
-    [HttpPost("/api/external/sync/orders")]
+    [HttpPost("/api/sync/orders")]
     public async Task<IActionResult> SyncOrders(
         [FromBody] List<CreateOrderDto> offlineOrders,
         CancellationToken cancellationToken)

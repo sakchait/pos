@@ -1730,8 +1730,8 @@ namespace Pos.Domain.Migrations
                             HourlyRate = 50.00m,
                             IsActive = true,
                             IsAdmin = true,
-                            PasswordHash = "$2a$11$8q3/p6K0iA1Xv0vG0mJ5.u8A9d1E3f5G7h9i1J3k5L7m9N1O3P5Q6",
-                            PinHash = "$2a$11$HjJ4K5vA3k9L9D/s8r5E6uOumS9h1R2D3y5G7h9i1J3k5L7m9N1O3P",
+                            PasswordHash = "$2a$11$uC19S.8s3RpTb1hz7wKJouDpB766FnaRg500LzBhCb9rmVjsmSygu",
+                            PinHash = "$2a$11$v.SpJbKinX0eR4gMp33utuzaMIvOIyPxJgyT78/e./y0kdFMQnrJS",
                             RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Username = "admin"
                         },
@@ -1744,8 +1744,8 @@ namespace Pos.Domain.Migrations
                             HourlyRate = 25.00m,
                             IsActive = true,
                             IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            PasswordHash = "$2a$11$lndSqgQXC5RexO5S6cxWIu8ffjLPpcNR7xQQq41y9aouMf584wm2u",
+                            PinHash = "$2a$11$Xkgs2dzU4n/gjcB4Y/NU5OSVM5ws31xKLgi/6k9JdP/xV46V7I7NO",
                             RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
                             Username = "sarah.jenkins"
                         },
@@ -1758,8 +1758,8 @@ namespace Pos.Domain.Migrations
                             HourlyRate = 18.00m,
                             IsActive = true,
                             IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            PasswordHash = "$2a$11$lndSqgQXC5RexO5S6cxWIu8ffjLPpcNR7xQQq41y9aouMf584wm2u",
+                            PinHash = "$2a$11$Xkgs2dzU4n/gjcB4Y/NU5OSVM5ws31xKLgi/6k9JdP/xV46V7I7NO",
                             RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Username = "alex.rivera"
                         },
@@ -1772,8 +1772,8 @@ namespace Pos.Domain.Migrations
                             HourlyRate = 20.00m,
                             IsActive = true,
                             IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            PasswordHash = "$2a$11$lndSqgQXC5RexO5S6cxWIu8ffjLPpcNR7xQQq41y9aouMf584wm2u",
+                            PinHash = "$2a$11$Xkgs2dzU4n/gjcB4Y/NU5OSVM5ws31xKLgi/6k9JdP/xV46V7I7NO",
                             RoleId = new Guid("77777777-7777-7777-7777-777777777777"),
                             Username = "mark.tanaka"
                         },
@@ -1786,8 +1786,8 @@ namespace Pos.Domain.Migrations
                             HourlyRate = 22.00m,
                             IsActive = true,
                             IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
+                            PasswordHash = "$2a$11$lndSqgQXC5RexO5S6cxWIu8ffjLPpcNR7xQQq41y9aouMf584wm2u",
+                            PinHash = "$2a$11$Xkgs2dzU4n/gjcB4Y/NU5OSVM5ws31xKLgi/6k9JdP/xV46V7I7NO",
                             RoleId = new Guid("66666666-6666-6666-6666-666666666666"),
                             Username = "purchaser.admin"
                         });

@@ -6,7 +6,7 @@ using Presentation.Api.Authorization;
 
 [ApiController]
 [ApiKey]
-[Route("api/external/[controller]")]
+[Route("api/[controller]")]
 public class PerformanceController : ControllerBase
 {
     private readonly IRepository<Order> _ordersRepo;

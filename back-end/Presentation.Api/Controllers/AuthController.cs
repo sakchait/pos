@@ -32,8 +32,9 @@ public class AuthController : ControllerBase
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Username == dto.Username && u.IsActive);
 
+        var verified = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
         // ตรวจสอบ Password (ควรใช้ BCrypt/Argon2 Verify)
-        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+        if (user == null || !verified)
             return Unauthorized(new { message = "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง" });
 
         // สร้าง JWT Claims
