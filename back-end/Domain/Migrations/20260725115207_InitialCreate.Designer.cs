@@ -1477,16 +1477,6 @@ namespace Pos.Domain.Migrations
 
                     b.ToTable("ShiftSwapRequests");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555501"),
-                            CreatedAt = new DateTime(2026, 7, 25, 10, 30, 0, 0, DateTimeKind.Utc),
-                            Reason = "Family emergency",
-                            RequestorShiftId = new Guid("44444444-4444-4444-4444-444444444401"),
-                            Status = "PendingPeer",
-                            TargetUserId = new Guid("33333333-3333-3333-3333-333333333303")
-                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.ShiftType", b =>
@@ -1511,28 +1501,6 @@ namespace Pos.Domain.Migrations
 
                     b.ToTable("ShiftTypes");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EndTime = new TimeSpan(0, 14, 0, 0, 0),
-                            Name = "กะเช้า",
-                            StartTime = new TimeSpan(0, 6, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EndTime = new TimeSpan(0, 22, 0, 0, 0),
-                            Name = "กะบ่าย",
-                            StartTime = new TimeSpan(0, 14, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            EndTime = new TimeSpan(0, 6, 0, 0, 0),
-                            Name = "กะดึก",
-                            StartTime = new TimeSpan(0, 22, 0, 0, 0)
-                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.StockBatch", b =>
@@ -1711,77 +1679,7 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("VendorId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FullName = "System Administrator",
-                            HourlyRate = 50.0m,
-                            IsActive = true,
-                            IsAdmin = true,
-                            PasswordHash = "$2a$11$F8tjZZi6VF.ICf6dL20Q4uzSCZ.iJJAHjN/QMsoag0Pujm8aqzN6W",
-                            PinHash = "$2a$11$HjJ4K5vA3k9L9D/s8r5E6uOumS9h1R2D3y5G7h9i1J3k5L7m9N1O3P",
-                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Username = "admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333334"),
-                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FullName = "Sarah Jenkins",
-                            HourlyRate = 25.0m,
-                            IsActive = true,
-                            IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
-                            RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            Username = "sarah.jenkins"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333302"),
-                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FullName = "Alex Rivera",
-                            HourlyRate = 18.0m,
-                            IsActive = true,
-                            IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
-                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Username = "alex.rivera"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333303"),
-                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FullName = "Mark Tanaka",
-                            HourlyRate = 20.0m,
-                            IsActive = true,
-                            IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
-                            RoleId = new Guid("77777777-7777-7777-7777-777777777777"),
-                            Username = "mark.tanaka"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333304"),
-                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FullName = "Elena Rostova",
-                            HourlyRate = 22.0m,
-                            IsActive = true,
-                            IsAdmin = false,
-                            PasswordHash = "$2a$11$Z6C1e9F4h8j2L6n0p4r8tux4v2z6B8d0f2h4j6l8n0p2r4t6v8z0B",
-                            PinHash = "$2a$11$FmBv6XyG/d9W7yCsh.tWnOHHkQnpeEa7M24c/Lupz9B9K.Yx4qBbe",
-                            RoleId = new Guid("66666666-6666-6666-6666-666666666666"),
-                            Username = "purchaser.admin"
-                        });
+                    
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.Vendor", b =>

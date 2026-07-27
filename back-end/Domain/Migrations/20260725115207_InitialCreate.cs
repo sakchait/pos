@@ -768,34 +768,6 @@ namespace Pos.Domain.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { new Guid("11111111-1111-1111-1111-111111111111"), "Admin" },
-                    { new Guid("22222222-2222-2222-2222-222222222222"), "Cashier" },
-                    { new Guid("33333333-3333-3333-3333-333333333333"), "BranchManager" },
-                    { new Guid("44444444-4444-4444-4444-444444444444"), "Accountant" },
-                    { new Guid("55555555-5555-5555-5555-555555555555"), "Vendor" },
-                    { new Guid("66666666-6666-6666-6666-666666666666"), "PurchaserManager" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ShiftTypes",
-                columns: new[] { "Id", "EndTime", "Name", "StartTime" },
-                values: new object[,]
-                {
-                    { 1, new TimeSpan(0, 14, 0, 0, 0), "กะเช้า", new TimeSpan(0, 6, 0, 0, 0) },
-                    { 2, new TimeSpan(0, 22, 0, 0, 0), "กะบ่าย", new TimeSpan(0, 14, 0, 0, 0) },
-                    { 3, new TimeSpan(0, 6, 0, 0, 0), "กะดึก", new TimeSpan(0, 22, 0, 0, 0) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "BranchId", "CreatedAt", "FullName", "HourlyRate", "IsActive", "IsAdmin", "PasswordHash", "PinHash", "RoleId", "Username", "VendorId" },
-                values: new object[] { new Guid("99999999-9999-9999-9999-999999999999"), null, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "System Administrator", 50.0m, true, true, "$2a$11$F8tjZZi6VF.ICf6dL20Q4uzSCZ.iJJAHjN/QMsoag0Pujm8aqzN6W", null, new Guid("11111111-1111-1111-1111-111111111111"), "admin", null });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_UserId",
                 table: "Attendances",

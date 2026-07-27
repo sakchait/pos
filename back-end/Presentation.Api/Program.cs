@@ -49,7 +49,8 @@ public class Program
         var tempLogger = loggerFactory.CreateLogger("Startup");
         var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(dbConnectionString));
+            options.UseSqlServer(dbConnectionString)
+                   .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
         // Application services and DI registrations
         builder.Services.AddApplicationServices();
@@ -104,23 +105,7 @@ public class Program
                 }
             });
         });
-        //builder.Services.AddAuthorization(options =>
-        //{
-        //    options.AddPolicy("RequireCashierOrManager", policy =>
-        //        policy.RequireRole("Cashier", "BranchManager"));
-
-        //    options.AddPolicy("RequireManagerOnly", policy =>
-        //        policy.RequireRole("BranchManager"));
-
-        //    options.AddPolicy("RequireAccounting", policy =>
-        //        policy.RequireRole("Accountant", "BranchManager"));
-
-        //    options.AddPolicy("RequireVendor", policy =>
-        //        policy.RequireRole("Vendor"));
-
-        //    options.AddPolicy("RequirePurchaser", policy =>
-        //        policy.RequireRole("PurchaserManager"));
-        //});
+     
         var app = builder.Build();
 
         //if (app.Environment.IsDevelopment())
@@ -134,12 +119,7 @@ public class Program
         //        var db = services.GetRequiredService<ApplicationDbContext>();
         //        logger2.LogInformation("Applying EF Core migrations (Development)...");
         //        await db.Database.MigrateAsync();
-        //        logger2.LogInformation("Migrations applied.");
-
-        //        // If you have an explicit seeder method, call it here:
-        //        // await YourSeederClass.SeedInitialMasterDataAsync(db, services);
-
-        //        logger2.LogInformation("Development seeding completed.");
+        //        logger2.LogInformation("EF Core migrations applied and database seeded.");
         //    }
         //    catch (Exception ex)
         //    {

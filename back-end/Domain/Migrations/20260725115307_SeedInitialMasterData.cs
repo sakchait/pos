@@ -1,6 +1,11 @@
 using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Pos.Domain.Persistence;
+
 #nullable disable
+
 namespace Pos.Domain.Migrations;
 
 public partial class SeedInitialMasterData : Migration
@@ -25,6 +30,16 @@ public partial class SeedInitialMasterData : Migration
             table: "Branches",
             columns: new[] { "Id", "Code", "Name", "TaxId" },
             values: new object[] { new Guid("a1111111-a111-a111-a111-a11111111111"), "HO01", "Head Office - Bangkok", "0105551234567" });
+
+        migrationBuilder.InsertData(
+            table: "ShiftTypes",
+            columns: new[] { "Id", "EndTime", "Name", "StartTime" },
+            values: new object[,]
+            {
+                { 1, new TimeSpan(14, 0, 0), "กะเช้า", new TimeSpan(6, 0, 0) },
+                { 2, new TimeSpan(22, 0, 0), "กะบ่าย", new TimeSpan(14, 0, 0) },
+                { 3, new TimeSpan(6, 0, 0), "กะดึก", new TimeSpan(22, 0, 0) }
+            });
 
         migrationBuilder.InsertData(
             table: "Users",
@@ -188,67 +203,8 @@ public partial class SeedInitialMasterData : Migration
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DeleteData(table: "CashierShifts", keyColumn: "Id", keyValue: new Guid("ee111111-1111-1111-1111-111111111101"));
-        migrationBuilder.DeleteData(table: "CashierShifts", keyColumn: "Id", keyValue: new Guid("ee111111-1111-1111-1111-111111111102"));
-        migrationBuilder.DeleteData(table: "DrawerOpenLogs", keyColumn: "Id", keyValue: new Guid("cc111111-1111-1111-1111-111111111101"));
-        migrationBuilder.DeleteData(table: "DrawerOpenLogs", keyColumn: "Id", keyValue: new Guid("cc111111-1111-1111-1111-111111111102"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111101"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111102"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111103"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111104"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111105"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111106"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111107"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111108"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111109"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111110"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111111"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111112"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111113"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111114"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111115"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111116"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111117"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111118"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111119"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111120"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111121"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111122"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111123"));
-        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111124"));
-        migrationBuilder.DeleteData(table: "LeaveRequests", keyColumn: "Id", keyValue: new Guid("99999999-9999-9999-9999-999999999901"));
-        migrationBuilder.DeleteData(table: "LeaveRequests", keyColumn: "Id", keyValue: new Guid("99999999-9999-9999-9999-999999999902"));
-        migrationBuilder.DeleteData(table: "Attendances", keyColumn: "Id", keyValue: new Guid("88888888-8888-8888-8888-888888888801"));
-        migrationBuilder.DeleteData(table: "Attendances", keyColumn: "Id", keyValue: new Guid("88888888-8888-8888-8888-888888888802"));
-        migrationBuilder.DeleteData(table: "Attendances", keyColumn: "Id", keyValue: new Guid("88888888-8888-8888-8888-888888888803"));
-        migrationBuilder.DeleteData(table: "StockBatches", keyColumn: "Id", keyValue: new Guid("77777777-7777-7777-7777-777777777701"));
-        migrationBuilder.DeleteData(table: "PurchaseOrderItems", keyColumn: "Id", keyValue: new Guid("66666666-6666-6666-6666-666666666602"));
-        migrationBuilder.DeleteData(table: "PurchaseOrders", keyColumn: "Id", keyValue: new Guid("66666666-6666-6666-6666-666666666601"));
-        migrationBuilder.DeleteData(table: "Vendors", keyColumn: "Id", keyValue: new Guid("d1111111-d111-d111-d111-d11111111111"));
-        migrationBuilder.DeleteData(table: "Warehouses", keyColumn: "Id", keyValue: new Guid("b1111111-b111-b111-b111-b11111111111"));
-        migrationBuilder.DeleteData(table: "ShiftSwapRequests", keyColumn: "Id", keyValue: new Guid("55555555-5555-5555-5555-555555555501"));
-        migrationBuilder.DeleteData(table: "ShiftSchedules", keyColumn: "Id", keyValue: new Guid("44444444-4444-4444-4444-444444444401"));
-        migrationBuilder.DeleteData(table: "ShiftSchedules", keyColumn: "Id", keyValue: new Guid("44444444-4444-4444-4444-444444444402"));
-        migrationBuilder.DeleteData(table: "ShiftSchedules", keyColumn: "Id", keyValue: new Guid("44444444-4444-4444-4444-444444444403"));
-        migrationBuilder.DeleteData(table: "ShiftSchedules", keyColumn: "Id", keyValue: new Guid("44444444-4444-4444-4444-444444444404"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111101"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111102"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111103"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111104"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111105"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111106"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111107"));
-        migrationBuilder.DeleteData(table: "Products", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111108"));
-        migrationBuilder.DeleteData(table: "Coupons", keyColumn: "Code", keyValue: "WELCOME10");
-        migrationBuilder.DeleteData(table: "Coupons", keyColumn: "Code", keyValue: "FLASH5");
-        migrationBuilder.DeleteData(table: "Coupons", keyColumn: "Code", keyValue: "VIPBURGER");
-        migrationBuilder.DeleteData(table: "Users", keyColumn: "Id", keyValue: new Guid("33333333-3333-3333-3333-333333333302"));
-        migrationBuilder.DeleteData(table: "Users", keyColumn: "Id", keyValue: new Guid("33333333-3333-3333-3333-333333333303"));
-        migrationBuilder.DeleteData(table: "Users", keyColumn: "Id", keyValue: new Guid("33333333-3333-3333-3333-333333333304"));
-        migrationBuilder.DeleteData(table: "Users", keyColumn: "Id", keyValue: new Guid("33333333-3333-3333-3333-333333333334"));
-        migrationBuilder.DeleteData(table: "Users", keyColumn: "Id", keyValue: new Guid("99999999-9999-9999-9999-999999999999"));
-        migrationBuilder.DeleteData(table: "Branches", keyColumn: "Id", keyValue: new Guid("a1111111-a111-a111-a111-a11111111111"));
-        migrationBuilder.DeleteData(table: "Roles", keyColumn: "Id", keyValue: new Guid("11111111-1111-1111-1111-111111111111"));
-        // ... (other deletes)
+        migrationBuilder.DeleteData(table: "ShiftTypes", keyColumn: "Id", keyValue: 1);
+        migrationBuilder.DeleteData(table: "ShiftTypes", keyColumn: "Id", keyValue: 2);
+        migrationBuilder.DeleteData(table: "ShiftTypes", keyColumn: "Id", keyValue: 3);
     }
 }

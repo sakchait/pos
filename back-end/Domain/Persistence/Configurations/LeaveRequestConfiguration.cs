@@ -18,7 +18,8 @@ public class LeaveRequestConfiguration : IEntityTypeConfiguration<LeaveRequest>
                 StartDate = new DateTime(2026, 7, 20, 0, 0, 0, DateTimeKind.Utc),
                 EndDate = new DateTime(2026, 7, 21, 0, 0, 0, DateTimeKind.Utc),
                 Reason = "High fever and flu",
-                Status = "Approved"
+                Status = "Approved",
+                CreatedAt = new DateTime(2026, 7, 20, 0, 0, 0, DateTimeKind.Utc)
             },
             new LeaveRequest
             {
@@ -28,7 +29,8 @@ public class LeaveRequestConfiguration : IEntityTypeConfiguration<LeaveRequest>
                 StartDate = new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc),
                 EndDate = new DateTime(2026, 8, 5, 0, 0, 0, DateTimeKind.Utc),
                 Reason = "Family vacation",
-                Status = "Approved"
+                Status = "Approved",
+                CreatedAt = new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
     }
