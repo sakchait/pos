@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pos.Application.Repositories;
 using Pos.Domain.Entities;
+using Presentation.Api.Authorization;
 
 namespace Pos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ApiKey]
 public class CouponsController : ControllerBase
 {
     private readonly IRepository<Coupon> _couponsRepo;

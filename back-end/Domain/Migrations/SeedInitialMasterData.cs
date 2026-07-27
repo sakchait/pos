@@ -122,10 +122,100 @@ public partial class SeedInitialMasterData : Migration
                 { new Guid("99999999-9999-9999-9999-999999999901"), new Guid("33333333-3333-3333-3333-333333333304"), "SickLeave", new DateTime(2026, 7, 20, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 7, 21, 0, 0, 0, DateTimeKind.Utc), "High fever and flu", "Approved", null, new DateTime(2026, 7, 20, 0, 0, 0, DateTimeKind.Utc) },
                 { new Guid("99999999-9999-9999-9999-999999999902"), new Guid("33333333-3333-3333-3333-333333333334"), "AnnualLeave", new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 8, 5, 0, 0, 0, DateTimeKind.Utc), "Family vacation", "Approved", null, new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc) }
             });
+
+        migrationBuilder.InsertData(
+            table: "RoleRoutePermissions",
+            columns: new[] { "Id", "RoleId", "RoutePath", "IsAllowed", "CreatedAt" },
+            values: new object[,]
+            {
+                // Cashier
+                { new Guid("aa111111-1111-1111-1111-111111111101"), new Guid("22222222-2222-2222-2222-222222222222"), "/pos", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111102"), new Guid("22222222-2222-2222-2222-222222222222"), "/shifts", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111103"), new Guid("22222222-2222-2222-2222-222222222222"), "/profile", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+
+                // BranchManager
+                { new Guid("aa111111-1111-1111-1111-111111111104"), new Guid("33333333-3333-3333-3333-333333333333"), "/pos", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111105"), new Guid("33333333-3333-3333-3333-333333333333"), "/shifts", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111106"), new Guid("33333333-3333-3333-3333-333333333333"), "/reports", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111107"), new Guid("33333333-3333-3333-3333-333333333333"), "/profile", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+
+                // Accountant
+                { new Guid("aa111111-1111-1111-1111-111111111108"), new Guid("44444444-4444-4444-4444-444444444444"), "/reports", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111109"), new Guid("44444444-4444-4444-4444-444444444444"), "/vendor", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111110"), new Guid("44444444-4444-4444-4444-444444444444"), "/profile", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+
+                // Vendor
+                { new Guid("aa111111-1111-1111-1111-111111111111"), new Guid("55555555-5555-5555-5555-555555555555"), "/vendor", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111112"), new Guid("55555555-5555-5555-5555-555555555555"), "/profile", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+
+                // PurchaserManager
+                { new Guid("aa111111-1111-1111-1111-111111111113"), new Guid("66666666-6666-6666-6666-666666666666"), "/vendor", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111114"), new Guid("66666666-6666-6666-6666-666666666666"), "/inventory", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111115"), new Guid("66666666-6666-6666-6666-666666666666"), "/profile", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+
+                // StockClerk
+                { new Guid("aa111111-1111-1111-1111-111111111116"), new Guid("77777777-7777-7777-7777-777777777777"), "/inventory", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111117"), new Guid("77777777-7777-7777-7777-777777777777"), "/profile", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+
+                // Admin
+                { new Guid("aa111111-1111-1111-1111-111111111118"), new Guid("11111111-1111-1111-1111-111111111111"), "/pos", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111119"), new Guid("11111111-1111-1111-1111-111111111111"), "/shifts", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111120"), new Guid("11111111-1111-1111-1111-111111111111"), "/shifts/schedule", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111121"), new Guid("11111111-1111-1111-1111-111111111111"), "/vendor", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111122"), new Guid("11111111-1111-1111-1111-111111111111"), "/reports", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111123"), new Guid("11111111-1111-1111-1111-111111111111"), "/admin/roles", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                { new Guid("aa111111-1111-1111-1111-111111111124"), new Guid("11111111-1111-1111-1111-111111111111"), "/profile", true, new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
+            });
+
+        migrationBuilder.InsertData(
+            table: "DrawerOpenLogs",
+            columns: new[] { "Id", "BranchId", "PosTerminalId", "ShiftId", "CashierId", "ApprovedBy", "Reason", "OpenedAt" },
+            values: new object[,]
+            {
+                { new Guid("cc111111-1111-1111-1111-111111111101"), new Guid("a1111111-a111-a111-a111-a11111111111"), "term-1", new Guid("44444444-4444-4444-4444-444444444401"), new Guid("33333333-3333-3333-3333-333333333334"), new Guid("33333333-3333-3333-3333-333333333302"), "NO_SALE", new DateTime(2026, 7, 25, 9, 30, 0, DateTimeKind.Utc) },
+                { new Guid("cc111111-1111-1111-1111-111111111102"), new Guid("a1111111-a111-a111-a111-a11111111111"), "term-1", new Guid("44444444-4444-4444-4444-444444444403"), new Guid("33333333-3333-3333-3333-333333333303"), null, "MANUAL_OPEN", new DateTime(2026, 7, 25, 15, 45, 0, DateTimeKind.Utc) }
+            });
+
+        migrationBuilder.InsertData(
+            table: "CashierShifts",
+            columns: new[] { "Id", "BranchId", "PosTerminalId", "CashierId", "OpenedAt", "ClosedAt", "OpeningCash", "TotalSystemCashSales", "TotalCashPaidIn", "TotalCashPaidOut", "ExpectedCash", "ActualCashCounted", "CashDifference", "Status", "CloseNotes" },
+            values: new object[,]
+            {
+                { new Guid("ee111111-1111-1111-1111-111111111101"), new Guid("a1111111-a111-a111-a111-a11111111111"), "term-1", new Guid("33333333-3333-3333-3333-333333333334"), new DateTime(2026, 7, 25, 6, 0, 0, DateTimeKind.Utc), new DateTime(2026, 7, 25, 14, 0, 0, DateTimeKind.Utc), 100.00m, 350.00m, 0.00m, 0.00m, 450.00m, 450.00m, 0.00m, "Closed", null },
+                { new Guid("ee111111-1111-1111-1111-111111111102"), new Guid("a1111111-a111-a111-a111-a11111111111"), "term-1", new Guid("33333333-3333-3333-3333-333333333303"), new DateTime(2026, 7, 25, 14, 0, 0, DateTimeKind.Utc), null, 100.00m, 120.00m, 0.00m, 0.00m, 220.00m, null, null, "Open", null }
+            });
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
+        migrationBuilder.DeleteData(table: "CashierShifts", keyColumn: "Id", keyValue: new Guid("ee111111-1111-1111-1111-111111111101"));
+        migrationBuilder.DeleteData(table: "CashierShifts", keyColumn: "Id", keyValue: new Guid("ee111111-1111-1111-1111-111111111102"));
+        migrationBuilder.DeleteData(table: "DrawerOpenLogs", keyColumn: "Id", keyValue: new Guid("cc111111-1111-1111-1111-111111111101"));
+        migrationBuilder.DeleteData(table: "DrawerOpenLogs", keyColumn: "Id", keyValue: new Guid("cc111111-1111-1111-1111-111111111102"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111101"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111102"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111103"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111104"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111105"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111106"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111107"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111108"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111109"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111110"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111111"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111112"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111113"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111114"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111115"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111116"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111117"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111118"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111119"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111120"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111121"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111122"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111123"));
+        migrationBuilder.DeleteData(table: "RoleRoutePermissions", keyColumn: "Id", keyValue: new Guid("aa111111-1111-1111-1111-111111111124"));
         migrationBuilder.DeleteData(table: "LeaveRequests", keyColumn: "Id", keyValue: new Guid("99999999-9999-9999-9999-999999999901"));
         migrationBuilder.DeleteData(table: "LeaveRequests", keyColumn: "Id", keyValue: new Guid("99999999-9999-9999-9999-999999999902"));
         migrationBuilder.DeleteData(table: "Attendances", keyColumn: "Id", keyValue: new Guid("88888888-8888-8888-8888-888888888801"));

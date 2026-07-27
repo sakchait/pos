@@ -1,11 +1,13 @@
-﻿// Controllers/ReportsController.cs
+// Controllers/ReportsController.cs
 using Microsoft.AspNetCore.Mvc;
 using Pos.Infrastructure.Interfaces;
 using Pos.Infrastructure.Services;
+using Presentation.Api.Authorization;
 
 namespace Pos.Api.Controllers;
 
 [ApiController]
+[ApiKey]
 [Route("api/external/[controller]")]
 public class ReportsController : ControllerBase
 {

@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Presentation.Api.Authorization;
 
 namespace Pos.Api.Controllers;
 
 [ApiController]
+[ApiKey]
 public class SchedulesController : ControllerBase
 {
     private readonly IRepository<ShiftSchedule> _schedulesRepo;

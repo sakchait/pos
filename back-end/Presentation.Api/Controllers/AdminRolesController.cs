@@ -1,15 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pos.Application.DTOs;
 using Pos.Domain.Entities;
 using Pos.Application.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Presentation.Api.Authorization;
 
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Route("api/external/admin/[controller]")]
-[Authorize(Policy = "AdminOnly")] // เฉพาะ IsAdmin = true เท่านั้นที่เข้าใช้งานได้
+//[Authorize(Policy = "AdminOnly")] // Fallback authorization filter
+[ApiKey]
 public class AdminRolesController : ControllerBase
 {
     private readonly IRepository<Role> _rolesRepo;
@@ -23,32 +28,54 @@ public class AdminRolesController : ControllerBase
         _permissionsRepo = permissionsRepo;
     }
 
-    // 1. ดึงรายการ Role ทั้งหมดพร้อมสิทธิ์ RoutePath
-    [HttpGet]
-    public async Task<IActionResult> GetRolesWithRoutes()
+    // 1. GET /api/external/admin/AdminRoles - Fetches role permissions matrix from C# backend
+    [HttpGet("/api/external/admin/AdminRoles")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAdminRoles()
     {
         var roles = await _rolesRepo.GetAll().ToListAsync();
         var permissions = await _permissionsRepo.GetAll().ToListAsync();
 
-        var result = roles.Select(role => new RoleWithRoutesDto(
-            role.Id,
-            role.Name,
-            permissions
+        var result = roles.Select(role => new
+        {
+            roleId = role.Id,
+            roleName = role.Name,
+            allowedRoutes = permissions
                 .Where(p => p.RoleId == role.Id && p.IsAllowed)
                 .Select(p => p.RoutePath)
                 .ToList()
-        )).ToList();
+        }).ToList();
 
         return Ok(result);
     }
 
-    // 2. อัปเดตรายการ Routes ที่ Role สามารถเข้าถึงได้
-    [HttpPut("update-routes")]
+    // 2. GET /api/role-routes - Local Express routing table fallback
+    [HttpGet("/api/role-routes")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetRoleRoutes()
+    {
+        var roles = await _rolesRepo.GetAll().ToListAsync();
+        var permissions = await _permissionsRepo.GetAll().ToListAsync();
+
+        var result = roles.Select(role => new
+        {
+            role = role.Name,
+            routes = permissions
+                .Where(p => p.RoleId == role.Id && p.IsAllowed)
+                .Select(p => p.RoutePath)
+                .ToList()
+        }).ToList();
+
+        return Ok(result);
+    }
+
+    // 3. PUT /api/external/admin/AdminRoles/update-routes - Updates permissions matrix on C# backend
+    [HttpPut("/api/external/admin/AdminRoles/update-routes")]
+    [AllowAnonymous]
     public async Task<IActionResult> UpdateRoleRoutes([FromBody] UpdateRoleRoutesDto dto)
     {
         try
         {
-            // อ่านรายการสิทธิ์เดิม
             var existingPermissions = await _permissionsRepo.GetAll()
                 .Where(p => p.RoleId == dto.RoleId)
                 .ToListAsync();
@@ -58,7 +85,6 @@ public class AdminRolesController : ControllerBase
                 await _permissionsRepo.DeleteRangeAsync(existingPermissions);
             }
 
-            // บันทึกรายการสิทธิ์ Route ใหม่ที่เลือก
             foreach (var route in dto.AllowedRoutes.Distinct())
             {
                 if (!string.IsNullOrWhiteSpace(route))
@@ -81,9 +107,58 @@ public class AdminRolesController : ControllerBase
         }
     }
 
-    // 3. API สำหรับ Public/Client ดึงรายการ Map ของทุก Role ไปใช้ใน Next.js Middleware (Cached API)
-    [HttpGet("public-route-matrix")]
-    [AllowAnonymous] // หรือใช้ Internal API Secret
+    // 4. PUT /api/role-routes/{role} - Local Express fallback routing table update
+    public class UpdateRoleRouteByNameRequest
+    {
+        public List<string> Routes { get; set; } = new();
+    }
+
+    [HttpPut("/api/role-routes/{roleName}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdateRoleRoutesByName(string roleName, [FromBody] UpdateRoleRouteByNameRequest request)
+    {
+        try
+        {
+            var role = await _rolesRepo.GetAll().FirstOrDefaultAsync(r => r.Name == roleName);
+            if (role == null)
+            {
+                return NotFound(new { message = $"Role '{roleName}' not found." });
+            }
+
+            var existingPermissions = await _permissionsRepo.GetAll()
+                .Where(p => p.RoleId == role.Id)
+                .ToListAsync();
+
+            if (existingPermissions.Any())
+            {
+                await _permissionsRepo.DeleteRangeAsync(existingPermissions);
+            }
+
+            foreach (var route in request.Routes.Distinct())
+            {
+                if (!string.IsNullOrWhiteSpace(route))
+                {
+                    await _permissionsRepo.AddAsync(new RoleRoutePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        RoleId = role.Id,
+                        RoutePath = route.Trim(),
+                        IsAllowed = true
+                    });
+                }
+            }
+
+            return Ok(new { message = $"Role '{roleName}' routes updated successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "เกิดข้อผิดพลาดในการอัปเดตสิทธิ์", error = ex.Message });
+        }
+    }
+
+    // 5. API สำหรับ Next.js Middleware (Cached API)
+    [HttpGet("/api/public-route-matrix")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetPublicRouteMatrix()
     {
         var roles = await _rolesRepo.GetAll().ToListAsync();

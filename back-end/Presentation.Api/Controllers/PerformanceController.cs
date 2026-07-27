@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pos.Domain.Entities;
 using Pos.Application.Repositories;
+using Presentation.Api.Authorization;
 
 [ApiController]
+[ApiKey]
 [Route("api/external/[controller]")]
 public class PerformanceController : ControllerBase
 {

@@ -6,10 +6,12 @@ using Pos.Application.Repositories;
 using Pos.Domain.Entities;
 using System;
 using System.Threading.Tasks;
+using Presentation.Api.Authorization;
 
 [ApiController]
+[ApiKey]
 [Route("api/external/[controller]")]
-[Authorize(Roles = "PurchaserManager")] // ล็อกสิทธิ์เฉพาะ PurchaserManager
+//[Authorize(Roles = "PurchaserManager")] // ล็อกสิทธิ์เฉพาะ PurchaserManager
 public class PurchaseOrdersController : ControllerBase
 {
     [HttpPost("approve/{poId}")]

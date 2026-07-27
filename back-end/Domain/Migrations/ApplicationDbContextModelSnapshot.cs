@@ -157,6 +157,39 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("CashierId");
 
                     b.ToTable("CashierShifts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("ee111111-1111-1111-1111-111111111101"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CashierId = new Guid("33333333-3333-3333-3333-333333333334"),
+                            ClosedAt = new DateTime(2026, 7, 25, 14, 0, 0, 0, DateTimeKind.Utc),
+                            OpenedAt = new DateTime(2026, 7, 25, 6, 0, 0, 0, DateTimeKind.Utc),
+                            OpeningCash = 100.00m,
+                            PosTerminalId = "term-1",
+                            Status = "Closed",
+                            TotalCashPaidIn = 0.00m,
+                            TotalCashPaidOut = 0.00m,
+                            TotalSystemCashSales = 350.00m,
+                            ExpectedCash = 450.00m,
+                            ActualCashCounted = 450.00m,
+                            CashDifference = 0.00m
+                        },
+                        new
+                        {
+                            Id = new Guid("ee111111-1111-1111-1111-111111111102"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CashierId = new Guid("33333333-3333-3333-3333-333333333303"),
+                            OpenedAt = new DateTime(2026, 7, 25, 14, 0, 0, 0, DateTimeKind.Utc),
+                            OpeningCash = 100.00m,
+                            PosTerminalId = "term-1",
+                            Status = "Open",
+                            TotalCashPaidIn = 0.00m,
+                            TotalCashPaidOut = 0.00m,
+                            TotalSystemCashSales = 120.00m,
+                            ExpectedCash = 220.00m
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.Coupon", b =>
@@ -352,6 +385,29 @@ namespace Pos.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DrawerOpenLogs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("cc111111-1111-1111-1111-111111111101"),
+                            ApprovedBy = new Guid("33333333-3333-3333-3333-333333333302"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CashierId = new Guid("33333333-3333-3333-3333-333333333334"),
+                            OpenedAt = new DateTime(2026, 7, 25, 9, 30, 0, 0, DateTimeKind.Utc),
+                            PosTerminalId = "term-1",
+                            Reason = "NO_SALE",
+                            ShiftId = new Guid("44444444-4444-4444-4444-444444444401")
+                        },
+                        new
+                        {
+                            Id = new Guid("cc111111-1111-1111-1111-111111111102"),
+                            BranchId = new Guid("a1111111-a111-a111-a111-a11111111111"),
+                            CashierId = new Guid("33333333-3333-3333-3333-333333333303"),
+                            OpenedAt = new DateTime(2026, 7, 25, 15, 45, 0, 0, DateTimeKind.Utc),
+                            PosTerminalId = "term-1",
+                            Reason = "MANUAL_OPEN",
+                            ShiftId = new Guid("44444444-4444-4444-4444-444444444403")
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.LeaveRequest", b =>
@@ -1111,6 +1167,200 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RoleRoutePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111101"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            RoutePath = "/pos"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111102"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            RoutePath = "/shifts"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111103"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            RoutePath = "/profile"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111104"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            RoutePath = "/pos"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111105"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            RoutePath = "/shifts"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111106"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            RoutePath = "/reports"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111107"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            RoutePath = "/profile"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111108"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("44444444-4444-4444-4444-444444444444"),
+                            RoutePath = "/reports"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111109"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("44444444-4444-4444-4444-444444444444"),
+                            RoutePath = "/vendor"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111110"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("44444444-4444-4444-4444-444444444444"),
+                            RoutePath = "/profile"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("55555555-5555-5555-5555-555555555555"),
+                            RoutePath = "/vendor"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111112"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("55555555-5555-5555-5555-555555555555"),
+                            RoutePath = "/profile"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111113"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("66666666-6666-6666-6666-666666666666"),
+                            RoutePath = "/vendor"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111114"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("66666666-6666-6666-6666-666666666666"),
+                            RoutePath = "/inventory"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111115"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("66666666-6666-6666-6666-666666666666"),
+                            RoutePath = "/profile"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111116"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("77777777-7777-7777-7777-777777777777"),
+                            RoutePath = "/inventory"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111117"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("77777777-7777-7777-7777-777777777777"),
+                            RoutePath = "/profile"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111118"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoutePath = "/pos"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111119"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoutePath = "/shifts"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111120"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoutePath = "/shifts/schedule"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111121"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoutePath = "/vendor"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111122"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoutePath = "/reports"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111123"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoutePath = "/admin/roles"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa111111-1111-1111-1111-111111111124"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsAllowed = true,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoutePath = "/profile"
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.ShiftSchedule", b =>

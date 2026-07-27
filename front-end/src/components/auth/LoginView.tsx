@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { db } from '../../db/dexieDb';
 import { UserAccount } from '../../types/pos';
+import { apiService } from '../../services/apiService';
 
 interface LoginViewProps {
   onLoginSuccess: (user: UserAccount) => void;
@@ -41,6 +42,22 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
     setIsLoading(true);
 
     try {
+      if (apiService.isUsingServices()) {
+        try {
+          const user = await apiService.login(username, password);
+          if (rememberMe) {
+            localStorage.setItem('omnipos_last_user', user.id);
+          }
+          setIsLoading(false);
+          onLoginSuccess(user);
+          return;
+        } catch (err: any) {
+          setErrorMsg(err.message || 'Invalid username or password.');
+          setIsLoading(false);
+          return;
+        }
+      }
+
       // Find user by username or email
       const cleanInput = username.trim().toLowerCase();
       const allUsers = await db.users.toArray();
@@ -92,6 +109,19 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
 
     setIsLoading(true);
     try {
+      if (apiService.isUsingServices()) {
+        try {
+          const user = await apiService.loginPin(pin);
+          setIsLoading(false);
+          onLoginSuccess(user);
+          return;
+        } catch (err: any) {
+          setErrorMsg(err.message || 'Incorrect PIN. Security log recorded.');
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const allUsers = await db.users.toArray();
       const user = allUsers.find((u) => u.pin === pin);
 
@@ -123,6 +153,19 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
     setErrorMsg('');
 
     setIsLoading(true);
+    if (apiService.isUsingServices()) {
+      try {
+        const user = await apiService.login(userAccount.username, userAccount.pass);
+        setIsLoading(false);
+        onLoginSuccess(user);
+        return;
+      } catch (err: any) {
+        setIsLoading(false);
+        setErrorMsg(err.message || 'Quick login failed.');
+        return;
+      }
+    }
+
     const allUsers = await db.users.toArray();
     const user = allUsers.find(
       (u) => u.username.toLowerCase() === userAccount.username.toLowerCase()

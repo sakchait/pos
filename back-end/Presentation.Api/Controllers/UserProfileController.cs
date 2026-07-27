@@ -1,4 +1,4 @@
-﻿// Controllers/UserProfileController.cs
+// Controllers/UserProfileController.cs
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +7,13 @@ using Pos.Application.Repositories;
 using Pos.Domain.Entities;
 using Pos.Domain.Persistence;
 using System.Security.Claims;
+using Presentation.Api.Authorization;
 
 namespace Pos.Api.Controllers;
 
 [ApiController]
-[Authorize] // ผู้ใช้งานทุกคนที่ล็อกอินแล้วสามารถเข้าถึงได้
+//[Authorize] // ผู้ใช้งานทุกคนที่ล็อกอินแล้วสามารถเข้าถึงได้
+[ApiKey]
 public class UserProfileController : ControllerBase
 {
     private readonly IRepository<User> _userRepository;

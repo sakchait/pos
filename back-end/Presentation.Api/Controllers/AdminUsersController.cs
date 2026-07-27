@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,12 +6,14 @@ using Pos.Application.DTOs;
 using Pos.Domain.Entities;
 using Pos.Application.Repositories;
 using User = Pos.Domain.Entities.User;
+using Presentation.Api.Authorization;
 
 namespace Pos.Api.Controllers;
 
 [ApiController]
 [Route("api/external/admin/[controller]")]
-[Authorize(Policy = "AdminOnly")]
+//[Authorize(Policy = "AdminOnly")]
+[ApiKey]
 public class AdminUsersController : ControllerBase
 {
     private readonly IRepository<User> _usersRepo;

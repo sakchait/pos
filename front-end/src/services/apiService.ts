@@ -4,7 +4,7 @@ import { db, validateCouponCode } from '../db/dexieDb';
 import { 
   Product, Coupon, Member, Order, Shift, DrawerOpenLog, 
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch, 
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount
 } from '../types/pos';
 
 const USE_SERVICES = import.meta.env.VITE_USE_SERVICES === 'true';
@@ -387,7 +387,7 @@ export const apiService = {
     if (USE_SERVICES) {
       try {
         const guidBranchId = branchId === 'branch-1' ? 'a1111111-a111-a111-a111-a11111111111' : branchId;
-        const res = await apiFetch<any>('/external/Auth/verify-manager-pin', {
+        const res = await apiFetch<any>('/Auth/verify-manager-pin', {
           method: 'POST',
           body: JSON.stringify({ branchId: guidBranchId, pin })
         });
@@ -399,5 +399,40 @@ export const apiService = {
     } else {
       return pin === '1234' || pin === '9999';
     }
+  },
+
+  // Backend Authentication
+  async login(username: string, passwordHash: string): Promise<UserAccount> {
+    const res = await apiFetch<any>('/Auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username, password: passwordHash })
+    });
+    return {
+      id: res.user.id,
+      username: username,
+      fullName: res.user.fullName,
+      role: res.user.role as any,
+      pin: '',
+      email: '',
+      passwordHash: '',
+      lastLoginAt: new Date().toISOString()
+    };
+  },
+
+  async loginPin(pin: string): Promise<UserAccount> {
+    const res = await apiFetch<any>('/Auth/login-pin', {
+      method: 'POST',
+      body: JSON.stringify({ pin })
+    });
+    return {
+      id: res.user.id,
+      username: '',
+      fullName: res.user.fullName,
+      role: res.user.role as any,
+      pin: pin,
+      email: '',
+      passwordHash: '',
+      lastLoginAt: new Date().toISOString()
+    };
   }
 };
