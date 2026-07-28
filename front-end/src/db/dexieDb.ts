@@ -559,8 +559,9 @@ export async function seedUsersIfNeeded() {
 }
 
 export async function seedRoleRoutesIfNeeded() {
-  const count = await db.roleRoutes.count();
-  if (count < 7) {
+  const allRoutes = await db.roleRoutes.toArray();
+  const hasRestocking = allRoutes.some((r) => r.routes.includes('/restocking'));
+  if (allRoutes.length < 7 || !hasRestocking) {
     await db.roleRoutes.clear();
     const initialRoleRoutes: RoleRoutePermission[] = [
       {
@@ -569,7 +570,7 @@ export async function seedRoleRoutesIfNeeded() {
       },
       {
         role: 'BranchManager',
-        routes: ['/pos', '/shifts', '/reports', '/profile'],
+        routes: ['/pos', '/shifts', '/restocking', '/reports', '/profile'],
       },
       {
         role: 'Accountant',
@@ -585,7 +586,7 @@ export async function seedRoleRoutesIfNeeded() {
       },
       {
         role: 'StockClerk',
-        routes: ['/inventory', '/profile'],
+        routes: ['/inventory', '/restocking', '/profile'],
       },
       {
         role: 'Admin',
@@ -594,6 +595,7 @@ export async function seedRoleRoutesIfNeeded() {
           '/shifts',
           '/shifts/schedule',
           '/vendor',
+          '/restocking',
           '/inventory',
           '/reports',
           '/admin/roles',

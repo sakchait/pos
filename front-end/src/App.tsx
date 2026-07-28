@@ -24,6 +24,7 @@ import { PosTerminalView } from './components/pos/PosTerminalView';
 import { ShiftManagementView } from './components/shifts/ShiftManagementView';
 import { ShiftScheduleView } from './components/shifts/ShiftScheduleView';
 import { VendorPortalView } from './components/vendor/VendorPortalView';
+import { RestockingView } from './components/restocking/RestockingView';
 import { ReportsView } from './components/reports/ReportsView';
 import { RoleManagementView } from './components/admin/RoleManagementView';
 import { LoginView } from './components/auth/LoginView';
@@ -55,6 +56,7 @@ export function App() {
     '/shifts',
     '/shifts/schedule',
     '/vendor',
+    '/restocking',
     '/reports',
     '/admin/roles',
     '/profile',
@@ -117,7 +119,7 @@ export function App() {
     if (rp) {
       setAllowedRoutes([...rp.routes, '/profile']);
     } else {
-      setAllowedRoutes(['/pos', '/shifts', '/shifts/schedule', '/vendor', '/reports', '/admin/roles', '/profile']);
+      setAllowedRoutes(['/pos', '/shifts', '/shifts/schedule', '/vendor', '/restocking', '/inventory', '/reports', '/admin/roles', '/profile']);
     }
   };
 
@@ -193,6 +195,7 @@ export function App() {
     { path: '/shifts', label: 'Shift Reconciliation', icon: Banknote },
     { path: '/shifts/schedule', label: 'Shift Scheduling', icon: Calendar },
     { path: '/vendor', label: 'Vendor & FIFO', icon: Truck },
+    { path: '/restocking', label: 'Branch Restocking', icon: RefreshCw },
     { path: '/inventory', label: 'Inventory Stock', icon: Layers },
     { path: '/reports', label: 'Audit & HR Reports', icon: FileSpreadsheet },
     { path: '/admin/roles', label: 'Access Control', icon: UserCog },
@@ -369,6 +372,8 @@ export function App() {
         )}
 
         {activeRoute === '/vendor' && <VendorPortalView userRole={activeRole} />}
+
+        {activeRoute === '/restocking' && <RestockingView userRole={activeRole} />}
 
         {activeRoute === '/inventory' && <InventoryView />}
 
