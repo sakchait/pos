@@ -266,14 +266,41 @@ export const apiService = {
   // Proposed POs (Vendor)
   async getProposedPOs(): Promise<ProposedPO[]> {
     if (USE_SERVICES) {
-      return apiFetch<ProposedPO[]>('/proposed-pos');
+      const raw = await apiFetch<any[]>('/proposed-pos');
+      return raw.map(po => ({
+        id: po.id,
+        poNumber: po.poNumber,
+        vendorName: po.vendorName,
+        vendorContact: 'orders@supplier.com',
+        items: (po.items || []).map((item: any) => ({
+          productId: item.productId,
+          productName: item.productName,
+          proposedQty: item.quantity || 0,
+          unitCost: item.price || 0
+        })),
+        totalCost: po.totalAmount || 0,
+        status: po.status,
+        createdAt: po.createdAt
+      }));
     } else {
       return db.proposedPOs.toArray();
     }
   },
   async addProposedPO(po: ProposedPO): Promise<void> {
     if (USE_SERVICES) {
-      await apiFetch('/proposed-pos', { method: 'POST', body: JSON.stringify(po) });
+      const payload = {
+        id: po.id.startsWith('po-') ? undefined : po.id,
+        poNumber: po.poNumber,
+        vendorId: 'd1111111-d111-d111-d111-d11111111111', // seeded Global Foods Co.
+        totalAmount: po.totalCost,
+        status: po.status,
+        items: po.items.map(item => ({
+          productId: item.productId,
+          quantity: item.proposedQty,
+          price: item.unitCost
+        }))
+      };
+      await apiFetch('/proposed-pos', { method: 'POST', body: JSON.stringify(payload) });
     } else {
       await db.proposedPOs.add(po);
     }

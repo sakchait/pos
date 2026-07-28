@@ -312,12 +312,12 @@ export const RestockingView: React.FC<RestockingViewProps> = ({ userRole }) => {
                             {po.items.map((item, index) => (
                               <div key={index} className="text-slate-600 dark:text-slate-400">
                                 {item.productName}{' '}
-                                <span className="font-bold text-orange-600">x{item.proposedQty}</span>
+                                <span className="font-bold text-orange-600">x{item.proposedQty || 0}</span>
                               </div>
                             ))}
                           </td>
                           <td className="py-4 px-2 font-mono font-bold text-slate-950 dark:text-slate-50">
-                            ฿{po.totalCost.toFixed(2)}
+                            ฿{(po.totalCost || 0).toFixed(2)}
                           </td>
                           <td className="py-4 px-2">
                             <span
