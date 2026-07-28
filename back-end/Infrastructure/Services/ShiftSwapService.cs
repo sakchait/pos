@@ -1,4 +1,4 @@
-﻿// Services/ShiftSwapService.cs
+// Services/ShiftSwapService.cs
 using Microsoft.EntityFrameworkCore;
 using Pos.Domain.Persistence;
 using Pos.Infrastructure.Interfaces;
@@ -15,7 +15,7 @@ public class ShiftSwapService : IShiftSwapService
             .Include(r => r.RequestorShift)
             .FirstOrDefaultAsync(r => r.Id == swapRequestId);
 
-        if (swapRequest == null || swapRequest.Status != "PendingManager")
+        if (swapRequest == null || (swapRequest.Status != "PendingManager" && swapRequest.Status != "PendingPeer"))
             return false;
 
         // ตรวจสอบอีกครั้งว่าหากสลับกะแล้ว พนักงานปลายทางจะผิดกฎควง 3 กะหรือไม่
