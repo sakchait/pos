@@ -281,4 +281,39 @@ public class CouponsController : ControllerBase
             coupons = updatedCoupons
         });
     }
+
+    // 6. POST /api/coupons - Creates a new coupon
+    [HttpPost]
+    public async Task<IActionResult> CreateCoupon([FromBody] Coupon coupon, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(coupon.Code))
+            return BadRequest(new { message = "Coupon code is required." });
+
+        coupon.Code = coupon.Code.Trim().ToUpperInvariant();
+
+        var existing = await _couponsRepo.GetAll().AsNoTracking().FirstOrDefaultAsync(c => c.Code == coupon.Code, cancellationToken);
+        if (existing != null)
+            return BadRequest(new { message = "Coupon with this code already exists." });
+
+        coupon.UpdatedAt = DateTime.UtcNow;
+        if (string.IsNullOrEmpty(coupon.DiscountType))
+            coupon.DiscountType = "Fixed";
+        if (string.IsNullOrEmpty(coupon.ApplicableProductIdsJson))
+            coupon.ApplicableProductIdsJson = "[]";
+
+        await _couponsRepo.AddAsync(coupon);
+        return Ok(new { message = "Coupon created successfully.", code = coupon.Code });
+    }
+
+    // 7. DELETE /api/coupons/{code} - Deletes/rejects a coupon
+    [HttpDelete("{code}")]
+    public async Task<IActionResult> DeleteCoupon(string code, CancellationToken cancellationToken)
+    {
+        var coupon = await _couponsRepo.GetAll().FirstOrDefaultAsync(c => c.Code == code, cancellationToken);
+        if (coupon == null)
+            return NotFound(new { message = "Coupon not found." });
+
+        await _couponsRepo.DeleteAsync(coupon);
+        return Ok(new { message = "Coupon deleted successfully." });
+    }
 }

@@ -18,6 +18,7 @@ import {
   LogOut,
   UserCircle,
   Layers,
+  Tag,
 } from 'lucide-react';
 
 import { PosTerminalView } from './components/pos/PosTerminalView';
@@ -27,6 +28,7 @@ import { VendorPortalView } from './components/vendor/VendorPortalView';
 import { RestockingView } from './components/restocking/RestockingView';
 import { ReportsView } from './components/reports/ReportsView';
 import { RoleManagementView } from './components/admin/RoleManagementView';
+import { CouponManagementView } from './components/admin/CouponManagementView';
 import { LoginView } from './components/auth/LoginView';
 import { ProfileView } from './components/auth/ProfileView';
 import { ManagerPinModal } from './components/common/ManagerPinModal';
@@ -197,6 +199,7 @@ export function App() {
     { path: '/vendor', label: 'Vendor & FIFO', icon: Truck },
     { path: '/restocking', label: 'Branch Restocking', icon: RefreshCw },
     { path: '/inventory', label: 'Inventory Stock', icon: Layers },
+    { path: '/admin/coupons', label: 'Coupon Management', icon: Tag },
     { path: '/reports', label: 'Audit & HR Reports', icon: FileSpreadsheet },
     { path: '/admin/roles', label: 'Access Control', icon: UserCog },
   ];
@@ -381,6 +384,10 @@ export function App() {
 
         {activeRoute === '/admin/roles' && (
           <RoleManagementView currentRole={activeRole} onRequireManagerPin={openManagerPinModal} />
+        )}
+
+        {activeRoute === '/admin/coupons' && (
+          <CouponManagementView userRole={activeRole} />
         )}
 
         {activeRoute === '/profile' && (

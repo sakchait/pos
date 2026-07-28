@@ -60,6 +60,7 @@ export interface Order {
 export interface Coupon {
   id: string;
   code: string;
+  description?: string;
   discountType: 'fixed' | 'percentage';
   discountValue: number;
   minOrderAmount: number;

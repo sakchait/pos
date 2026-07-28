@@ -78,6 +78,20 @@ export const apiService = {
       await db.coupons.update(id, updates);
     }
   },
+  async createCoupon(coupon: Coupon): Promise<void> {
+    if (USE_SERVICES) {
+      await apiFetch('/coupons', { method: 'POST', body: JSON.stringify(coupon) });
+    } else {
+      await db.coupons.add(coupon);
+    }
+  },
+  async deleteCoupon(code: string): Promise<void> {
+    if (USE_SERVICES) {
+      await apiFetch(`/coupons/${code}`, { method: 'DELETE' });
+    } else {
+      await db.coupons.delete(code);
+    }
+  },
   async findCouponByCode(code: string): Promise<Coupon | undefined> {
     if (USE_SERVICES) {
       const coupon = await apiFetch<Coupon | null>(`/coupons/code/${code}`);
