@@ -1,30 +1,38 @@
 ---
-name: pos-enterprise-frontend
-description: Master business requirements for building the Offline-First Next.js POS Enterprise Front-End.
+name: pos-enterprise-pos
+description: Master business and technical requirements for the POS Enterprise system (React SPA Frontend & C# .NET 10 Backend).
 allowed-tools: Read Write
 ---
 
-# Feature Requirements: POS Enterprise Front-End Application
+# Feature Requirements: POS Enterprise Application
 
 ## 1. Core System Capabilities & Architectural Rules
 
-- **Framework:** Next.js (App Router, Strict TypeScript, Tailwind CSS, Lucide Icons).
-- **Offline Storage:** Dexie.js (`IndexedDB`) as primary storage. Always write to Dexie first before queueing background API syncs to `.NET 8`.
+- **Frontend Framework:** React Single Page Application (Vite, Strict TypeScript, Tailwind CSS, Lucide Icons).
+- **Backend Framework:** C# .NET 10 Web API, Entity Framework Core, SQL Server database.
+- **Offline Storage:** Dexie.js (`IndexedDB`) as PWA offline storage. Always write to Dexie first (`db.orders.add(order)`) before queuing background API syncs to .NET backend to maintain accurate transaction histories and sequence numbers across online/offline modes.
+- **Strict Authentication:** Forces login on initial visit (no auto-login on page startup).
 - **Dynamic Access Control:** Front-end routes must respect dynamic permissions set via `ROLE_ROUTES` and Middleware.
 
 ---
 
-## 2. Cashier POS Terminal & Checkout Engine (`src/app/pos/page.tsx`)
-
-<Image src="image_agent_tag_8669345170497552384" alt="POS Cashier Terminal Interface with Grid View and Cart Summary" caption="POS Terminal Visual Layout" />
+## 2. Cashier POS Terminal & Checkout Engine
 
 ### 2.1 Order & Multi-Channel Payment (Split Payment)
-- **Item Calculation:** Calculate VAT 7% (Inclusive/Exclusive), Item-level discounts, and subtotal dynamically in Dexie.js.
+- **Item Calculation:** Calculate VAT 7% (Inclusive/Exclusive), Item-level discounts, and subtotal dynamically.
+- **VAT-Inclusive Financial Rule:** In VAT-inclusive mode, the saved and displayed subtotal MUST exclude VAT:
+  $$\text{SubTotal} = \text{GrandTotal} - \text{VatAmount}$$
+  $$\text{VatAmount} = \text{GrandTotal} - \frac{\text{GrandTotal}}{1.07}$$
 - **Split Payment Verification:**
   - Cashier can select multiple payment methods (Cash, Credit Card, PromptPay QR) for a single order.
   - The sum of payments in `OrderPayments` MUST equal `GrandTotal` (±0.01 tolerance) before enabling the Complete Order button.
-- **HMAC Anti-Tamper Signing:**
-  - Compute a client-side SHA-256 HMAC signature using `orderId`, `orderNo`, `grandTotal`, and `createdAt` before writing to Dexie to prevent client DB tampering.
+- **Order Number Generation & HMAC Safety:**
+  - Order numbers are generated in the format: `S[YY][MM][DD][StoreCode][TerminalId]-[Sequence]` (e.g. `S26072835N02-002773`).
+  - The order number must be generated *before* loading the payment/split-payment dialogs to prevent HMAC signature verification mismatch on backend.
+  - Compute a client-side SHA-256 HMAC signature using `orderId`, `orderNo`, `grandTotal`, and `createdAt` before writing.
+- **Idempotency & Sequence Collision Resolution:**
+  - **Idempotency:** Backend (`OrdersController.cs` and `SyncService.cs`) checks if the order GUID already exists. If yes, it returns `Order already exists` (idempotency check).
+  - **Collision Handler:** If a new GUID transaction encounters a collision on the generated `OrderNo` (e.g. sequence counter resets), the backend auto-resolves it by appending a sequence suffix (e.g. `-1`, `-2`) to let the transaction succeed instead of throwing unique constraint errors.
 
 ### 2.2 Offline Coupon Validation Logic
 - Validate coupons against Dexie `coupons` table:
@@ -44,24 +52,28 @@ allowed-tools: Read Write
 
 ---
 
-## 3. Cashier Shift & Anti-Fraud Management (`src/app/shifts/page.tsx`)
+## 3. Product & Category Management
+- **Category Entity:** Category is managed via EF Core (`Category.cs`) supporting database-driven categories (Appetizers, Main Course, Beverages, Desserts).
+- **Product Entity:** Seeded products are linked to their respective `CategoryId` GUIDs. Products controller dynamically loads Category relations using EF `.Include(p => p.Category)` instead of hardcoded mapping logic.
 
-<Image src="image_agent_tag_8669345170497553919" alt="Cash Drawer Management and Shift Reconciliation Dashboard" caption="Shift & Cash Reconciliation Dashboard" />
+---
 
-### 3.1 Blind Count Cash Drawer Reconciliation
+## 4. Cashier Shift & Anti-Fraud Management
+
+### 4.1 Blind Count Cash Drawer Reconciliation
 - **Opening Shift:** Prompt for `OpeningCash` float before enabling sales.
 - **Closing Shift (Blind Count):** Cashier inputs physical cash count (`ActualCashCounted`) without seeing the system's expected total.
 - **System Calculation:**
   $$\text{ExpectedCash} = \text{OpeningCash} + \text{SystemCashSales} + \text{PaidIn} - \text{PaidOut} - \text{SafeDrop}$$
 - **Discrepancy:** Report `CashDifference = ActualCashCounted - ExpectedCash`.
 
-### 3.2 Anti-Fraud Controls
+### 4.2 Anti-Fraud Controls
 - **Manager Approval Modal:** High-risk actions (Void Order, Refund, No-Sale Drawer Open, Price Override) must trigger a Modal requiring a **4-6 digit Manager PIN**.
 - **Drawer Open Log:** Log every empty drawer trigger to Dexie `DrawerOpenLogs` with timestamp and reason.
 
 ---
 
-## 4. Shift Scheduling, Swaps & Overtime (`src/app/shifts/schedule/page.tsx`)
+## 5. Shift Scheduling, Swaps & Overtime
 
 - **Shift Generation Rules (3 Shifts/Day):** Morning (06:00–14:00), Afternoon (14:00–22:00), Night (22:00–06:00).
 - **Staffing Minimums:** 1 Manager and 1–2 Cashiers per shift.
@@ -75,35 +87,29 @@ allowed-tools: Read Write
 
 ---
 
-## 5. Vendor Portal & FIFO Purchasing (`src/app/vendor/page.tsx`)
-
-- **Low-Stock Alerting:** Display items where `currentStock <= minStockThreshold`.
-- **Proposed PO Creation:** Vendor creates a Proposed Purchase Order (`ProposedPO`) with proposed quantities and unit costs.
-- **Purchaser Approval:** `PurchaserManager` reviews and approves POs. Approval updates `WarehouseInventories` and inserts a new FIFO `StockBatch`.
-
----
-
-## 6. Audit & HR Reporting Module (`src/app/reports/page.tsx`)
-
-Provide tabbed reporting views for export to Excel/PDF:
-
-1. **Shift Schedule vs Actual Attendance Report:** Compare scheduled start/end times against clock-in/out timestamps; highlight late arrivals (>5 mins).
-2. **Overtime & Double Shift Audit:** Flag consecutive shift instances with manager approval logs and reasons.
-3. **Leave Summary Report:** Summarize sick, personal, and annual leaves per employee.
-4. **Holiday Pay Report:** Calculate earnings for shifts worked on public holidays using legal multipliers ($2.0\times$ or $3.0\times$).
+## 6. Branch Restocking & FIFO Inventory
+- **Allowed Roles:** Access to `/restocking` (`RestockingView.tsx`) is granted to `BranchManager`, `StockClerk`, and `Admin`.
+- **API Model Mapping:** `apiService.ts` handles parameter mapping to transform frontend types (`qtyReceived`, `qtyRemaining`, `totalCost`, `unitCost`) to C# API request DTOs (`initialQuantity`, `remainingQuantity`, `totalAmount`, `price`, and `expiryDate` defaulting to 1 year ahead).
+- **Direct Intake Workflow:** When receiving a proposed PO, the system:
+  1. Marks PO status as `APPROVED`.
+  2. Increments product stock counts directly via `apiService.updateProduct`.
+  3. Registers a new FIFO `StockBatch` in IndexedDB via `apiService.addStockBatch`.
 
 ---
 
-## 7. Dynamic Role & Access Control (`src/app/admin/roles/page.tsx`)
+## 7. Dynamic Role & Access Control
 
 - **IsAdmin SuperAdmin Panel:** `IsAdmin` users can check/uncheck allowed front-end route paths per Role.
 - **Middleware Enforcement:** Protect routes dynamically using matrix stored in cookies/DB:
 
 ```typescript
 const ROLE_ROUTES: Record<string, string[]> = {
-  Cashier: ['/pos', '/shifts/my-shift', '/profile'],
-  BranchManager: ['/pos', '/manager', '/reports', '/shifts', '/profile'],
-  Accountant: ['/reports/accounting', '/reports/fifo', '/reports/tax', '/profile'],
-  Vendor: ['/vendor/portal', '/vendor/propose-po', '/profile'],
-  PurchaserManager: ['/purchasing', '/inventory/warehouses', '/vendor/approve-po', '/profile'],
+  Cashier: ['/pos', '/shifts', '/profile'],
+  BranchManager: ['/pos', '/shifts', '/restocking', '/reports', '/profile'],
+  Accountant: ['/reports', '/vendor', '/profile'],
+  Vendor: ['/vendor', '/profile'],
+  PurchaserManager: ['/vendor', '/inventory', '/profile'],
+  StockClerk: ['/inventory', '/restocking', '/profile'],
+  Admin: ['/pos', '/shifts', '/shifts/schedule', '/vendor', '/restocking', '/inventory', '/reports', '/admin/roles', '/profile'],
 };
+```
