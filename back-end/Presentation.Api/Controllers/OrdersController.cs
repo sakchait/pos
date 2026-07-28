@@ -80,7 +80,7 @@ public class OrdersController : ControllerBase
                     name = i.Product?.Name ?? "Unknown Product",
                     price = (double)(i.Product?.Price ?? 0m),
                     stock = i.Product?.StockQuantity ?? 0,
-                    category = i.Product != null ? MapCategory(i.Product.Code) : "Food",
+                    category = i.Product?.Category?.Name ?? "Unknown Category",
                     image = i.Product != null ? MapImage(i.Product.Code) : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60",
                     isActive = i.Product?.IsActive ?? true
                 },
@@ -146,18 +146,32 @@ public class OrdersController : ControllerBase
     {
         var orderGuid = Guid.TryParse(request.Id, out var parsedOrderId) ? parsedOrderId : Guid.NewGuid();
 
+        // 1. Idempotency Check by unique Order ID (GUID)
+        var existingById = await _ordersRepo.GetAll()
+            .FirstOrDefaultAsync(o => o.Id == orderGuid, cancellationToken);
+        if (existingById != null)
+        {
+            return Ok(new { message = "Order already exists.", id = existingById.Id });
+        }
+
         string orderNo = request.OrderNo;
         if (string.IsNullOrEmpty(orderNo) || orderNo.StartsWith("ORD-"))
         {
             orderNo = await GenerateOrderNoAsync(cancellationToken);
         }
 
-        // Prevent duplicates
-        var existing = await _ordersRepo.GetAll()
-            .FirstOrDefaultAsync(o => o.Id == orderGuid || o.OrderNo == orderNo, cancellationToken);
-        if (existing != null)
+        // 2. Uniqueness Check for OrderNo (Collision handling)
+        var existingByNo = await _ordersRepo.GetAll()
+            .FirstOrDefaultAsync(o => o.OrderNo == orderNo, cancellationToken);
+        if (existingByNo != null)
         {
-            return Ok(new { message = "Order already exists.", id = existing.Id });
+            int suffix = 1;
+            string baseOrderNo = orderNo;
+            while (await _ordersRepo.GetAll().AnyAsync(o => o.OrderNo == $"{baseOrderNo}-{suffix}", cancellationToken))
+            {
+                suffix++;
+            }
+            orderNo = $"{baseOrderNo}-{suffix}";
         }
 
         var cashierGuid = Guid.TryParse(request.CashierId, out var parsedCashierId) ? parsedCashierId : Guid.Empty;

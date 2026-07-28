@@ -145,6 +145,9 @@ export const apiService = {
     }
   },
   async addOrder(order: Order): Promise<void> {
+    // Always save to IndexedDB first so local order counts/records are consistent
+    await db.orders.add(order);
+
     if (USE_SERVICES) {
       await apiFetch('/orders', { method: 'POST', body: JSON.stringify(order) });
       // Sync order to C# backend
@@ -168,8 +171,6 @@ export const apiService = {
       } catch (e) {
         console.error('Failed to sync order to C# backend:', e);
       }
-    } else {
-      await db.orders.add(order);
     }
   },
 
