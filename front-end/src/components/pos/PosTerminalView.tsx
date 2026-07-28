@@ -21,6 +21,7 @@ import { apiService } from '../../services/apiService';
 import { Product, CartItem, Member, Coupon, Order } from '../../types/pos';
 import { GeminiAiSmartUpsell } from './GeminiAiSmartUpsell';
 import { SplitPaymentModal } from './SplitPaymentModal';
+import { db } from '@/src/db/dexieDb';
 
 interface PosTerminalViewProps {
   cashierId: string;
@@ -317,11 +318,10 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                selectedCategory === cat
+              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${selectedCategory === cat
                   ? 'bg-orange-600 text-white shadow-md shadow-orange-600/30'
                   : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-orange-500'
-              }`}
+                }`}
             >
               {cat}
             </button>
@@ -338,11 +338,10 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
               <div
                 key={product.id}
                 onClick={() => product.stock > 0 && addToCart(product)}
-                className={`bg-white dark:bg-slate-800 rounded-2xl border p-2.5 flex flex-col group cursor-pointer transition-all duration-300 relative overflow-hidden ${
-                  inCart
+                className={`bg-white dark:bg-slate-800 rounded-2xl border p-2.5 flex flex-col group cursor-pointer transition-all duration-300 relative overflow-hidden ${inCart
                     ? 'border-2 border-orange-600 shadow-md ring-2 ring-orange-600/20'
                     : 'border-slate-200 dark:border-slate-700/80 hover:shadow-lg hover:border-orange-500'
-                } ${product.stock <= 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
+                  } ${product.stock <= 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
               >
                 {inCart && (
                   <div className="absolute top-2 right-2 z-10 bg-orange-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
@@ -538,11 +537,10 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
                               }
                               setCart(updated);
                             }}
-                            className={`px-2 py-0.5 text-[9px] font-bold rounded-full transition-colors ${
-                              isSelected
+                            className={`px-2 py-0.5 text-[9px] font-bold rounded-full transition-colors ${isSelected
                                 ? 'bg-orange-600 text-white'
                                 : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                            }`}
+                              }`}
                           >
                             {mod}
                           </button>
