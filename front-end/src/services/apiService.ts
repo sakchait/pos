@@ -289,7 +289,7 @@ export const apiService = {
   async addProposedPO(po: ProposedPO): Promise<void> {
     if (USE_SERVICES) {
       const payload = {
-        id: po.id.startsWith('po-') ? undefined : po.id,
+        id: po.id.startsWith('po-') ? crypto.randomUUID() : po.id,
         poNumber: po.poNumber,
         vendorId: 'd1111111-d111-d111-d111-d11111111111', // seeded Global Foods Co.
         totalAmount: po.totalCost,
