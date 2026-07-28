@@ -93,6 +93,20 @@ public class SyncService : ISyncService
                 // 3. วนลูปประมวลผลแต่ละ Order
                 foreach (var orderTuple in ordersToProcess)
                 {
+                    string orderNo = orderTuple.OrderNo;
+                    var existingByNo = await _context.Orders
+                        .FirstOrDefaultAsync(o => o.OrderNo == orderNo, cancellationToken);
+                    if (existingByNo != null)
+                    {
+                        int suffix = 1;
+                        string baseOrderNo = orderNo;
+                        while (await _context.Orders.AnyAsync(o => o.OrderNo == $"{baseOrderNo}-{suffix}", cancellationToken))
+                        {
+                            suffix++;
+                        }
+                        orderNo = $"{baseOrderNo}-{suffix}";
+                    }
+
                     // Calculate VAT (7% inclusive)
                     decimal vatRate = 0.07m;
                     decimal vatAmount = Math.Round(orderTuple.TotalAmount - (orderTuple.TotalAmount / (1m + vatRate)), 2, MidpointRounding.AwayFromZero);
@@ -101,7 +115,7 @@ public class SyncService : ISyncService
                     var newOrder = new Order
                     {
                         Id = orderTuple.OrderGuid,
-                        OrderNo = orderTuple.OrderNo,
+                        OrderNo = orderNo,
                         PosTerminalId = "term-1",
                         TotalAmount = orderTuple.TotalAmount,
                         GrandTotal = orderTuple.TotalAmount,
@@ -144,6 +158,8 @@ public class SyncService : ISyncService
                         _context.StockTransactions.Add(new StockTransaction
                         {
                             Id = Guid.NewGuid(),
+                            BranchId = Guid.Parse("a1111111-a111-a111-a111-a11111111111"), // Head Office
+                            WarehouseId = Guid.Parse("b1111111-b111-b111-b111-b11111111111"), // Main Warehouse
                             ProductId = product.Id,
                             OrderId = newOrder.Id,
                             ChangeQuantity = -itemTuple.Quantity,
