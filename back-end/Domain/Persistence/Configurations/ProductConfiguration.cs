@@ -24,7 +24,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 35
+                StockQuantity = 35,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222201") // Appetizers
             },
             new Product
             {
@@ -38,7 +39,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 42
+                StockQuantity = 42,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222202") // Main Course
             },
             new Product
             {
@@ -52,7 +54,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 80
+                StockQuantity = 80,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222203") // Beverages
             },
             new Product
             {
@@ -66,7 +69,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 50
+                StockQuantity = 50,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222204") // Desserts
             },
             new Product
             {
@@ -80,7 +84,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 3
+                StockQuantity = 3,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222202") // Main Course
             },
             new Product
             {
@@ -94,7 +99,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 65
+                StockQuantity = 65,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222201") // Appetizers
             },
             new Product
             {
@@ -108,7 +114,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 2
+                StockQuantity = 2,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222203") // Beverages
             },
             new Product
             {
@@ -122,7 +129,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                 IsActive = true,
                 Version = 1,
                 UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                StockQuantity = 4
+                StockQuantity = 4,
+                CategoryId = Guid.Parse("22222222-2222-2222-2222-222222222202") // Main Course
             }
         );
     }

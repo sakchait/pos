@@ -1,4 +1,4 @@
-﻿namespace Pos.Domain.Entities;
+namespace Pos.Domain.Entities;
 
 public class Product
 {
@@ -13,4 +13,7 @@ public class Product
     public int Version { get; set; } = 1;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public int StockQuantity { get; set; }
+
+    public Guid? CategoryId { get; set; }
+    public Category? Category { get; set; }
 }

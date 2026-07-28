@@ -22,7 +22,10 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
     {
-        var list = await _productsRepo.GetAll().AsNoTracking().ToListAsync(cancellationToken);
+        var list = await _productsRepo.GetAll()
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
         
         var result = list.Select(p => new
         {
@@ -30,7 +33,7 @@ public class ProductsController : ControllerBase
             sku = p.Code,
             name = p.Name,
             price = p.Price,
-            category = GetDefaultCategory(p.Code),
+            category = p.Category != null ? p.Category.Name : "General",
             stock = p.StockQuantity,
             minStockThreshold = p.MinStockThreshold,
             imageUrl = GetDefaultImageUrl(p.Code),
@@ -71,22 +74,6 @@ public class ProductsController : ControllerBase
         await _productsRepo.UpdateAsync(product);
 
         return Ok(new { message = "Product updated successfully." });
-    }
-
-    private static string GetDefaultCategory(string code)
-    {
-        return code switch
-        {
-            "0012" => "Appetizers",
-            "0054" => "Main Course",
-            "0098" => "Beverages",
-            "0112" => "Desserts",
-            "0087" => "Main Course",
-            "0041" => "Appetizers",
-            "0203" => "Beverages",
-            "0319" => "Main Course",
-            _ => "General"
-        };
     }
 
     private static string GetDefaultImageUrl(string code)

@@ -267,11 +267,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                     setLoginMode('PASSWORD');
                     setErrorMsg('');
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    loginMode === 'PASSWORD'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${loginMode === 'PASSWORD'
                       ? 'bg-orange-600 text-white shadow-md'
                       : 'text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <User className="w-3.5 h-3.5" />
                   <span>Password</span>
@@ -282,11 +281,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                     setLoginMode('PIN');
                     setErrorMsg('');
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    loginMode === 'PIN'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${loginMode === 'PIN'
                       ? 'bg-orange-600 text-white shadow-md'
                       : 'text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <Smartphone className="w-3.5 h-3.5" />
                   <span>Fast PIN</span>
@@ -383,11 +381,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                     {[0, 1, 2, 3].map((idx) => (
                       <div
                         key={idx}
-                        className={`w-12 h-12 rounded-xl border flex items-center justify-center font-mono text-xl font-bold transition-all ${
-                          pin.length > idx
+                        className={`w-12 h-12 rounded-xl border flex items-center justify-center font-mono text-xl font-bold transition-all ${pin.length > idx
                             ? 'border-orange-500 bg-orange-500/20 text-orange-400 shadow-md shadow-orange-500/20'
                             : 'border-slate-800 bg-slate-950 text-slate-600'
-                        }`}
+                          }`}
                       >
                         {pin.length > idx ? '•' : ''}
                       </div>
@@ -482,7 +479,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                   role: 'Admin',
                   name: 'System Admin',
                   username: 'admin',
-                  pass: 'admin123',
+                  pass: 'Admin@1234',
                   pin: '9999',
                   color: 'border-rose-500/40 bg-rose-950/20 text-rose-300',
                 },
