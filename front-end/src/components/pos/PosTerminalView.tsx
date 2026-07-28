@@ -59,6 +59,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
   // Modals
   const [isSplitPaymentOpen, setIsSplitPaymentOpen] = useState<boolean>(false);
   const [lastCompletedOrder, setLastCompletedOrder] = useState<Order | null>(null);
+  const [currentOrderNo, setCurrentOrderNo] = useState<string>('');
 
   useEffect(() => {
     loadProducts();
@@ -201,11 +202,29 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
     }
   };
 
+  const handleOpenPayment = async () => {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayCount = await db.orders
+      .where('createdAt')
+      .aboveOrEqual(todayStart.toISOString())
+      .count();
+
+    const now = new Date();
+    const yy = now.getFullYear().toString().slice(-2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const sequence = String(todayCount + 1).padStart(6, '0');
+    const orderNo = `S${yy}${mm}${dd}35N02-${sequence}`;
+
+    setCurrentOrderNo(orderNo);
+    setIsSplitPaymentOpen(true);
+  };
+
   const handleCompleteOrder = async (payments: any[], hmacSignature: string) => {
-    const orderNo = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
-      orderNo,
+      orderNo: currentOrderNo,
       items: cart,
       subtotal,
       vatRate,
@@ -615,7 +634,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
 
           {/* Proceed to Split Payment Checkout Button */}
           <button
-            onClick={() => setIsSplitPaymentOpen(true)}
+            onClick={handleOpenPayment}
             disabled={cart.length === 0}
             className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-40 text-white py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-orange-600/25 active:scale-98 transition-all"
           >
@@ -629,7 +648,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
       <SplitPaymentModal
         isOpen={isSplitPaymentOpen}
         grandTotal={grandTotal}
-        orderNo={`#${Math.floor(100 + Math.random() * 900)}-${Math.floor(100 + Math.random() * 900)}`}
+        orderNo={currentOrderNo}
         onCancel={() => setIsSplitPaymentOpen(false)}
         onCompleteOrder={handleCompleteOrder}
       />

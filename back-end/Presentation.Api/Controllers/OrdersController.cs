@@ -146,9 +146,15 @@ public class OrdersController : ControllerBase
     {
         var orderGuid = Guid.TryParse(request.Id, out var parsedOrderId) ? parsedOrderId : Guid.NewGuid();
 
+        string orderNo = request.OrderNo;
+        if (string.IsNullOrEmpty(orderNo) || orderNo.StartsWith("ORD-"))
+        {
+            orderNo = await GenerateOrderNoAsync(cancellationToken);
+        }
+
         // Prevent duplicates
         var existing = await _ordersRepo.GetAll()
-            .FirstOrDefaultAsync(o => o.Id == orderGuid || o.OrderNo == request.OrderNo, cancellationToken);
+            .FirstOrDefaultAsync(o => o.Id == orderGuid || o.OrderNo == orderNo, cancellationToken);
         if (existing != null)
         {
             return Ok(new { message = "Order already exists.", id = existing.Id });
@@ -190,7 +196,7 @@ public class OrdersController : ControllerBase
             MemberId = Guid.TryParse(request.MemberId, out var parsedMemberId) ? parsedMemberId : null,
             ShiftId = activeShift.Id,
             PosTerminalId = "term-1",
-            OrderNo = request.OrderNo,
+            OrderNo = orderNo,
             SubTotal = request.Subtotal,
             TotalItemDiscount = string.IsNullOrEmpty(request.CouponCode) ? request.DiscountAmount : 0m,
             CouponDiscount = !string.IsNullOrEmpty(request.CouponCode) ? request.DiscountAmount : 0m,
@@ -289,5 +295,22 @@ public class OrdersController : ControllerBase
             "0319" => "https://images.unsplash.com/photo-1546964124-0cce460f38ef?w=500&auto=format&fit=crop&q=60",
             _ => "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
         };
+    }
+
+    private async Task<string> GenerateOrderNoAsync(CancellationToken cancellationToken)
+    {
+        var today = DateTime.UtcNow;
+        var todayStart = today.Date;
+        var todayEnd = todayStart.AddDays(1);
+        
+        int todayCount = await _ordersRepo.GetAll()
+            .CountAsync(o => o.CreatedAt >= todayStart && o.CreatedAt < todayEnd, cancellationToken);
+        
+        string yy = today.ToString("yy");
+        string mm = today.ToString("MM");
+        string dd = today.ToString("dd");
+        string sequence = (todayCount + 1).ToString("D6");
+        
+        return $"S{yy}{mm}{dd}35N02-{sequence}";
     }
 }
