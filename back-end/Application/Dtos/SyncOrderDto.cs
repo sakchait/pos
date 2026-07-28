@@ -1,14 +1,14 @@
-﻿// Application/DTOs/SyncOrderDto.cs
+// Application/DTOs/SyncOrderDto.cs
 namespace Pos.Application.DTOs;
 
 public record CreateOrderItemDto(
-    Guid ProductId,
+    string ProductId,
     decimal UnitPrice,
     int Quantity
 );
 
 public record CreateOrderDto(
-    Guid Id, // GUID จาก Client PWA
+    string Id, // GUID จาก Client PWA
     string OrderNo,
     string PosTerminalId,
     decimal TotalAmount,
