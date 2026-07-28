@@ -55,6 +55,8 @@ export interface Order {
   cashierName: string;
   memberId?: string;
   memberName?: string;
+  branchId?: string;
+  posTerminalId?: string;
 }
 
 export interface Coupon {
@@ -213,4 +215,9 @@ export interface UserAccount {
   lastLoginAt?: string;
   department?: string;
   employeeCode?: string;
+  selectedBranchId?: string;
+  selectedBranchCode?: string;
+  selectedBranchName?: string;
+  selectedTerminalId?: string;
+  selectedTerminalDbId?: string;
 }

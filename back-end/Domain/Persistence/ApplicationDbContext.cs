@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Branch> Branches => Set<Branch>();
+    public DbSet<PosTerminal> PosTerminals => Set<PosTerminal>();
     public DbSet<Warehouse> Warehouses => Set<Warehouse>();
     public DbSet<WarehouseInventory> WarehouseInventories => Set<WarehouseInventory>();
     public DbSet<Order> Orders => Set<Order>();

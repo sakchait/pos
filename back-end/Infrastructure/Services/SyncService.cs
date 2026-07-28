@@ -29,7 +29,7 @@ public class SyncService : ISyncService
         }
 
         // Map parsed order representations
-        var mappedOrders = new List<(Guid OrderGuid, string OrderNo, decimal TotalAmount, string PaymentMethod, DateTime CreatedAt, List<(Guid ProductGuid, decimal UnitPrice, int Quantity)> Items)>();
+        var mappedOrders = new List<(Guid OrderGuid, string OrderNo, decimal TotalAmount, string PaymentMethod, DateTime CreatedAt, List<(Guid ProductGuid, decimal UnitPrice, int Quantity)> Items, string? BranchId, string? PosTerminalId)>();
 
         foreach (var dto in offlineOrders)
         {
@@ -50,7 +50,7 @@ public class SyncService : ISyncService
                 items.Add((productGuid, itemDto.UnitPrice, itemDto.Quantity));
             }
 
-            mappedOrders.Add((orderGuid, dto.OrderNo, dto.TotalAmount, dto.PaymentMethod, dto.CreatedAt, items));
+            mappedOrders.Add((orderGuid, dto.OrderNo, dto.TotalAmount, dto.PaymentMethod, dto.CreatedAt, items, dto.BranchId, dto.PosTerminalId));
         }
 
         // ดึง ExecutionStrategy เพื่อรองรับ EF Core Resilient Connections
@@ -112,11 +112,30 @@ public class SyncService : ISyncService
                     decimal vatAmount = Math.Round(orderTuple.TotalAmount - (orderTuple.TotalAmount / (1m + vatRate)), 2, MidpointRounding.AwayFromZero);
                     decimal subTotal = orderTuple.TotalAmount - vatAmount;
 
+                    var branchGuid = Guid.TryParse(orderTuple.BranchId, out var parsedBranchId) ? parsedBranchId : Guid.Parse("a1111111-a111-a111-a111-a11111111111");
+                    
+                    string terminalCode = "N02";
+                    if (!string.IsNullOrEmpty(orderTuple.PosTerminalId))
+                    {
+                        if (Guid.TryParse(orderTuple.PosTerminalId, out var parsedTerminalGuid))
+                        {
+                            var terminal = _context.PosTerminals.Find(parsedTerminalGuid);
+                            if (terminal != null)
+                            {
+                                terminalCode = terminal.TerminalId;
+                            }
+                        }
+                        else
+                        {
+                            terminalCode = orderTuple.PosTerminalId;
+                        }
+                    }
+
                     var newOrder = new Order
                     {
                         Id = orderTuple.OrderGuid,
                         OrderNo = orderNo,
-                        PosTerminalId = "term-1",
+                        PosTerminalId = terminalCode,
                         TotalAmount = orderTuple.TotalAmount,
                         GrandTotal = orderTuple.TotalAmount,
                         SubTotal = subTotal,
@@ -125,7 +144,7 @@ public class SyncService : ISyncService
                         PaymentMethod = orderTuple.PaymentMethod,
                         CreatedAt = orderTuple.CreatedAt,
                         SyncedAt = DateTime.UtcNow,
-                        BranchId = Guid.Parse("a1111111-a111-a111-a111-a11111111111"), // Head Office
+                        BranchId = branchGuid,
                         WarehouseId = Guid.Parse("b1111111-b111-b111-b111-b11111111111"), // Main Warehouse
                         CashierId = Guid.Parse("99999999-9999-9999-9999-999999999999"), // System Admin
                         SyncStatus = "Synced"
@@ -158,7 +177,7 @@ public class SyncService : ISyncService
                         _context.StockTransactions.Add(new StockTransaction
                         {
                             Id = Guid.NewGuid(),
-                            BranchId = Guid.Parse("a1111111-a111-a111-a111-a11111111111"), // Head Office
+                            BranchId = branchGuid,
                             WarehouseId = Guid.Parse("b1111111-b111-b111-b111-b11111111111"), // Main Warehouse
                             ProductId = product.Id,
                             OrderId = newOrder.Id,

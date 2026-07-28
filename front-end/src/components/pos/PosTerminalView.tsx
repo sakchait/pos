@@ -29,6 +29,7 @@ interface PosTerminalViewProps {
   cashierId: string;
   cashierName: string;
   terminalId: string;
+  currentUser?: any;
   onRequireManagerPin: (
     title: string,
     desc: string,
@@ -41,6 +42,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
   cashierId,
   cashierName,
   terminalId,
+  currentUser,
   onRequireManagerPin,
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -208,9 +210,15 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
   const handleOpenPayment = async () => {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
+
+    const branchCode = currentUser?.selectedBranchCode || '35';
+    const termCode = currentUser?.selectedTerminalId || 'N02';
+    const prefix = `S${todayStart.getFullYear().toString().slice(-2)}${String(todayStart.getMonth() + 1).padStart(2, '0')}${String(todayStart.getDate()).padStart(2, '0')}${branchCode}${termCode}-`;
+
     const todayCount = await db.orders
       .where('createdAt')
       .aboveOrEqual(todayStart.toISOString())
+      .filter(o => o.orderNo.startsWith(prefix))
       .count();
 
     const now = new Date();
@@ -218,7 +226,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
     const sequence = String(todayCount + 1).padStart(6, '0');
-    const orderNo = `S${yy}${mm}${dd}35N02-${sequence}`;
+    const orderNo = `${prefix}${sequence}`;
 
     setCurrentOrderNo(orderNo);
     setIsSplitPaymentOpen(true);
@@ -229,9 +237,15 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
 
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
+
+    const branchCode = currentUser?.selectedBranchCode || '35';
+    const termCode = currentUser?.selectedTerminalId || 'N02';
+    const prefix = `S${todayStart.getFullYear().toString().slice(-2)}${String(todayStart.getMonth() + 1).padStart(2, '0')}${String(todayStart.getDate()).padStart(2, '0')}${branchCode}${termCode}-`;
+
     const todayCount = await db.orders
       .where('createdAt')
       .aboveOrEqual(todayStart.toISOString())
+      .filter(o => o.orderNo.startsWith(prefix))
       .count();
 
     const now = new Date();
@@ -239,7 +253,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
     const sequence = String(todayCount + 1).padStart(6, '0');
-    const orderNo = `S${yy}${mm}${dd}35N02-${sequence}`;
+    const orderNo = `${prefix}${sequence}`;
 
     const orderId = `ord-${Date.now()}`;
     const createdAt = now.toISOString();
@@ -289,6 +303,8 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
       cashierName,
       memberId: selectedMember?.id,
       memberName: selectedMember?.name,
+      branchId: currentUser?.selectedBranchId,
+      posTerminalId: currentUser?.selectedTerminalDbId,
     };
 
     // Save to Dexie IndexedDB / Server

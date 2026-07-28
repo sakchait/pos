@@ -21,17 +21,23 @@ public class OrdersController : ControllerBase
     private readonly IRepository<Order> _ordersRepo;
     private readonly IRepository<CashierShift> _shiftRepo;
     private readonly IRepository<User> _usersRepo;
+    private readonly IRepository<Branch> _branchRepo;
+    private readonly IRepository<PosTerminal> _terminalRepo;
 
     public OrdersController(
         ISyncService syncService,
         IRepository<Order> ordersRepo,
         IRepository<CashierShift> shiftRepo,
-        IRepository<User> usersRepo)
+        IRepository<User> usersRepo,
+        IRepository<Branch> branchRepo,
+        IRepository<PosTerminal> terminalRepo)
     {
         _syncService = syncService;
         _ordersRepo = ordersRepo;
         _shiftRepo = shiftRepo;
         _usersRepo = usersRepo;
+        _branchRepo = branchRepo;
+        _terminalRepo = terminalRepo;
     }
 
     // 1. GET /api/orders - Retrieves all transactions mapped to frontend Order DTO
@@ -139,6 +145,8 @@ public class OrdersController : ControllerBase
         public List<CartItemDto> Items { get; set; } = new();
         public List<PaymentDto> Payments { get; set; } = new();
         public string CreatedAt { get; set; } = string.Empty;
+        public string? BranchId { get; set; }
+        public string? PosTerminalId { get; set; }
     }
 
     [HttpPost("/api/orders")]
@@ -154,10 +162,29 @@ public class OrdersController : ControllerBase
             return Ok(new { message = "Order already exists.", id = existingById.Id });
         }
 
+        var branchGuid = Guid.TryParse(request.BranchId, out var bg) ? bg : Guid.Parse("a1111111-a111-a111-a111-a11111111111");
+        
+        string terminalCode = "N02";
+        if (!string.IsNullOrEmpty(request.PosTerminalId))
+        {
+            if (Guid.TryParse(request.PosTerminalId, out var tg))
+            {
+                var terminal = await _terminalRepo.FindAsync(tg);
+                if (terminal != null)
+                {
+                    terminalCode = terminal.TerminalId;
+                }
+            }
+            else
+            {
+                terminalCode = request.PosTerminalId;
+            }
+        }
+
         string orderNo = request.OrderNo;
         if (string.IsNullOrEmpty(orderNo) || orderNo.StartsWith("ORD-"))
         {
-            orderNo = await GenerateOrderNoAsync(cancellationToken);
+            orderNo = await GenerateOrderNoAsync(branchGuid, terminalCode, cancellationToken);
         }
 
         // 2. Uniqueness Check for OrderNo (Collision handling)
@@ -191,8 +218,8 @@ public class OrdersController : ControllerBase
             activeShift = new CashierShift
             {
                 Id = Guid.NewGuid(),
-                BranchId = Guid.Parse("a1111111-a111-a111-a111-a11111111111"), // Head Office
-                PosTerminalId = "term-1",
+                BranchId = branchGuid,
+                PosTerminalId = terminalCode,
                 CashierId = cashierGuid,
                 OpenedAt = DateTime.UtcNow.AddHours(-1),
                 OpeningCash = 100.00m,
@@ -204,12 +231,12 @@ public class OrdersController : ControllerBase
         var order = new Order
         {
             Id = orderGuid,
-            BranchId = Guid.Parse("a1111111-a111-a111-a111-a11111111111"), // Head Office
+            BranchId = branchGuid,
             WarehouseId = Guid.Parse("b1111111-b111-b111-b111-b11111111111"), // Main Warehouse
             CashierId = cashierGuid,
             MemberId = Guid.TryParse(request.MemberId, out var parsedMemberId) ? parsedMemberId : null,
             ShiftId = activeShift.Id,
-            PosTerminalId = "term-1",
+            PosTerminalId = terminalCode,
             OrderNo = orderNo,
             SubTotal = request.Subtotal,
             TotalItemDiscount = string.IsNullOrEmpty(request.CouponCode) ? request.DiscountAmount : 0m,
@@ -311,20 +338,23 @@ public class OrdersController : ControllerBase
         };
     }
 
-    private async Task<string> GenerateOrderNoAsync(CancellationToken cancellationToken)
+    private async Task<string> GenerateOrderNoAsync(Guid branchId, string terminalCode, CancellationToken cancellationToken)
     {
         var today = DateTime.UtcNow;
         var todayStart = today.Date;
         var todayEnd = todayStart.AddDays(1);
         
         int todayCount = await _ordersRepo.GetAll()
-            .CountAsync(o => o.CreatedAt >= todayStart && o.CreatedAt < todayEnd, cancellationToken);
+            .CountAsync(o => o.BranchId == branchId && o.PosTerminalId == terminalCode && o.CreatedAt >= todayStart && o.CreatedAt < todayEnd, cancellationToken);
         
+        var branch = await _branchRepo.FindAsync(branchId);
+        string branchCode = branch?.Code ?? "35";
+
         string yy = today.ToString("yy");
         string mm = today.ToString("MM");
         string dd = today.ToString("dd");
         string sequence = (todayCount + 1).ToString("D6");
         
-        return $"S{yy}{mm}{dd}35N02-{sequence}";
+        return $"S{yy}{mm}{dd}{branchCode}{terminalCode}-{sequence}";
     }
 }

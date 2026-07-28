@@ -239,6 +239,27 @@ async function startServer() {
     res.json(serverDb.leaves);
   });
 
+  app.get('/api/Branches', (req, res) => {
+    res.json([
+      { id: 'a1111111-a111-a111-a111-a11111111111', code: 'BR001', name: 'Head Office Branch' },
+      { id: 'a2222222-a222-a222-a222-a22222222222', code: '35', name: 'Siam Paragon Branch' }
+    ]);
+  });
+  app.get('/api/Branches/:branchId/terminals', (req, res) => {
+    const { branchId } = req.params;
+    if (branchId === 'a1111111-a111-a111-a111-a11111111111') {
+      res.json([
+        { id: 'c1111111-c111-c111-c111-c11111111111', terminalId: 'N01', name: 'Head Office Terminal 1' },
+        { id: 'c1111111-c111-c111-c111-c11111111112', terminalId: 'N02', name: 'Head Office Terminal 2' }
+      ]);
+    } else {
+      res.json([
+        { id: 'c2222222-c222-c222-c222-c22222222221', terminalId: 'N02', name: 'Siam Paragon Terminal 1' },
+        { id: 'c2222222-c222-c222-c222-c22222222222', terminalId: 'N03', name: 'Siam Paragon Terminal 2' }
+      ]);
+    }
+  });
+
   // Swagger schema proxy call
   app.get('/api/external-swagger', async (_req, res) => {
     try {

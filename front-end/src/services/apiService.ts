@@ -171,7 +171,8 @@ export const apiService = {
           body: JSON.stringify([{
             id: order.id,
             orderNo: order.orderNo,
-            posTerminalId: 'term-1',
+            branchId: order.branchId,
+            posTerminalId: order.posTerminalId,
             totalAmount: order.grandTotal,
             paymentMethod: order.payments[0]?.method || 'Cash',
             createdAt: new Date(order.createdAt).toISOString(),
@@ -478,6 +479,36 @@ export const apiService = {
       }
     } else {
       return pin === '1234' || pin === '9999';
+    }
+  },
+
+  // Branches and POS Terminals
+  async getBranches(): Promise<any[]> {
+    if (USE_SERVICES) {
+      return apiFetch<any[]>('/Branches');
+    } else {
+      return [
+        { id: 'a1111111-a111-a111-a111-a11111111111', code: 'BR001', name: 'Head Office Branch' },
+        { id: 'a2222222-a222-a222-a222-a22222222222', code: '35', name: 'Siam Paragon Branch' }
+      ];
+    }
+  },
+
+  async getTerminals(branchId: string): Promise<any[]> {
+    if (USE_SERVICES) {
+      return apiFetch<any[]>(`/Branches/${branchId}/terminals`);
+    } else {
+      if (branchId === 'a1111111-a111-a111-a111-a11111111111') {
+        return [
+          { id: 'c1111111-c111-c111-c111-c11111111111', terminalId: 'N01', name: 'Head Office Terminal 1' },
+          { id: 'c1111111-c111-c111-c111-c11111111112', terminalId: 'N02', name: 'Head Office Terminal 2' }
+        ];
+      } else {
+        return [
+          { id: 'c2222222-c222-c222-c222-c22222222221', terminalId: 'N02', name: 'Siam Paragon Terminal 1' },
+          { id: 'c2222222-c222-c222-c222-c22222222222', terminalId: 'N03', name: 'Siam Paragon Terminal 2' }
+        ];
+      }
     }
   },
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Lock,
   User,
@@ -36,20 +36,67 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Branch and Terminal Select State
+  const [branches, setBranches] = useState<any[]>([]);
+  const [terminals, setTerminals] = useState<any[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<string>('');
+  const [selectedTerminalId, setSelectedTerminalId] = useState<string>('');
+
+  useEffect(() => {
+    const loadBranches = async () => {
+      try {
+        const list = await apiService.getBranches();
+        setBranches(list);
+      } catch (err) {
+        console.error('Failed to load branches:', err);
+      }
+    };
+    loadBranches();
+  }, []);
+
+  const handleBranchChange = async (branchId: string) => {
+    setSelectedBranchId(branchId);
+    setSelectedTerminalId('');
+    setTerminals([]);
+    try {
+      const list = await apiService.getTerminals(branchId);
+      setTerminals(list);
+    } catch (err) {
+      console.error('Failed to load terminals:', err);
+    }
+  };
+
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+
+    if (!selectedBranchId || !selectedTerminalId) {
+      setErrorMsg('Please select a Branch and POS Terminal before logging in.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
+      const branchObj = branches.find(b => b.id === selectedBranchId);
+      const terminalObj = terminals.find(t => t.id === selectedTerminalId);
+
       if (apiService.isUsingServices()) {
         try {
           const user = await apiService.login(username, password);
+          const userWithTerminal = {
+            ...user,
+            selectedBranchId: branchObj?.id,
+            selectedBranchCode: branchObj?.code,
+            selectedBranchName: branchObj?.name,
+            selectedTerminalId: terminalObj?.terminalId,
+            selectedTerminalDbId: terminalObj?.id,
+          };
           if (rememberMe) {
             localStorage.setItem('omnipos_last_user', user.id);
           }
           setIsLoading(false);
-          onLoginSuccess(user);
+          onLoginSuccess(userWithTerminal);
           return;
         } catch (err: any) {
           setErrorMsg(err.message || 'Invalid username or password.');
@@ -83,6 +130,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
       const updatedUser: UserAccount = {
         ...user,
         lastLoginAt: new Date().toISOString(),
+        selectedBranchId: branchObj?.id,
+        selectedBranchCode: branchObj?.code,
+        selectedBranchName: branchObj?.name,
+        selectedTerminalId: terminalObj?.terminalId,
+        selectedTerminalDbId: terminalObj?.id,
       };
       await db.users.put(updatedUser);
 
@@ -102,6 +154,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
   const handlePinLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+
+    if (!selectedBranchId || !selectedTerminalId) {
+      setErrorMsg('Please select a Branch and POS Terminal before logging in.');
+      return;
+    }
+
     if (pin.length < 4) {
       setErrorMsg('Please enter a 4-digit PIN.');
       return;
@@ -109,11 +167,22 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
 
     setIsLoading(true);
     try {
+      const branchObj = branches.find(b => b.id === selectedBranchId);
+      const terminalObj = terminals.find(t => t.id === selectedTerminalId);
+
       if (apiService.isUsingServices()) {
         try {
           const user = await apiService.loginPin(pin);
+          const userWithTerminal = {
+            ...user,
+            selectedBranchId: branchObj?.id,
+            selectedBranchCode: branchObj?.code,
+            selectedBranchName: branchObj?.name,
+            selectedTerminalId: terminalObj?.terminalId,
+            selectedTerminalDbId: terminalObj?.id,
+          };
           setIsLoading(false);
-          onLoginSuccess(user);
+          onLoginSuccess(userWithTerminal);
           return;
         } catch (err: any) {
           setErrorMsg(err.message || 'Incorrect PIN. Security log recorded.');
@@ -134,6 +203,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
       const updatedUser: UserAccount = {
         ...user,
         lastLoginAt: new Date().toISOString(),
+        selectedBranchId: branchObj?.id,
+        selectedBranchCode: branchObj?.code,
+        selectedBranchName: branchObj?.name,
+        selectedTerminalId: terminalObj?.terminalId,
+        selectedTerminalDbId: terminalObj?.id,
       };
       await db.users.put(updatedUser);
 
@@ -153,11 +227,55 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
     setErrorMsg('');
 
     setIsLoading(true);
+    
+    let currentBranches = branches;
+    if (currentBranches.length === 0) {
+      try {
+        currentBranches = await apiService.getBranches();
+        setBranches(currentBranches);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    let branchId = selectedBranchId;
+    if (!branchId && currentBranches.length > 0) {
+      branchId = currentBranches[0].id;
+      setSelectedBranchId(branchId);
+    }
+
+    let currentTerminals = terminals;
+    if (branchId && currentTerminals.length === 0) {
+      try {
+        currentTerminals = await apiService.getTerminals(branchId);
+        setTerminals(currentTerminals);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    let terminalId = selectedTerminalId;
+    if (branchId && !terminalId && currentTerminals.length > 0) {
+      terminalId = currentTerminals[0].id;
+      setSelectedTerminalId(terminalId);
+    }
+
+    const branchObj = currentBranches.find(b => b.id === branchId);
+    const terminalObj = currentTerminals.find(t => t.id === terminalId);
+
     if (apiService.isUsingServices()) {
       try {
         const user = await apiService.login(userAccount.username, userAccount.pass);
+        const userWithTerminal = {
+          ...user,
+          selectedBranchId: branchObj?.id,
+          selectedBranchCode: branchObj?.code,
+          selectedBranchName: branchObj?.name,
+          selectedTerminalId: terminalObj?.terminalId,
+          selectedTerminalDbId: terminalObj?.id,
+        };
         setIsLoading(false);
-        onLoginSuccess(user);
+        onLoginSuccess(userWithTerminal);
         return;
       } catch (err: any) {
         setIsLoading(false);
@@ -175,6 +293,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
       const updatedUser: UserAccount = {
         ...user,
         lastLoginAt: new Date().toISOString(),
+        selectedBranchId: branchObj?.id,
+        selectedBranchCode: branchObj?.code,
+        selectedBranchName: branchObj?.name,
+        selectedTerminalId: terminalObj?.terminalId,
+        selectedTerminalDbId: terminalObj?.id,
       };
       await db.users.put(updatedUser);
       setIsLoading(false);
@@ -289,6 +412,46 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                   <Smartphone className="w-3.5 h-3.5" />
                   <span>Fast PIN</span>
                 </button>
+              </div>
+            </div>
+
+            {/* Branch and POS Terminal Selection */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6 border-b border-slate-800/80">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Select Branch
+                </label>
+                <select
+                  value={selectedBranchId}
+                  onChange={(e) => handleBranchChange(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all cursor-pointer"
+                >
+                  <option value="" disabled>-- Select Branch --</option>
+                  {branches.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name} ({b.code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Select POS Terminal
+                </label>
+                <select
+                  value={selectedTerminalId}
+                  onChange={(e) => setSelectedTerminalId(e.target.value)}
+                  disabled={!selectedBranchId}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <option value="" disabled>-- Select Terminal --</option>
+                  {terminals.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} ({t.terminalId})
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

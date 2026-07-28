@@ -14,7 +14,8 @@ public record CreateOrderDto(
     decimal TotalAmount,
     string PaymentMethod,
     DateTime CreatedAt,
-    List<CreateOrderItemDto> Items
+    List<CreateOrderItemDto> Items,
+    string? BranchId = null
 );
 
 public record SyncResultDto(

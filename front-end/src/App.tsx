@@ -234,6 +234,20 @@ export function App() {
                 {isOnline ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
                 <span>{isOnline ? 'ONLINE (Dexie)' : 'OFFLINE MODE'}</span>
               </div>
+
+              {/* Active Branch and POS Terminal Info */}
+              {currentUser?.selectedBranchName && currentUser?.selectedTerminalId && (
+                <div
+                  className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold border bg-slate-800 border-slate-700 text-slate-300 shadow-inner"
+                  title={`Branch: ${currentUser.selectedBranchName} | Terminal: ${currentUser.selectedTerminalId}`}
+                >
+                  <span className="text-orange-400">Branch:</span>
+                  <span>{currentUser.selectedBranchName}</span>
+                  <span className="text-slate-600">|</span>
+                  <span className="text-orange-400">Terminal:</span>
+                  <span className="font-mono text-amber-400">{currentUser.selectedTerminalId}</span>
+                </div>
+              )}
             </div>
 
             {/* Nav Tab Buttons */}
@@ -353,6 +367,7 @@ export function App() {
             cashierId={activeUser.id}
             cashierName={activeUser.name}
             terminalId="TERM-01"
+            currentUser={currentUser}
             onRequireManagerPin={openManagerPinModal}
           />
         )}

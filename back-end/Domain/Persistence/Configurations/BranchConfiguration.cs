@@ -18,6 +18,13 @@ public class BranchConfiguration : IEntityTypeConfiguration<Branch>
                 Code = "BR001",
                 Name = "Head Office Branch",
                 Address = "123 Main Street, Bangkok"
+            },
+            new Branch
+            {
+                Id = Guid.Parse("a2222222-a222-a222-a222-a22222222222"),
+                Code = "35",
+                Name = "Siam Paragon Branch",
+                Address = "991 Rama I Rd, Bangkok"
             }
         );
     }
