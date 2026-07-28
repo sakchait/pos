@@ -80,17 +80,17 @@ public class AuthController : ControllerBase
     [HttpPost("verify-manager-pin")]
     public async Task<IActionResult> VerifyManagerPin([FromBody] VerifyPinRequest dto)
     {
-        var manager = await _usersRepo.GetAll()
+        var managers = await _usersRepo.GetAll()
             .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => (u.Role.Name == "BranchManager" || u.Role.Name == "Admin") && u.IsActive);
+            .Where(u => (u.Role.Name == "BranchManager" || u.Role.Name == "Admin") && u.IsActive)
+            .ToListAsync();
 
-        if (manager == null || string.IsNullOrEmpty(manager.PinHash))
-            return BadRequest(new { message = "ไม่พบข้อมูลผู้จัดการในสาขานี้" });
+        var matchedManager = managers.FirstOrDefault(u => !string.IsNullOrEmpty(u.PinHash) && BCrypt.Net.BCrypt.Verify(dto.Pin, u.PinHash));
 
-        if (!BCrypt.Net.BCrypt.Verify(dto.Pin, manager.PinHash))
+        if (matchedManager == null)
             return Unauthorized(new { message = "รหัส PIN ผู้จัดการไม่ถูกต้อง" });
 
-        return Ok(new { isValid = true, success = true, managerId = manager.Id, managerName = manager.FullName });
+        return Ok(new { isValid = true, success = true, managerId = matchedManager.Id, managerName = matchedManager.FullName });
     }
 
     [HttpPost("login-pin")]

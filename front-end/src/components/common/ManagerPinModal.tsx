@@ -4,24 +4,24 @@ import { apiService } from '../../services/apiService';
 
 interface ManagerPinModalProps {
   isOpen: boolean;
-  actionTitle: string;
-  actionDescription: string;
+  title: string;
+  description: string;
   cashierId: string;
   cashierName: string;
-  reasonType: 'NO_SALE' | 'MANUAL_OPEN' | 'VOID_ORDER' | 'REFUND' | 'PRICE_OVERRIDE';
-  onApproved: (managerPin: string) => void;
-  onCancel: () => void;
+  reason: 'NO_SALE' | 'MANUAL_OPEN' | 'VOID_ORDER' | 'REFUND' | 'PRICE_OVERRIDE';
+  onSuccess: (managerPin?: string) => void;
+  onClose: () => void;
 }
 
 export const ManagerPinModal: React.FC<ManagerPinModalProps> = ({
   isOpen,
-  actionTitle,
-  actionDescription,
+  title,
+  description,
   cashierId,
   cashierName,
-  reasonType,
-  onApproved,
-  onCancel,
+  reason,
+  onSuccess,
+  onClose,
 }) => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
@@ -55,11 +55,11 @@ export const ManagerPinModal: React.FC<ManagerPinModalProps> = ({
         cashierId,
         cashierName,
         timestamp: new Date().toISOString(),
-        reason: reasonType,
+        reason: reason,
         managerApprovedBy: `Manager (PIN: ${pin})`,
       });
 
-      onApproved(pin);
+      onSuccess(pin);
       setPin('');
       setError('');
     } else {
@@ -82,7 +82,7 @@ export const ManagerPinModal: React.FC<ManagerPinModalProps> = ({
             </div>
           </div>
           <button
-            onClick={onCancel}
+            onClick={onClose}
             className="p-1 rounded-lg hover:bg-white/20 text-amber-100 hover:text-white transition-colors"
           >
             <X className="w-6 h-6" />
@@ -95,8 +95,8 @@ export const ManagerPinModal: React.FC<ManagerPinModalProps> = ({
             <div className="flex gap-3">
               <Lock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{actionTitle}</p>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{actionDescription}</p>
+                <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{title}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{description}</p>
               </div>
             </div>
           </div>
@@ -110,19 +110,17 @@ export const ManagerPinModal: React.FC<ManagerPinModalProps> = ({
               {[0, 1, 2, 3, 4, 5].map((idx) => (
                 <div
                   key={idx}
-                  className={`w-4 h-4 rounded-full transition-all duration-200 ${
-                    idx < pin.length
-                      ? 'bg-orange-600 scale-110 shadow-sm'
-                      : 'border-2 border-slate-300 dark:border-slate-600'
+                  className={`w-3.5 h-3.5 rounded-full transition-all duration-100 ${
+                    idx < pin.length ? 'bg-orange-600 scale-110' : 'bg-slate-300 dark:bg-slate-700'
                   }`}
                 />
               ))}
             </div>
-            {error && <p className="text-xs font-semibold text-rose-600 mt-1">{error}</p>}
+            {error && <p className="text-xs text-rose-500 font-bold">{error}</p>}
           </div>
 
-          {/* Numeric Keypad */}
-          <div className="grid grid-cols-3 gap-2 pt-2">
+          {/* Number Pad */}
+          <div className="grid grid-cols-3 gap-3">
             {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
               <button
                 key={num}
@@ -160,7 +158,7 @@ export const ManagerPinModal: React.FC<ManagerPinModalProps> = ({
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              onClick={onCancel}
+              onClick={onClose}
               className="flex-1 py-3 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
             >
               Cancel
