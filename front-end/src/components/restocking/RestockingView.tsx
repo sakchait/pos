@@ -11,7 +11,7 @@ import {
   Inbox
 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
-import { Product, ProposedPO } from '../../types/pos';
+import { Product, ProposedPO, StockBatch } from '../../types/pos';
 
 interface RestockingViewProps {
   userRole: string;
@@ -106,11 +106,43 @@ export const RestockingView: React.FC<RestockingViewProps> = ({ userRole }) => {
 
   const handleReceiveStock = async (po: ProposedPO) => {
     try {
+      // 1. Mark PO as APPROVED
       await apiService.updateProposedPO(po.id, {
         status: 'APPROVED',
         approvedAt: new Date().toISOString(),
         approvedBy: 'BranchManager',
       });
+
+      // 2. Update Product Inventory Stock in Dexie / Server
+      for (const item of po.items) {
+        const allProds = await apiService.getProducts();
+        const prod = allProds.find(p => p.id === item.productId);
+        if (prod) {
+          await apiService.updateProduct(item.productId, {
+            stock: prod.stock + item.proposedQty,
+          });
+
+          // 3. Insert new FIFO StockBatch
+          const batchNo = `BATCH-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(
+            100 + Math.random() * 900
+          )}`;
+
+          const newBatch: StockBatch = {
+            id: `batch-${Date.now()}`,
+            productId: item.productId,
+            productName: item.productName,
+            batchNo,
+            qtyReceived: item.proposedQty,
+            qtyRemaining: item.proposedQty,
+            unitCost: item.unitCost,
+            receivedDate: new Date().toISOString().split('T')[0],
+            poNumber: po.poNumber,
+          };
+
+          await apiService.addStockBatch(newBatch);
+        }
+      }
+
       await loadRestockingData();
     } catch (e) {
       console.error('Failed to receive stock batch:', e);
