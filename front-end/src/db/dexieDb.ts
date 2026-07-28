@@ -560,8 +560,8 @@ export async function seedUsersIfNeeded() {
 
 export async function seedRoleRoutesIfNeeded() {
   const allRoutes = await db.roleRoutes.toArray();
-  const hasCoupons = allRoutes.some((r) => r.routes.includes('/admin/coupons'));
-  if (allRoutes.length < 7 || !hasCoupons) {
+  const hasMembers = allRoutes.some((r) => r.routes.includes('/admin/members'));
+  if (allRoutes.length < 7 || !hasMembers) {
     await db.roleRoutes.clear();
     const initialRoleRoutes: RoleRoutePermission[] = [
       {
@@ -570,7 +570,7 @@ export async function seedRoleRoutesIfNeeded() {
       },
       {
         role: 'BranchManager',
-        routes: ['/pos', '/shifts', '/restocking', '/reports', '/admin/coupons', '/profile'],
+        routes: ['/pos', '/shifts', '/restocking', '/reports', '/admin/coupons', '/admin/members', '/profile'],
       },
       {
         role: 'Accountant',
@@ -600,6 +600,7 @@ export async function seedRoleRoutesIfNeeded() {
           '/reports',
           '/admin/roles',
           '/admin/coupons',
+          '/admin/members',
           '/profile',
         ],
       },

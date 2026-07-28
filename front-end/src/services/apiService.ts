@@ -144,9 +144,48 @@ export const apiService = {
   },
   async updateMember(id: string, updates: Partial<Member>): Promise<void> {
     if (USE_SERVICES) {
-      await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify(updates) });
+      const dto = {
+        name: updates.name,
+        phone: updates.phone,
+        email: updates.email,
+        points: updates.points,
+        totalSpent: updates.totalSpent,
+        tier: updates.tier
+      };
+      await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify(dto) });
     } else {
       await db.members.update(id, updates);
+    }
+  },
+  async createMember(member: Omit<Member, 'id' | 'memberNo' | 'joinDate'>): Promise<Member> {
+    if (USE_SERVICES) {
+      const dto = {
+        name: member.name,
+        phone: member.phone,
+        email: member.email,
+        points: member.points || 0,
+        totalSpent: member.totalSpent || 0,
+        tier: member.tier || 'Standard'
+      };
+      return apiFetch<Member>('/members', { method: 'POST', body: JSON.stringify(dto) });
+    } else {
+      const newId = `m-${Date.now()}`;
+      const sequence = (await db.members.count()) + 1003;
+      const newMember: Member = {
+        ...member,
+        id: newId,
+        memberNo: `M-${sequence}`,
+        joinDate: new Date().toISOString().split('T')[0],
+      };
+      await db.members.add(newMember);
+      return newMember;
+    }
+  },
+  async deleteMember(id: string): Promise<void> {
+    if (USE_SERVICES) {
+      await apiFetch(`/members/${id}`, { method: 'DELETE' });
+    } else {
+      await db.members.delete(id);
     }
   },
 

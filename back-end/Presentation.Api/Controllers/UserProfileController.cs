@@ -24,7 +24,7 @@ public class UserProfileController : ControllerBase
     }
 
     // 1. ดึงข้อมูลโปรไฟล์ของตนเอง
-    [HttpGet("/api/members")]
+    [HttpGet("/api/profile")]
     public async Task<IActionResult> GetMyProfile()
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -47,7 +47,7 @@ public class UserProfileController : ControllerBase
     }
 
     // 2. แก้ไขข้อมูลส่วนตัวของตนเอง (เปลี่ยนได้เฉพาะชื่อ-นามสกุล)
-    [HttpPut("/api/members")]
+    [HttpPut("/api/profile")]
     public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateMyProfileDto dto)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -63,7 +63,7 @@ public class UserProfileController : ControllerBase
     }
 
     // 3. เปลี่ยนรหัสผ่านของตนเอง (Self Reset Password)
-    [HttpPost("/api/members/change-password")]
+    [HttpPost("/api/profile/change-password")]
     public async Task<IActionResult> ChangeMyPassword([FromBody] ChangeMyPasswordDto dto)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

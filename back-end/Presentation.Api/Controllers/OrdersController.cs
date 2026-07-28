@@ -306,22 +306,6 @@ public class OrdersController : ControllerBase
         return Ok(result);
     }
 
-    private static string MapCategory(string sku)
-    {
-        return sku switch
-        {
-            "0012" => "Salad",
-            "0054" => "Burger",
-            "0098" => "Coffee",
-            "0112" => "Dessert",
-            "0087" => "Meat",
-            "0041" => "Snack",
-            "0203" => "Tea",
-            "0319" => "Meat",
-            _ => "Food"
-        };
-    }
-
     private static string MapImage(string sku)
     {
         return sku switch

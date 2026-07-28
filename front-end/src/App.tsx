@@ -19,6 +19,7 @@ import {
   UserCircle,
   Layers,
   Tag,
+  Users,
 } from 'lucide-react';
 
 import { PosTerminalView } from './components/pos/PosTerminalView';
@@ -29,6 +30,7 @@ import { RestockingView } from './components/restocking/RestockingView';
 import { ReportsView } from './components/reports/ReportsView';
 import { RoleManagementView } from './components/admin/RoleManagementView';
 import { CouponManagementView } from './components/admin/CouponManagementView';
+import { MemberManagementView } from './components/admin/MemberManagementView';
 import { LoginView } from './components/auth/LoginView';
 import { ProfileView } from './components/auth/ProfileView';
 import { ManagerPinModal } from './components/common/ManagerPinModal';
@@ -61,6 +63,8 @@ export function App() {
     '/restocking',
     '/reports',
     '/admin/roles',
+    '/admin/coupons',
+    '/admin/members',
     '/profile',
   ]);
 
@@ -200,6 +204,7 @@ export function App() {
     { path: '/restocking', label: 'Branch Restocking', icon: RefreshCw },
     { path: '/inventory', label: 'Inventory Stock', icon: Layers },
     { path: '/admin/coupons', label: 'Coupon Management', icon: Tag },
+    { path: '/admin/members', label: 'Member Management', icon: Users },
     { path: '/reports', label: 'Audit & HR Reports', icon: FileSpreadsheet },
     { path: '/admin/roles', label: 'Access Control', icon: UserCog },
   ];
@@ -403,6 +408,10 @@ export function App() {
 
         {activeRoute === '/admin/coupons' && (
           <CouponManagementView userRole={activeRole} />
+        )}
+
+        {activeRoute === '/admin/members' && (
+          <MemberManagementView userRole={activeRole} />
         )}
 
         {activeRoute === '/profile' && (

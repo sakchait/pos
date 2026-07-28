@@ -1,4 +1,4 @@
-﻿namespace Pos.Domain.Entities;
+namespace Pos.Domain.Entities;
 
 public class Member
 {
@@ -6,6 +6,7 @@ public class Member
     public string MemberNo { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
+    public string? Email { get; set; }
     public int PointsBalance { get; set; } = 0;
     public decimal TotalSpent { get; set; } = 0;
     public string TierLevel { get; set; } = "Standard";

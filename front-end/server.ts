@@ -117,8 +117,42 @@ async function startServer() {
   app.put('/api/members/:id', (req, res) => {
     const idx = serverDb.members.findIndex(m => m.id === req.params.id);
     if (idx !== -1) {
-      serverDb.members[idx] = { ...serverDb.members[idx], ...req.body };
-      res.json({ success: true, member: serverDb.members[idx] });
+      // Map C# DTO keys if they come from frontend PUT (e.g. updates name/phone/email/points/tier/totalSpent)
+      const updates = {
+        name: req.body.name !== undefined ? req.body.name : serverDb.members[idx].name,
+        phone: req.body.phone !== undefined ? req.body.phone : serverDb.members[idx].phone,
+        email: req.body.email !== undefined ? req.body.email : serverDb.members[idx].email,
+        points: req.body.points !== undefined ? req.body.points : serverDb.members[idx].points,
+        totalSpent: req.body.totalSpent !== undefined ? req.body.totalSpent : serverDb.members[idx].totalSpent,
+        tier: req.body.tier !== undefined ? req.body.tier : serverDb.members[idx].tier,
+      };
+      serverDb.members[idx] = { ...serverDb.members[idx], ...updates };
+      res.json(serverDb.members[idx]);
+    } else {
+      res.status(404).json({ error: 'Member not found' });
+    }
+  });
+  app.post('/api/members', (req, res) => {
+    const sequence = serverDb.members.length + 1003;
+    const newMember = {
+      id: `m-${Date.now()}`,
+      memberNo: `M-${sequence}`,
+      name: req.body.name,
+      phone: req.body.phone,
+      email: req.body.email || '',
+      points: req.body.points || 0,
+      totalSpent: req.body.totalSpent || 0,
+      tier: req.body.tier || 'Standard',
+      joinDate: new Date().toISOString().split('T')[0]
+    };
+    serverDb.members.push(newMember);
+    res.json(newMember);
+  });
+  app.delete('/api/members/:id', (req, res) => {
+    const idx = serverDb.members.findIndex(m => m.id === req.params.id);
+    if (idx !== -1) {
+      serverDb.members.splice(idx, 1);
+      res.json({ success: true });
     } else {
       res.status(404).json({ error: 'Member not found' });
     }

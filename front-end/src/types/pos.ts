@@ -82,9 +82,10 @@ export interface Member {
   phone: string;
   email: string;
   points: number;
-  tier: 'Gold' | 'Platinum' | 'Silver' | 'Bronze';
+  tier: 'Gold' | 'Platinum' | 'Silver' | 'Bronze' | 'Standard' | string;
   joinDate: string;
-  favoriteItems: string[];
+  favoriteItems?: string[];
+  totalSpent?: number;
 }
 
 export interface Shift {
