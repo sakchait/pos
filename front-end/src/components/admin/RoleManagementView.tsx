@@ -36,10 +36,12 @@ export const RoleManagementView: React.FC<RoleManagementViewProps> = ({
     { path: '/shifts', label: '2. Shift Reconciliation & Blind Count' },
     { path: '/shifts/schedule', label: '3. Shift Scheduling & Swaps' },
     { path: '/vendor', label: '4. Vendor Portal & FIFO Purchasing' },
-    { path: '/inventory', label: '5. Warehouse Inventory Stock Control' },
-    { path: '/reports', label: '6. Audit & HR Reporting Module' },
-    { path: '/admin/roles', label: '7. Role Management & Middleware' },
-    { path: '/profile', label: '8. User Profile & Password' },
+    { path: '/restocking', label: '5. Branch Restocking Request' },
+    { path: '/inventory', label: '6. Warehouse Inventory Stock Control' },
+    { path: '/admin/coupons', label: '7. Coupon Management & Control' },
+    { path: '/reports', label: '8. Audit & HR Reporting Module' },
+    { path: '/admin/roles', label: '9. Role Management & Middleware' },
+    { path: '/profile', label: '10. User Profile & Password' },
   ];
 
   const handleToggleRoutePermission = (role: string, routePath: string) => {
