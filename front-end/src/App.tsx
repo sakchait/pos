@@ -85,35 +85,9 @@ export function App() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Initialize Dexie Seed Data & Restore Last User Session
+    // Initialize Dexie Seed Data
     seedInitialDataIfNeeded().then(async () => {
       setDbReady(true);
-
-      const savedUserId = localStorage.getItem('omnipos_last_user');
-      let userToSet: UserAccount | null = null;
-
-      if (savedUserId) {
-        const found = await db.users.get(savedUserId);
-        if (found) userToSet = found;
-      }
-
-      if (!userToSet) {
-        // Default to first user in Dexie (Sarah Jenkins)
-        const allUsers = await db.users.toArray();
-        if (allUsers.length > 0) userToSet = allUsers[0];
-      }
-
-      if (userToSet) {
-        setCurrentUser(userToSet);
-        setActiveRole(userToSet.role);
-        setActiveUser({ id: userToSet.id, name: userToSet.fullName });
-        refreshRolePermissions(userToSet.role);
-        
-        // Dynamically default to first permitted route
-        getRoleDefaultRoute(userToSet.role).then((route) => {
-          setActiveRoute(route);
-        });
-      }
     });
 
     return () => {
