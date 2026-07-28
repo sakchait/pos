@@ -150,6 +150,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
   if (isVatInclusive) {
     // Inclusive: Tax is inside subtotal
     vatAmount = subtotal - subtotal / (1 + vatRate);
+    subtotal = subtotal - vatAmount;
   } else {
     // Exclusive: Tax added on top
     vatAmount = subtotal * vatRate;
@@ -158,7 +159,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
   const grandTotal = Math.max(
     0,
     isVatInclusive
-      ? subtotal - couponDiscount
+      ? (subtotal + vatAmount) - couponDiscount
       : subtotal + vatAmount - couponDiscount
   );
 

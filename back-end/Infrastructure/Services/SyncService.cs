@@ -93,6 +93,11 @@ public class SyncService : ISyncService
                 // 3. วนลูปประมวลผลแต่ละ Order
                 foreach (var orderTuple in ordersToProcess)
                 {
+                    // Calculate VAT (7% inclusive)
+                    decimal vatRate = 0.07m;
+                    decimal vatAmount = Math.Round(orderTuple.TotalAmount - (orderTuple.TotalAmount / (1m + vatRate)), 2, MidpointRounding.AwayFromZero);
+                    decimal subTotal = orderTuple.TotalAmount - vatAmount;
+
                     var newOrder = new Order
                     {
                         Id = orderTuple.OrderGuid,
@@ -100,7 +105,9 @@ public class SyncService : ISyncService
                         PosTerminalId = "term-1",
                         TotalAmount = orderTuple.TotalAmount,
                         GrandTotal = orderTuple.TotalAmount,
-                        SubTotal = orderTuple.TotalAmount,
+                        SubTotal = subTotal,
+                        AmountBeforeVat = subTotal,
+                        VatAmount = vatAmount,
                         PaymentMethod = orderTuple.PaymentMethod,
                         CreatedAt = orderTuple.CreatedAt,
                         SyncedAt = DateTime.UtcNow,
