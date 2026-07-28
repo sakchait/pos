@@ -77,6 +77,35 @@ The application is split into two major component layers:
 
 ---
 
+## 🛠️ Detailed Architecture & Technical Implementation
+
+### 1. Frontend Offline-First & Synced Store
+- **Dexie.js Persistence**: Completed transactions are written to the local IndexedDB table (`db.orders`) before being queued for synchronization. This maintains chronological transaction counting even when browser state is cleared.
+- **REST API Mapping Layer**:
+  - Client mappers in `apiService.ts` automatically convert backend C# camelCase and PascalCase DTOs into standard camelCase frontend interfaces.
+  - Automatically transforms stock intake structures (`qtyReceived` ➔ `initialQuantity`, `qtyRemaining` ➔ `remainingQuantity`) and creates default 1-year product expiries for C# model validation.
+
+### 2. VAT-Inclusive Financial Rules
+- Follows strict Thai revenue VAT regulations (7% standard rate).
+- In VAT-inclusive mode, subtotal calculations and sync payloads are split dynamically to store value excluding VAT:
+  $$\text{SubTotal} = \text{GrandTotal} - \text{VatAmount}$$
+  $$\text{VatAmount} = \text{GrandTotal} - \frac{\text{GrandTotal}}{1.07}$$
+
+### 3. Order Number & Duplicate Handling
+- **Generation Timing**: Order numbers (`S[YY][MM][DD][StoreCode][TerminalId]-[Sequence]`) are computed prior to payment checkout, preventing HMAC anti-tamper signature validation errors.
+- **Idempotency Check**: Unique transaction GUIDs are checked first on the server to prevent duplicates from double-submissions or retries.
+- **Sequence Collision Handler**: If a new GUID transaction encounters a collision on the `OrderNo` sequence (e.g. if the local store count resets), the backend auto-resolves the duplicate by appending a sequence suffix (e.g. `-1`, `-2`) to let the transaction succeed without unique index constraint crashes.
+
+### 4. Database Category Entity (EF Core)
+- Products are linked via the SQL Server database Category entity (`Category.cs`) rather than hardcoded string types.
+- Product controllers use Entity Framework's `.Include(p => p.Category)` to dynamically construct category structures.
+
+### 5. Branch Restocking Page
+- Enforces dynamic access control on the `/restocking` route for `BranchManager`, `StockClerk`, and `Admin`.
+- The Branch Restocking view allows managers to request POs from suppliers and perform direct stock intake, incrementing local stock levels and generating new FIFO `StockBatch` lot entries.
+
+---
+
 ## 📂 Project Directory Structure
 
 ```
