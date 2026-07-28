@@ -16,12 +16,14 @@ import {
   Printer,
   ShieldCheck,
   AlertCircle,
+  Banknote,
 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
 import { Product, CartItem, Member, Coupon, Order } from '../../types/pos';
 import { GeminiAiSmartUpsell } from './GeminiAiSmartUpsell';
 import { SplitPaymentModal } from './SplitPaymentModal';
 import { db } from '@/src/db/dexieDb';
+import { computeHmacSignature } from '../../utils/crypto';
 
 interface PosTerminalViewProps {
   cashierId: string;
@@ -222,10 +224,55 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
     setIsSplitPaymentOpen(true);
   };
 
-  const handleCompleteOrder = async (payments: any[], hmacSignature: string) => {
+  const handleQuickCashCheckout = async () => {
+    if (cart.length === 0) return;
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayCount = await db.orders
+      .where('createdAt')
+      .aboveOrEqual(todayStart.toISOString())
+      .count();
+
+    const now = new Date();
+    const yy = now.getFullYear().toString().slice(-2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const sequence = String(todayCount + 1).padStart(6, '0');
+    const orderNo = `S${yy}${mm}${dd}35N02-${sequence}`;
+
+    const orderId = `ord-${Date.now()}`;
+    const createdAt = now.toISOString();
+
+    // Calculate HMAC Signature
+    const hmacSig = await computeHmacSignature(orderId, orderNo, grandTotal, createdAt);
+
+    const payments = [
+      {
+        id: `pay-${Date.now()}-cash`,
+        method: 'Cash',
+        amount: grandTotal,
+        timestamp: createdAt,
+      },
+    ];
+
+    await handleCompleteOrder(payments, hmacSig, orderId, orderNo, createdAt);
+  };
+
+  const handleCompleteOrder = async (
+    payments: any[],
+    hmacSignature: string,
+    customOrderId?: string,
+    customOrderNo?: string,
+    customCreatedAt?: string
+  ) => {
+    const finalOrderId = customOrderId || `ord-${Date.now()}`;
+    const finalOrderNo = customOrderNo || currentOrderNo;
+    const finalCreatedAt = customCreatedAt || new Date().toISOString();
+
     const newOrder: Order = {
-      id: `ord-${Date.now()}`,
-      orderNo: currentOrderNo,
+      id: finalOrderId,
+      orderNo: finalOrderNo,
       items: cart,
       subtotal,
       vatRate,
@@ -236,7 +283,7 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
       grandTotal,
       payments,
       status: 'COMPLETED',
-      createdAt: new Date().toISOString(),
+      createdAt: finalCreatedAt,
       hmacSignature,
       cashierId,
       cashierName,
@@ -630,15 +677,25 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
             </div>
           </div>
 
-          {/* Proceed to Split Payment Checkout Button */}
-          <button
-            onClick={handleOpenPayment}
-            disabled={cart.length === 0}
-            className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-40 text-white py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-orange-600/25 active:scale-98 transition-all"
-          >
-            <CreditCard className="w-5 h-5" />
-            <span>PROCEED TO PAYMENT</span>
-          </button>
+          {/* Proceed to Split Payment Checkout Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleQuickCashCheckout}
+              disabled={cart.length === 0}
+              className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-40 text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 active:scale-98 transition-all cursor-pointer"
+            >
+              <Banknote className="w-5 h-5" />
+              <span>PAY CASH (FULL)</span>
+            </button>
+            <button
+              onClick={handleOpenPayment}
+              disabled={cart.length === 0}
+              className="flex-1 border-2 border-slate-300 dark:border-slate-700 hover:border-slate-400 disabled:opacity-40 text-slate-700 dark:text-slate-300 py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
+            >
+              <CreditCard className="w-5 h-5" />
+              <span>SPLIT PAYMENT</span>
+            </button>
+          </div>
         </div>
       </section>
 
