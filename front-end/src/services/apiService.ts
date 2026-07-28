@@ -324,14 +324,34 @@ export const apiService = {
   // Stock Batches
   async getStockBatches(): Promise<StockBatch[]> {
     if (USE_SERVICES) {
-      return apiFetch<StockBatch[]>('/stock-batches');
+      const raw = await apiFetch<any[]>('/stock-batches');
+      return raw.map(b => ({
+        id: b.id,
+        productId: b.productId,
+        productName: b.productName,
+        batchNo: b.batchNo,
+        qtyReceived: b.initialQuantity || 0,
+        qtyRemaining: b.remainingQuantity || 0,
+        unitCost: b.unitCost || 0,
+        receivedDate: b.receivedDate
+      }));
     } else {
       return db.stockBatches.toArray();
     }
   },
   async addStockBatch(batch: StockBatch): Promise<void> {
     if (USE_SERVICES) {
-      await apiFetch('/stock-batches', { method: 'POST', body: JSON.stringify(batch) });
+      const payload = {
+        id: batch.id.startsWith('batch-') ? crypto.randomUUID() : batch.id,
+        productId: batch.productId,
+        batchNo: batch.batchNo,
+        unitCost: batch.unitCost,
+        initialQuantity: batch.qtyReceived,
+        remainingQuantity: batch.qtyRemaining,
+        receivedDate: batch.receivedDate,
+        expiryDate: new Date(new Date(batch.receivedDate).setFullYear(new Date(batch.receivedDate).getFullYear() + 1)).toISOString().split('T')[0]
+      };
+      await apiFetch('/stock-batches', { method: 'POST', body: JSON.stringify(payload) });
     } else {
       await db.stockBatches.add(batch);
     }
