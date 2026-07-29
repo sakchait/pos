@@ -1,4 +1,4 @@
-﻿// Services/AntiFraudAnalysisService.cs
+// Services/AntiFraudAnalysisService.cs
 using Microsoft.EntityFrameworkCore;
 using Pos.Domain.Entities;
 using Pos.Domain.Persistence;
@@ -47,12 +47,27 @@ public class AntiFraudAnalysisService : IAntiFraudAnalysisService
 
     private async Task FlagSuspiciousActivity(Guid cashierId, Guid shiftId, string reason)
     {
+        var logId = Guid.NewGuid();
+        var createdAt = DateTime.UtcNow;
+        var action = "SUSPICIOUS_BEHAVIOR_FLAG";
+        var description = $"ShiftId: {shiftId} - {reason}";
+
+        var signature = Pos.Domain.Security.HmacSecurity.ComputeAuditLogSignature(
+            logId.ToString(),
+            cashierId.ToString(),
+            action,
+            description,
+            createdAt.ToString("yyyy-MM-ddTHH:mm:ssZ")
+        );
+
         _context.SystemAuditLogs.Add(new SystemAuditLog
         {
+            Id = logId,
             UserId = cashierId,
-            Action = "SUSPICIOUS_BEHAVIOR_FLAG",
-            Description = $"ShiftId: {shiftId} - {reason}",
-            CreatedAt = DateTime.UtcNow
+            Action = action,
+            Description = description,
+            HmacSignature = signature,
+            CreatedAt = createdAt
         });
 
         await _context.SaveChangesAsync();

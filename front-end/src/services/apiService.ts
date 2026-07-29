@@ -1,6 +1,7 @@
 "use server";
 
 import { db, validateCouponCode } from '../db/dexieDb';
+import { computeAuditLogSignature } from '../utils/crypto';
 import {
   Product, Coupon, Member, Order, Shift, DrawerOpenLog,
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch,
@@ -597,11 +598,20 @@ export const apiService = {
         body: JSON.stringify(log)
       });
     } else {
+      const logId = `log-${Date.now()}`;
+      const createdAt = new Date().toISOString().split('.')[0] + 'Z';
+      const hmacSignature = await computeAuditLogSignature(
+        logId,
+        log.userId,
+        log.action,
+        log.description,
+        createdAt
+      );
       const newLog: SystemAuditLog = {
         ...log,
-        id: `log-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        hmacSignature: '', // mock offline hmac
+        id: logId,
+        createdAt,
+        hmacSignature,
         isVerified: true
       };
       await db.systemAuditLogs.add(newLog);

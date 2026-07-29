@@ -138,6 +138,16 @@ export function App() {
     setActiveRole(user.role);
     setActiveUser({ id: user.id, name: user.fullName });
 
+    try {
+      await apiService.createSystemAuditLog({
+        userId: user.id,
+        action: 'USER_LOGIN',
+        description: `User ${user.fullName} (@${user.username}) logged in successfully as ${user.role}`
+      });
+    } catch (err) {
+      console.error('Failed to log user login:', err);
+    }
+
     // Dynamically default to first permitted route
     const defaultRoute = await getRoleDefaultRoute(user.role);
     setActiveRoute(defaultRoute);
@@ -446,8 +456,19 @@ export function App() {
         cashierId={activeUser.id}
         cashierName={activeUser.name}
         onClose={() => setPinModalState((prev) => ({ ...prev, isOpen: false }))}
-        onSuccess={() => {
+        onSuccess={async () => {
           setPinModalState((prev) => ({ ...prev, isOpen: false }));
+
+          try {
+            await apiService.createSystemAuditLog({
+              userId: currentUser?.id || '99999999-9999-9999-9999-999999999999',
+              action: 'MANAGER_PIN_VERIFIED',
+              description: `Action: ${pinModalState.reason} | Context: ${pinModalState.description}`
+            });
+          } catch (err) {
+            console.error('Failed to log manager pin verification:', err);
+          }
+
           if (pinModalState.onSuccessCallback) {
             pinModalState.onSuccessCallback();
           }
