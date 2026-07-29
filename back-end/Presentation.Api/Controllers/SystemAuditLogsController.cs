@@ -27,51 +27,101 @@ public class SystemAuditLogsController : ControllerBase
 
     // 1. GET /api/systemauditlogs - Get all audit logs with verification status
     [HttpGet]
-    public async Task<IActionResult> GetLogs(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetLogs([FromQuery] int? page, [FromQuery] int? pageSize, CancellationToken cancellationToken)
     {
-        var logs = await _logsRepo.GetAll()
+        var query = _logsRepo.GetAll()
             .AsNoTracking()
-            .ToListAsync(cancellationToken);
+            .OrderByDescending(log => log.CreatedAt);
 
         var users = await _usersRepo.GetAll()
             .AsNoTracking()
             .ToDictionaryAsync(u => u.Id, cancellationToken);
 
-        var response = logs.Select(log =>
+        if (page.HasValue && pageSize.HasValue)
         {
-            users.TryGetValue(log.UserId, out var user);
-            var fullName = user?.FullName ?? "Unknown User";
-            var username = user?.Username ?? "unknown";
+            var totalCount = await query.CountAsync(cancellationToken);
+            var logs = await query
+                .Skip((page.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToListAsync(cancellationToken);
 
-            // Verify integrity
-            var computedSig = HmacSecurity.ComputeAuditLogSignature(
-                log.Id.ToString(),
-                log.UserId.ToString(),
-                log.Action,
-                log.Description,
-                log.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ")
-            );
-
-            var isVerified = !string.IsNullOrEmpty(log.HmacSignature) && 
-                             log.HmacSignature.Equals(computedSig, StringComparison.OrdinalIgnoreCase);
-
-            return new
+            var items = logs.Select(log =>
             {
-                id = log.Id.ToString(),
-                userId = log.UserId.ToString(),
-                action = log.Action,
-                description = log.Description,
-                hmacSignature = log.HmacSignature,
-                createdAt = log.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                fullName = fullName,
-                username = username,
-                isVerified = isVerified
-            };
-        })
-        .OrderByDescending(x => x.createdAt)
-        .ToList();
+                users.TryGetValue(log.UserId, out var user);
+                var fullName = user?.FullName ?? "Unknown User";
+                var username = user?.Username ?? "unknown";
 
-        return Ok(response);
+                // Verify integrity
+                var computedSig = HmacSecurity.ComputeAuditLogSignature(
+                    log.Id.ToString(),
+                    log.UserId.ToString(),
+                    log.Action,
+                    log.Description,
+                    log.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ")
+                );
+
+                var isVerified = !string.IsNullOrEmpty(log.HmacSignature) && 
+                                 log.HmacSignature.Equals(computedSig, StringComparison.OrdinalIgnoreCase);
+
+                return new
+                {
+                    id = log.Id.ToString(),
+                    userId = log.UserId.ToString(),
+                    action = log.Action,
+                    description = log.Description,
+                    hmacSignature = log.HmacSignature,
+                    createdAt = log.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    fullName = fullName,
+                    username = username,
+                    isVerified = isVerified
+                };
+            }).ToList();
+
+            return Ok(new Pos.Application.DTOs.PaginatedResult<object>
+            {
+                Items = items.Cast<object>().ToList(),
+                TotalCount = totalCount,
+                Page = page.Value,
+                PageSize = pageSize.Value
+            });
+        }
+        else
+        {
+            var logs = await query.ToListAsync(cancellationToken);
+            var response = logs.Select(log =>
+            {
+                users.TryGetValue(log.UserId, out var user);
+                var fullName = user?.FullName ?? "Unknown User";
+                var username = user?.Username ?? "unknown";
+
+                // Verify integrity
+                var computedSig = HmacSecurity.ComputeAuditLogSignature(
+                    log.Id.ToString(),
+                    log.UserId.ToString(),
+                    log.Action,
+                    log.Description,
+                    log.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ")
+                );
+
+                var isVerified = !string.IsNullOrEmpty(log.HmacSignature) && 
+                                 log.HmacSignature.Equals(computedSig, StringComparison.OrdinalIgnoreCase);
+
+                return new
+                {
+                    id = log.Id.ToString(),
+                    userId = log.UserId.ToString(),
+                    action = log.Action,
+                    description = log.Description,
+                    hmacSignature = log.HmacSignature,
+                    createdAt = log.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    fullName = fullName,
+                    username = username,
+                    isVerified = isVerified
+                };
+            }).ToList();
+
+            return Ok(response);
+        }
     }
 
     // 2. POST /api/systemauditlogs - Create a new signed audit log

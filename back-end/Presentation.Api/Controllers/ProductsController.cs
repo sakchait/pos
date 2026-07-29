@@ -26,27 +26,59 @@ public class ProductsController : ControllerBase
 
     // 1. GET /api/products - Retrieves all products
     [HttpGet]
-    public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProducts([FromQuery] int? page, [FromQuery] int? pageSize, CancellationToken cancellationToken)
     {
-        var list = await _productsRepo.GetAll()
+        var query = _productsRepo.GetAll()
             .Include(p => p.Category)
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
-        
-        var result = list.Select(p => new
-        {
-            id = p.Id.ToString(),
-            sku = p.Code,
-            name = p.Name,
-            price = p.Price,
-            category = p.Category != null ? p.Category.Name : "General",
-            stock = p.StockQuantity,
-            minStockThreshold = p.MinStockThreshold,
-            imageUrl = GetDefaultImageUrl(p.Code),
-            isAvailable = p.IsActive
-        }).ToList();
+            .AsNoTracking();
 
-        return Ok(result);
+        if (page.HasValue && pageSize.HasValue)
+        {
+            var totalCount = await query.CountAsync(cancellationToken);
+            var list = await query
+                .Skip((page.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToListAsync(cancellationToken);
+
+            var items = list.Select(p => new
+            {
+                id = p.Id.ToString(),
+                sku = p.Code,
+                name = p.Name,
+                price = p.Price,
+                category = p.Category != null ? p.Category.Name : "General",
+                stock = p.StockQuantity,
+                minStockThreshold = p.MinStockThreshold,
+                imageUrl = GetDefaultImageUrl(p.Code),
+                isAvailable = p.IsActive
+            }).ToList();
+
+            return Ok(new Pos.Application.DTOs.PaginatedResult<object>
+            {
+                Items = items.Cast<object>().ToList(),
+                TotalCount = totalCount,
+                Page = page.Value,
+                PageSize = pageSize.Value
+            });
+        }
+        else
+        {
+            var list = await query.ToListAsync(cancellationToken);
+            var result = list.Select(p => new
+            {
+                id = p.Id.ToString(),
+                sku = p.Code,
+                name = p.Name,
+                price = p.Price,
+                category = p.Category != null ? p.Category.Name : "General",
+                stock = p.StockQuantity,
+                minStockThreshold = p.MinStockThreshold,
+                imageUrl = GetDefaultImageUrl(p.Code),
+                isAvailable = p.IsActive
+            }).ToList();
+
+            return Ok(result);
+        }
     }
 
     // 2. POST /api/products - Creates a new product

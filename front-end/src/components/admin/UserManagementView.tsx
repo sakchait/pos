@@ -29,6 +29,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   // Form states
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -58,6 +60,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
   useEffect(() => {
     applyFilters();
   }, [users, searchQuery]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   const fetchUsers = async () => {
     try {
@@ -193,6 +199,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
     ? (users.reduce((acc, u) => acc + (u.hourlyRate || 0), 0) / users.length).toFixed(2)
     : '0.00';
 
+  const totalPages = Math.ceil(filteredUsers.length / pageSize);
+  const displayedUsers = filteredUsers.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <div className="flex-1 p-6 space-y-6 overflow-y-auto max-w-7xl mx-auto w-full">
       {/* Header Banner */}
@@ -309,7 +318,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
                   </td>
                 </tr>
               ) : (
-                filteredUsers.map((u) => {
+                displayedUsers.map((u) => {
                   const isActiveUser = u.isActive !== false;
                   return (
                     <tr
@@ -417,6 +426,45 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
               )}
             </tbody>
           </table>
+        </div>
+        {/* Pagination Bar */}
+        <div className="p-4 border-t border-slate-150 dark:border-slate-800 flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500">Items per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPage(1);
+              }}
+              className="px-2 py-1 border border-slate-200 dark:border-slate-800 bg-transparent rounded-lg text-xs outline-none cursor-pointer"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+          
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setPage(p => Math.max(p - 1, 1))}
+              disabled={page === 1}
+              className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+            >
+              Previous
+            </button>
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-medium px-2">
+              Page {page} of {totalPages || 1}
+            </span>
+            <button
+              onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+              disabled={page >= totalPages}
+              className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
 

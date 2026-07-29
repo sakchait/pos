@@ -28,11 +28,20 @@ public class AdminUsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAllUsers([FromQuery] int? page, [FromQuery] int? pageSize)
     {
-        var users = await _usersRepo.GetAll()
-            .Include(u => u.Role)
-            .Select(u => new
+        var query = _usersRepo.GetAll()
+            .Include(u => u.Role);
+
+        if (page.HasValue && pageSize.HasValue)
+        {
+            var totalCount = await query.CountAsync();
+            var list = await query
+                .Skip((page.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToListAsync();
+
+            var items = list.Select(u => new
             {
                 u.Id,
                 u.Username,
@@ -45,9 +54,36 @@ public class AdminUsersController : ControllerBase
                 u.IsAdmin,
                 u.IsActive,
                 u.CreatedAt
-            }).ToListAsync();
+            }).ToList();
 
-        return Ok(users);
+            return Ok(new Pos.Application.DTOs.PaginatedResult<object>
+            {
+                Items = items.Cast<object>().ToList(),
+                TotalCount = totalCount,
+                Page = page.Value,
+                PageSize = pageSize.Value
+            });
+        }
+        else
+        {
+            var list = await query.ToListAsync();
+            var result = list.Select(u => new
+            {
+                u.Id,
+                u.Username,
+                u.FullName,
+                RoleName = u.Role != null ? u.Role.Name : "",
+                u.RoleId,
+                u.BranchId,
+                u.VendorId,
+                u.HourlyRate,
+                u.IsAdmin,
+                u.IsActive,
+                u.CreatedAt
+            }).ToList();
+
+            return Ok(result);
+        }
     }
 
     [HttpPost]

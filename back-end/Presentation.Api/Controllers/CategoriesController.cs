@@ -23,21 +23,47 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCategories([FromQuery] int? page, [FromQuery] int? pageSize, CancellationToken cancellationToken)
     {
-        var list = await _categoriesRepo.GetAll()
+        var query = _categoriesRepo.GetAll()
             .AsNoTracking()
-            .Where(c => c.IsActive)
-            .ToListAsync(cancellationToken);
+            .Where(c => c.IsActive);
 
-        var result = list.Select(c => new
+        if (page.HasValue && pageSize.HasValue)
         {
-            id = c.Id.ToString(),
-            name = c.Name,
-            code = c.Code
-        }).ToList();
+            var totalCount = await query.CountAsync(cancellationToken);
+            var list = await query
+                .Skip((page.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToListAsync(cancellationToken);
 
-        return Ok(result);
+            var items = list.Select(c => new
+            {
+                id = c.Id.ToString(),
+                name = c.Name,
+                code = c.Code
+            }).ToList();
+
+            return Ok(new Pos.Application.DTOs.PaginatedResult<object>
+            {
+                Items = items.Cast<object>().ToList(),
+                TotalCount = totalCount,
+                Page = page.Value,
+                PageSize = pageSize.Value
+            });
+        }
+        else
+        {
+            var list = await query.ToListAsync(cancellationToken);
+            var result = list.Select(c => new
+            {
+                id = c.Id.ToString(),
+                name = c.Name,
+                code = c.Code
+            }).ToList();
+
+            return Ok(result);
+        }
     }
 
     [HttpPost]

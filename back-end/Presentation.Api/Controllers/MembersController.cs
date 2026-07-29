@@ -25,12 +25,21 @@ public class MembersController : ControllerBase
 
     // 1. GET /api/members - Get all members
     [HttpGet]
-    public async Task<IActionResult> GetMembers(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetMembers([FromQuery] int? page, [FromQuery] int? pageSize, CancellationToken cancellationToken)
     {
-        var list = await _membersRepo.GetAll()
+        var query = _membersRepo.GetAll()
             .AsNoTracking()
-            .OrderByDescending(m => m.CreatedAt)
-            .Select(m => new
+            .OrderByDescending(m => m.CreatedAt);
+
+        if (page.HasValue && pageSize.HasValue)
+        {
+            var totalCount = await query.CountAsync(cancellationToken);
+            var list = await query
+                .Skip((page.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToListAsync(cancellationToken);
+
+            var items = list.Select(m => new
             {
                 id = m.Id.ToString(),
                 memberNo = m.MemberNo,
@@ -41,10 +50,34 @@ public class MembersController : ControllerBase
                 totalSpent = (double)m.TotalSpent,
                 tier = m.TierLevel,
                 joinDate = m.CreatedAt.ToString("yyyy-MM-dd")
-            })
-            .ToListAsync(cancellationToken);
+            }).ToList();
 
-        return Ok(list);
+            return Ok(new Pos.Application.DTOs.PaginatedResult<object>
+            {
+                Items = items.Cast<object>().ToList(),
+                TotalCount = totalCount,
+                Page = page.Value,
+                PageSize = pageSize.Value
+            });
+        }
+        else
+        {
+            var list = await query.ToListAsync(cancellationToken);
+            var result = list.Select(m => new
+            {
+                id = m.Id.ToString(),
+                memberNo = m.MemberNo,
+                name = m.FullName,
+                phone = m.PhoneNumber,
+                email = m.Email,
+                points = m.PointsBalance,
+                totalSpent = (double)m.TotalSpent,
+                tier = m.TierLevel,
+                joinDate = m.CreatedAt.ToString("yyyy-MM-dd")
+            }).ToList();
+
+            return Ok(result);
+        }
     }
 
     // 2. GET /api/members/{id} - Get single member

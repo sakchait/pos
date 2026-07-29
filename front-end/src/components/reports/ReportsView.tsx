@@ -21,6 +21,12 @@ export const ReportsView: React.FC = () => {
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
   const [schedules, setSchedules] = useState<ShiftSchedule[]>([]);
   const [leaves, setLeaves] = useState<LeaveRecord[]>([]);
+  
+  const [attPage, setAttPage] = useState(1);
+  const [otPage, setOtPage] = useState(1);
+  const [leavePage, setLeavePage] = useState(1);
+  const [holidayPage, setHolidayPage] = useState(1);
+  const pageSize = 10;
 
   useEffect(() => {
     loadReportsData();
@@ -140,7 +146,7 @@ export const ReportsView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {attendance.map((att) => (
+                {attendance.slice((attPage - 1) * pageSize, attPage * pageSize).map((att) => (
                   <tr key={att.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{att.employeeName}</td>
                     <td className="p-3 text-slate-600 dark:text-slate-300">{att.date}</td>
@@ -165,6 +171,28 @@ export const ReportsView: React.FC = () => {
               </tbody>
             </table>
           </div>
+          {/* Pagination Bar */}
+          {attendance.length > pageSize && (
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <span className="text-xs text-slate-500">Showing {Math.min(attPage * pageSize, attendance.length)} of {attendance.length} items</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setAttPage(p => Math.max(p - 1, 1))}
+                  disabled={attPage === 1}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setAttPage(p => Math.min(p + 1, Math.ceil(attendance.length / pageSize)))}
+                  disabled={attPage >= Math.ceil(attendance.length / pageSize)}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -199,7 +227,7 @@ export const ReportsView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {schedules.map((sch) => (
+                {schedules.slice((otPage - 1) * pageSize, otPage * pageSize).map((sch) => (
                   <tr key={sch.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{sch.employeeName}</td>
                     <td className="p-3">{sch.date}</td>
@@ -217,6 +245,28 @@ export const ReportsView: React.FC = () => {
               </tbody>
             </table>
           </div>
+          {/* Pagination Bar */}
+          {schedules.length > pageSize && (
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <span className="text-xs text-slate-500">Showing {Math.min(otPage * pageSize, schedules.length)} of {schedules.length} items</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setOtPage(p => Math.max(p - 1, 1))}
+                  disabled={otPage === 1}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setOtPage(p => Math.min(p + 1, Math.ceil(schedules.length / pageSize)))}
+                  disabled={otPage >= Math.ceil(schedules.length / pageSize)}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -250,7 +300,7 @@ export const ReportsView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {leaves.map((lv) => (
+                {leaves.slice((leavePage - 1) * pageSize, leavePage * pageSize).map((lv) => (
                   <tr key={lv.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{lv.employeeName}</td>
                     <td className="p-3 font-bold text-purple-600">{lv.leaveType} Leave</td>
@@ -267,6 +317,28 @@ export const ReportsView: React.FC = () => {
               </tbody>
             </table>
           </div>
+          {/* Pagination Bar */}
+          {leaves.length > pageSize && (
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <span className="text-xs text-slate-500">Showing {Math.min(leavePage * pageSize, leaves.length)} of {leaves.length} items</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setLeavePage(p => Math.max(p - 1, 1))}
+                  disabled={leavePage === 1}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setLeavePage(p => Math.min(p + 1, Math.ceil(leaves.length / pageSize)))}
+                  disabled={leavePage >= Math.ceil(leaves.length / pageSize)}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -302,6 +374,7 @@ export const ReportsView: React.FC = () => {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {schedules
                   .filter((s) => s.isHoliday)
+                  .slice((holidayPage - 1) * pageSize, holidayPage * pageSize)
                   .map((sch) => {
                     const baseRate = 20.0; // $20/hr
                     const hours = 8;
@@ -324,6 +397,28 @@ export const ReportsView: React.FC = () => {
               </tbody>
             </table>
           </div>
+          {/* Pagination Bar */}
+          {schedules.filter((s) => s.isHoliday).length > pageSize && (
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <span className="text-xs text-slate-500">Showing {Math.min(holidayPage * pageSize, schedules.filter((s) => s.isHoliday).length)} of {schedules.filter((s) => s.isHoliday).length} items</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setHolidayPage(p => Math.max(p - 1, 1))}
+                  disabled={holidayPage === 1}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setHolidayPage(p => Math.min(p + 1, Math.ceil(schedules.filter((s) => s.isHoliday).length / pageSize)))}
+                  disabled={holidayPage >= Math.ceil(schedules.filter((s) => s.isHoliday).length / pageSize)}
+                  className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

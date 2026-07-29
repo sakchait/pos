@@ -5,13 +5,21 @@ import { computeAuditLogSignature } from '../utils/crypto';
 import {
   Product, Coupon, Member, Order, Shift, DrawerOpenLog,
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch,
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount, MemberPromotion, SystemAuditLog, Category
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount, MemberPromotion, SystemAuditLog, Category, PaginatedList
 } from '../types/pos';
 
 const USE_SERVICES = import.meta.env.VITE_USE_SERVICES === 'true';
 const API_BASE = '/api';
 const X_FUNCTION_KEY = import.meta.env.VITE_API_KEY;
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+const buildUrl = (path: string, page?: number, pageSize?: number) => {
+  if (page !== undefined && pageSize !== undefined) {
+    const separator = path.includes('?') ? '&' : '?';
+    return `${path}${separator}page=${page}&pageSize=${pageSize}`;
+  }
+  return path;
+};
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${BACKEND_URL}${API_BASE}${path}`;
@@ -49,12 +57,26 @@ export const apiService = {
   },
 
   // Products
-  async getProducts(): Promise<Product[]> {
+  getProducts: (async (page?: number, pageSize?: number): Promise<any> => {
     if (USE_SERVICES) {
-      return apiFetch<Product[]>('/products');
+      return apiFetch<any>(buildUrl('/products', page, pageSize));
     } else {
-      return db.products.toArray();
+      const all = await db.products.toArray();
+      if (page !== undefined && pageSize !== undefined) {
+        const offset = (page - 1) * pageSize;
+        return {
+          items: all.slice(offset, offset + pageSize),
+          totalCount: all.length,
+          page,
+          pageSize,
+          totalPages: Math.ceil(all.length / pageSize)
+        };
+      }
+      return all;
     }
+  }) as {
+    (): Promise<Product[]>;
+    (page: number, pageSize: number): Promise<PaginatedList<Product>>;
   },
   async createProduct(product: Omit<Product, 'id'>): Promise<any> {
     if (USE_SERVICES) {
@@ -84,12 +106,26 @@ export const apiService = {
   },
 
   // Categories
-  async getCategories(): Promise<Category[]> {
+  getCategories: (async (page?: number, pageSize?: number): Promise<any> => {
     if (USE_SERVICES) {
-      return apiFetch<Category[]>('/categories');
+      return apiFetch<any>(buildUrl('/categories', page, pageSize));
     } else {
-      return db.categories.toArray();
+      const all = await db.categories.toArray();
+      if (page !== undefined && pageSize !== undefined) {
+        const offset = (page - 1) * pageSize;
+        return {
+          items: all.slice(offset, offset + pageSize),
+          totalCount: all.length,
+          page,
+          pageSize,
+          totalPages: Math.ceil(all.length / pageSize)
+        };
+      }
+      return all;
     }
+  }) as {
+    (): Promise<Category[]>;
+    (page: number, pageSize: number): Promise<PaginatedList<Category>>;
   },
   async createCategory(category: Omit<Category, 'id'>): Promise<Category> {
     if (USE_SERVICES) {
@@ -119,12 +155,26 @@ export const apiService = {
   },
 
   // Coupons
-  async getCoupons(): Promise<Coupon[]> {
+  getCoupons: (async (page?: number, pageSize?: number): Promise<any> => {
     if (USE_SERVICES) {
-      return apiFetch<Coupon[]>('/coupons');
+      return apiFetch<any>(buildUrl('/coupons', page, pageSize));
     } else {
-      return db.coupons.toArray();
+      const all = await db.coupons.toArray();
+      if (page !== undefined && pageSize !== undefined) {
+        const offset = (page - 1) * pageSize;
+        return {
+          items: all.slice(offset, offset + pageSize),
+          totalCount: all.length,
+          page,
+          pageSize,
+          totalPages: Math.ceil(all.length / pageSize)
+        };
+      }
+      return all;
     }
+  }) as {
+    (): Promise<Coupon[]>;
+    (page: number, pageSize: number): Promise<PaginatedList<Coupon>>;
   },
   async updateCoupon(id: string, updates: Partial<Coupon>): Promise<void> {
     if (USE_SERVICES) {
@@ -177,12 +227,26 @@ export const apiService = {
   },
 
   // Members
-  async getMembers(): Promise<Member[]> {
+  getMembers: (async (page?: number, pageSize?: number): Promise<any> => {
     if (USE_SERVICES) {
-      return apiFetch<Member[]>('/members');
+      return apiFetch<any>(buildUrl('/members', page, pageSize));
     } else {
-      return db.members.toArray();
+      const all = await db.members.toArray();
+      if (page !== undefined && pageSize !== undefined) {
+        const offset = (page - 1) * pageSize;
+        return {
+          items: all.slice(offset, offset + pageSize),
+          totalCount: all.length,
+          page,
+          pageSize,
+          totalPages: Math.ceil(all.length / pageSize)
+        };
+      }
+      return all;
     }
+  }) as {
+    (): Promise<Member[]>;
+    (page: number, pageSize: number): Promise<PaginatedList<Member>>;
   },
   async findMemberByPhoneOrNo(query: string): Promise<Member | undefined> {
     if (USE_SERVICES) {
@@ -637,12 +701,28 @@ export const apiService = {
     }
   },
 
-  async getSystemAuditLogs(): Promise<SystemAuditLog[]> {
+  getSystemAuditLogs: (async (page?: number, pageSize?: number): Promise<any> => {
     if (USE_SERVICES) {
-      return apiFetch<SystemAuditLog[]>('/systemauditlogs');
+      return apiFetch<any>(buildUrl('/systemauditlogs', page, pageSize));
     } else {
-      return db.systemAuditLogs.toArray();
+      const all = await db.systemAuditLogs.toArray();
+      // Sort descending by default for audit logs
+      all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      if (page !== undefined && pageSize !== undefined) {
+        const offset = (page - 1) * pageSize;
+        return {
+          items: all.slice(offset, offset + pageSize),
+          totalCount: all.length,
+          page,
+          pageSize,
+          totalPages: Math.ceil(all.length / pageSize)
+        };
+      }
+      return all;
     }
+  }) as {
+    (): Promise<SystemAuditLog[]>;
+    (page: number, pageSize: number): Promise<PaginatedList<SystemAuditLog>>;
   },
 
   async createSystemAuditLog(log: Omit<SystemAuditLog, 'id' | 'createdAt' | 'hmacSignature'>): Promise<SystemAuditLog> {
@@ -673,12 +753,26 @@ export const apiService = {
     }
   },
 
-  async getUsers(): Promise<UserAccount[]> {
+  getUsers: (async (page?: number, pageSize?: number): Promise<any> => {
     if (USE_SERVICES) {
-      return apiFetch<UserAccount[]>('/admin/adminusers');
+      return apiFetch<any>(buildUrl('/admin/adminusers', page, pageSize));
     } else {
-      return db.users.toArray();
+      const all = await db.users.toArray();
+      if (page !== undefined && pageSize !== undefined) {
+        const offset = (page - 1) * pageSize;
+        return {
+          items: all.slice(offset, offset + pageSize),
+          totalCount: all.length,
+          page,
+          pageSize,
+          totalPages: Math.ceil(all.length / pageSize)
+        };
+      }
+      return all;
     }
+  }) as {
+    (): Promise<UserAccount[]>;
+    (page: number, pageSize: number): Promise<PaginatedList<UserAccount>>;
   },
 
   async createUser(user: Omit<UserAccount, 'id'>): Promise<any> {

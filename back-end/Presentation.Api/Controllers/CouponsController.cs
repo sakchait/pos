@@ -21,29 +21,69 @@ public class CouponsController : ControllerBase
 
     // 1. GET /api/coupons - Retrieves all coupons mapped to client schema
     [HttpGet]
-    public async Task<IActionResult> GetCoupons(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCoupons([FromQuery] int? page, [FromQuery] int? pageSize, CancellationToken cancellationToken)
     {
-        var list = await _couponsRepo.GetAll().AsNoTracking().ToListAsync(cancellationToken);
-        var result = list.Select(c => new
-        {
-            id = c.Code,
-            code = c.Code,
-            description = c.Description,
-            discountType = c.DiscountType.ToLowerInvariant(),
-            discountValue = c.DiscountValue,
-            maxDiscountAmount = c.MaxDiscountAmount,
-            minOrderAmount = c.MinOrderAmount,
-            startDate = c.StartDate.ToString("yyyy-MM-dd"),
-            endDate = c.EndDate.ToString("yyyy-MM-dd"),
-            applicableProductIds = string.IsNullOrEmpty(c.ApplicableProductIdsJson)
-                ? new List<string>()
-                : System.Text.Json.JsonSerializer.Deserialize<List<string>>(c.ApplicableProductIdsJson),
-            usageLimit = c.UsageLimit,
-            usedCount = c.UsedCount,
-            isActive = c.IsActive
-        }).ToList();
+        var query = _couponsRepo.GetAll().AsNoTracking();
 
-        return Ok(result);
+        if (page.HasValue && pageSize.HasValue)
+        {
+            var totalCount = await query.CountAsync(cancellationToken);
+            var list = await query
+                .Skip((page.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToListAsync(cancellationToken);
+
+            var items = list.Select(c => new
+            {
+                id = c.Code,
+                code = c.Code,
+                description = c.Description,
+                discountType = c.DiscountType.ToLowerInvariant(),
+                discountValue = c.DiscountValue,
+                maxDiscountAmount = c.MaxDiscountAmount,
+                minOrderAmount = c.MinOrderAmount,
+                startDate = c.StartDate.ToString("yyyy-MM-dd"),
+                endDate = c.EndDate.ToString("yyyy-MM-dd"),
+                applicableProductIds = string.IsNullOrEmpty(c.ApplicableProductIdsJson)
+                    ? new List<string>()
+                    : System.Text.Json.JsonSerializer.Deserialize<List<string>>(c.ApplicableProductIdsJson),
+                usageLimit = c.UsageLimit,
+                usedCount = c.UsedCount,
+                isActive = c.IsActive
+            }).ToList();
+
+            return Ok(new Pos.Application.DTOs.PaginatedResult<object>
+            {
+                Items = items.Cast<object>().ToList(),
+                TotalCount = totalCount,
+                Page = page.Value,
+                PageSize = pageSize.Value
+            });
+        }
+        else
+        {
+            var list = await query.ToListAsync(cancellationToken);
+            var result = list.Select(c => new
+            {
+                id = c.Code,
+                code = c.Code,
+                description = c.Description,
+                discountType = c.DiscountType.ToLowerInvariant(),
+                discountValue = c.DiscountValue,
+                maxDiscountAmount = c.MaxDiscountAmount,
+                minOrderAmount = c.MinOrderAmount,
+                startDate = c.StartDate.ToString("yyyy-MM-dd"),
+                endDate = c.EndDate.ToString("yyyy-MM-dd"),
+                applicableProductIds = string.IsNullOrEmpty(c.ApplicableProductIdsJson)
+                    ? new List<string>()
+                    : System.Text.Json.JsonSerializer.Deserialize<List<string>>(c.ApplicableProductIdsJson),
+                usageLimit = c.UsageLimit,
+                usedCount = c.UsedCount,
+                isActive = c.IsActive
+            }).ToList();
+
+            return Ok(result);
+        }
     }
 
     // 2. GET /api/coupons/code/{code} - Looks up a coupon by its code

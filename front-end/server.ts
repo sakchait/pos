@@ -19,14 +19,25 @@ async function startServer() {
 
   app.use(express.json());
 
-  // Health check endpoint
-  app.get('/api/health', (_req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-  });
+  const paginate = (list: any[], req: express.Request) => {
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : null;
+    const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string, 10) : null;
+    if (page && pageSize) {
+      const offset = (page - 1) * pageSize;
+      return {
+        items: list.slice(offset, offset + pageSize),
+        totalCount: list.length,
+        page,
+        pageSize,
+        totalPages: Math.ceil(list.length / pageSize)
+      };
+    }
+    return list;
+  };
 
   // Mock server APIs for offline capability toggle (VITE_USE_SERVICES="true")
   app.get('/api/products', (req, res) => {
-    res.json(serverDb.products);
+    res.json(paginate(serverDb.products, req));
   });
   app.post('/api/products', (req, res) => {
     const { sku, name, price, stock, minStockThreshold, category } = req.body;
@@ -67,7 +78,7 @@ async function startServer() {
 
   // Category Mock APIs
   app.get('/api/categories', (req, res) => {
-    res.json(serverDb.categories);
+    res.json(paginate(serverDb.categories, req));
   });
   app.post('/api/categories', (req, res) => {
     const { name, code } = req.body;
@@ -106,7 +117,7 @@ async function startServer() {
   });
 
   app.get('/api/coupons', (req, res) => {
-    res.json(serverDb.coupons);
+    res.json(paginate(serverDb.coupons, req));
   });
   app.put('/api/coupons/:id', (req, res) => {
     const idx = serverDb.coupons.findIndex(c => c.id === req.params.id);
@@ -174,7 +185,7 @@ async function startServer() {
   });
 
   app.get('/api/members', (req, res) => {
-    res.json(serverDb.members);
+    res.json(paginate(serverDb.members, req));
   });
   app.get('/api/members/search', (req, res) => {
     const q = (req.query.q as string || '').toLowerCase();
@@ -249,7 +260,9 @@ async function startServer() {
         isVerified: true
       };
     });
-    res.json(list);
+    // Sort descending by default for audit logs
+    list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    res.json(paginate(list, req));
   });
   app.post('/api/systemauditlogs', (req, res) => {
     const newLog = {
@@ -270,7 +283,7 @@ async function startServer() {
       ...u,
       roleName: u.role
     }));
-    res.json(list);
+    res.json(paginate(list, req));
   });
 
   app.post('/api/admin/adminusers', (req, res) => {

@@ -28,6 +28,8 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   // Editing state
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -52,6 +54,10 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
   useEffect(() => {
     loadMembers();
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   const loadMembers = async () => {
     try {
@@ -179,6 +185,9 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
   const goldCount = members.filter((m) => m.tier.toLowerCase() === 'gold').length;
   const totalRevenue = members.reduce((acc, m) => acc + (m.totalSpent || 0), 0);
   const avgSpent = totalCount > 0 ? totalRevenue / totalCount : 0;
+
+  const totalPages = Math.ceil(filteredMembers.length / pageSize);
+  const displayedMembers = filteredMembers.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="flex-1 p-6 space-y-6 overflow-y-auto max-w-7xl mx-auto w-full">
@@ -311,7 +320,7 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
-                {filteredMembers.map((m) => {
+                {displayedMembers.map((m) => {
                   let tierColor = 'bg-slate-100 text-slate-655 dark:bg-slate-800 dark:text-slate-400';
                   if (m.tier.toLowerCase() === 'gold') tierColor = 'bg-yellow-100/70 text-yellow-700 dark:bg-yellow-950/40 dark:text-yellow-500 border border-yellow-250 dark:border-yellow-900';
                   else if (m.tier.toLowerCase() === 'platinum') tierColor = 'bg-cyan-100/70 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900';
@@ -372,6 +381,45 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
               </tbody>
             </table>
           )}
+        </div>
+        {/* Pagination Bar */}
+        <div className="p-4 border-t border-slate-150 dark:border-slate-800 flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500">Items per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPage(1);
+              }}
+              className="px-2 py-1 border border-slate-200 dark:border-slate-800 bg-transparent rounded-lg text-xs outline-none cursor-pointer"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+          
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setPage(p => Math.max(p - 1, 1))}
+              disabled={page === 1}
+              className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+            >
+              Previous
+            </button>
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-medium px-2">
+              Page {page} of {totalPages || 1}
+            </span>
+            <button
+              onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+              disabled={page >= totalPages}
+              className="px-3 py-1 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none rounded-lg text-xs font-bold transition-colors cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
 
