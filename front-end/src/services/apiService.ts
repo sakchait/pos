@@ -683,9 +683,31 @@ export const apiService = {
 
   async createUser(user: Omit<UserAccount, 'id'>): Promise<any> {
     if (USE_SERVICES) {
+      const roleMap: Record<string, string> = {
+        'Admin': '11111111-1111-1111-1111-111111111111',
+        'Cashier': '22222222-2222-2222-2222-222222222222',
+        'BranchManager': '33333333-3333-3333-3333-333333333333',
+        'Accountant': '44444444-4444-4444-4444-444444444444',
+        'Vendor': '55555555-5555-5555-5555-555555555555',
+        'PurchaserManager': '66666666-6666-6666-6666-666666666666',
+        'StockClerk': '77777777-7777-7777-7777-777777777777'
+      };
+
+      const payload = {
+        username: user.username,
+        password: user.passwordHash,
+        fullName: user.fullName,
+        roleId: roleMap[user.role] || user.role,
+        branchId: user.branchId || null,
+        vendorId: user.vendorId || null,
+        isAdmin: user.isAdmin === true,
+        pin: user.pin || null,
+        hourlyRate: user.hourlyRate || 50.00
+      };
+
       return apiFetch<any>('/admin/adminusers', {
         method: 'POST',
-        body: JSON.stringify(user)
+        body: JSON.stringify(payload)
       });
     } else {
       const newUser = {
@@ -699,9 +721,32 @@ export const apiService = {
 
   async updateUser(id: string, user: Partial<UserAccount>): Promise<any> {
     if (USE_SERVICES) {
+      const roleMap: Record<string, string> = {
+        'Admin': '11111111-1111-1111-1111-111111111111',
+        'Cashier': '22222222-2222-2222-2222-222222222222',
+        'BranchManager': '33333333-3333-3333-3333-333333333333',
+        'Accountant': '44444444-4444-4444-4444-444444444444',
+        'Vendor': '55555555-5555-5555-5555-555555555555',
+        'PurchaserManager': '66666666-6666-6666-6666-666666666666',
+        'StockClerk': '77777777-7777-7777-7777-777777777777'
+      };
+
+      const payload = {
+        username: user.username,
+        password: user.passwordHash || null,
+        fullName: user.fullName,
+        roleId: user.role ? (roleMap[user.role] || user.role) : undefined,
+        branchId: user.branchId || null,
+        vendorId: user.vendorId || null,
+        hourlyRate: user.hourlyRate || 50.00,
+        isAdmin: user.isAdmin === true,
+        isActive: user.isActive !== false,
+        pin: user.pin || null
+      };
+
       return apiFetch<any>(`/admin/adminusers/${id}`, {
         method: 'PUT',
-        body: JSON.stringify(user)
+        body: JSON.stringify(payload)
       });
     } else {
       await db.users.update(id, user);

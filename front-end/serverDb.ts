@@ -1,7 +1,7 @@
-import { 
-  Product, Coupon, Member, Order, Shift, DrawerOpenLog, 
-  ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch, 
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage, SystemAuditLog, UserAccount, Category 
+import {
+  Product, Coupon, Member, Order, Shift, DrawerOpenLog,
+  ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch,
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage, SystemAuditLog, UserAccount, Category
 } from './src/types/pos';
 
 export let products: Product[] = [
@@ -189,11 +189,6 @@ export let roleRoutes: RoleRoutePermission[] = [
   {
     role: 'Admin',
     routes: [
-      '/pos',
-      '/shifts',
-      '/shifts/schedule',
-      '/vendor',
-      '/reports',
       '/admin/roles',
       '/admin/coupons',
       '/admin/members',
