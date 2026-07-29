@@ -48,3 +48,50 @@ export async function verifyHmacSignature(
   const computed = await computeHmacSignature(orderId, orderNo, grandTotal, createdAt);
   return computed === existingSignature;
 }
+
+export async function computeAuditLogSignature(
+  logId: string,
+  userId: string,
+  action: string,
+  description: string,
+  createdAt: string
+): Promise<string> {
+  try {
+    const encoder = new TextEncoder();
+    const dataToSign = `${logId}:${userId}:${action}:${description}:${createdAt}`;
+
+    const keyData = encoder.encode(SECRET_KEY);
+    const cryptoKey = await window.crypto.subtle.importKey(
+      'raw',
+      keyData,
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+
+    const signatureBuffer = await window.crypto.subtle.sign(
+      'HMAC',
+      cryptoKey,
+      encoder.encode(dataToSign)
+    );
+
+    const hashArray = Array.from(new Uint8Array(signatureBuffer));
+    const hmacHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    return hmacHex;
+  } catch (err) {
+    console.error('Error computing audit log signature:', err);
+    return `HMAC-LOG-${logId}`;
+  }
+}
+
+export async function verifyAuditLogSignature(
+  logId: string,
+  userId: string,
+  action: string,
+  description: string,
+  createdAt: string,
+  existingSignature: string
+): Promise<boolean> {
+  const computed = await computeAuditLogSignature(logId, userId, action, description, createdAt);
+  return computed.toLowerCase() === existingSignature.toLowerCase();
+}

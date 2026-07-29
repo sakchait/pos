@@ -4,7 +4,7 @@ import { db, validateCouponCode } from '../db/dexieDb';
 import {
   Product, Coupon, Member, Order, Shift, DrawerOpenLog,
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch,
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount, MemberPromotion
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount, MemberPromotion, SystemAuditLog
 } from '../types/pos';
 
 const USE_SERVICES = import.meta.env.VITE_USE_SERVICES === 'true';
@@ -579,6 +579,33 @@ export const apiService = {
       return apiFetch<MemberPromotion[]>('/promotions');
     } else {
       return db.promotions.toArray();
+    }
+  },
+
+  async getSystemAuditLogs(): Promise<SystemAuditLog[]> {
+    if (USE_SERVICES) {
+      return apiFetch<SystemAuditLog[]>('/systemauditlogs');
+    } else {
+      return db.systemAuditLogs.toArray();
+    }
+  },
+
+  async createSystemAuditLog(log: Omit<SystemAuditLog, 'id' | 'createdAt' | 'hmacSignature'>): Promise<SystemAuditLog> {
+    if (USE_SERVICES) {
+      return apiFetch<SystemAuditLog>('/systemauditlogs', {
+        method: 'POST',
+        body: JSON.stringify(log)
+      });
+    } else {
+      const newLog: SystemAuditLog = {
+        ...log,
+        id: `log-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        hmacSignature: '', // mock offline hmac
+        isVerified: true
+      };
+      await db.systemAuditLogs.add(newLog);
+      return newLog;
     }
   },
 

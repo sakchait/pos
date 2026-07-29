@@ -31,6 +31,7 @@ import { ReportsView } from './components/reports/ReportsView';
 import { RoleManagementView } from './components/admin/RoleManagementView';
 import { CouponManagementView } from './components/admin/CouponManagementView';
 import { MemberManagementView } from './components/admin/MemberManagementView';
+import { SystemAuditLogManagementView } from './components/admin/SystemAuditLogManagementView';
 import { LoginView } from './components/auth/LoginView';
 import { ProfileView } from './components/auth/ProfileView';
 import { ManagerPinModal } from './components/common/ManagerPinModal';
@@ -65,6 +66,7 @@ export function App() {
     '/admin/roles',
     '/admin/coupons',
     '/admin/members',
+    '/admin/audit-logs',
     '/profile',
   ]);
 
@@ -133,11 +135,11 @@ export function App() {
     setCurrentUser(user);
     setActiveRole(user.role);
     setActiveUser({ id: user.id, name: user.fullName });
-    
+
     // Dynamically default to first permitted route
     const defaultRoute = await getRoleDefaultRoute(user.role);
     setActiveRoute(defaultRoute);
-    
+
     refreshRolePermissions(user.role);
   };
 
@@ -206,6 +208,7 @@ export function App() {
     { path: '/admin/coupons', label: 'Coupon Management', icon: Tag },
     { path: '/admin/members', label: 'Member Management', icon: Users },
     { path: '/reports', label: 'Audit & HR Reports', icon: FileSpreadsheet },
+    { path: '/admin/audit-logs', label: 'Audit Log Management', icon: ShieldAlert },
     { path: '/admin/roles', label: 'Access Control', icon: UserCog },
   ];
 
@@ -412,6 +415,10 @@ export function App() {
 
         {activeRoute === '/admin/members' && (
           <MemberManagementView userRole={activeRole} />
+        )}
+
+        {activeRoute === '/admin/audit-logs' && (
+          <SystemAuditLogManagementView currentUser={currentUser} />
         )}
 
         {activeRoute === '/profile' && (

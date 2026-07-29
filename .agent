@@ -1,5 +1,5 @@
 ---
-name: pos-enterprise-pos
+name: pos-enterprise
 description: Master business and technical requirements for the POS Enterprise system (React SPA Frontend & C# .NET 10 Backend).
 allowed-tools: Read Write
 ---

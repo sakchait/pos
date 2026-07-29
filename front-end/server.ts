@@ -170,6 +170,34 @@ async function startServer() {
     res.json(serverDb.promotions);
   });
 
+  app.get('/api/systemauditlogs', (req, res) => {
+    const list = serverDb.systemAuditLogs.map(log => {
+      const member = serverDb.members.find(m => m.id === log.userId);
+      const fullName = member ? member.name : (log.userId === '99999999-9999-9999-9999-999999999999' ? 'System Administrator' : 'System User');
+      const username = member ? member.phone : 'admin';
+      return {
+        ...log,
+        fullName,
+        username,
+        isVerified: true
+      };
+    });
+    res.json(list);
+  });
+  app.post('/api/systemauditlogs', (req, res) => {
+    const newLog = {
+      ...req.body,
+      id: `log-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      hmacSignature: `mock-sig-${Date.now()}`
+    };
+    serverDb.systemAuditLogs.push(newLog);
+    res.json({
+      ...newLog,
+      isVerified: true
+    });
+  });
+
   app.get('/api/shifts/active', (req, res) => {
     const cashierId = req.query.cashierId as string;
     const active = serverDb.shifts.find(s => s.cashierId === cashierId && s.status === 'OPEN');

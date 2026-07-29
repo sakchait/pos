@@ -1,7 +1,7 @@
 import { 
   Product, Coupon, Member, Order, Shift, DrawerOpenLog, 
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch, 
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage 
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage, SystemAuditLog 
 } from './src/types/pos';
 
 export let products: Product[] = [
@@ -195,6 +195,9 @@ export let roleRoutes: RoleRoutePermission[] = [
       '/vendor',
       '/reports',
       '/admin/roles',
+      '/admin/coupons',
+      '/admin/members',
+      '/admin/audit-logs',
       '/profile',
     ],
   }
@@ -409,3 +412,22 @@ export let promotions: MemberPromotion[] = [
 ];
 
 export let couponUsages: CouponUsage[] = [];
+
+export let systemAuditLogs: SystemAuditLog[] = [
+  {
+    id: 'log-1',
+    userId: '99999999-9999-9999-9999-999999999999', // admin
+    action: 'USER_LOGIN',
+    description: 'System Administrator logged in successfully from 192.168.1.100.',
+    hmacSignature: '38a7852de9fbdf1890efd06371cf12c2864f19934273bb074900a69a08ebfa61',
+    createdAt: '2026-07-29T08:00:00Z',
+  },
+  {
+    id: 'log-2',
+    userId: '11111111-d111-d111-d111-d11111111111', // cashier
+    action: 'SUSPICIOUS_BEHAVIOR_FLAG',
+    description: 'ShiftId: s-101 - Significant Cash Shortage: Missing -250.00 THB.',
+    hmacSignature: '8ab4a0e28f14b2d18bc47e33527b1ee880cf5a7d6568b6ff9a34bc762b322a3d',
+    createdAt: '2026-07-29T09:15:30Z',
+  }
+];

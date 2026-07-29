@@ -16,6 +16,7 @@ import {
   UserAccount,
   MemberPromotion,
   CouponUsage,
+  SystemAuditLog,
 } from '../types/pos';
 
 export class OmniPOSDatabase extends Dexie {
@@ -35,6 +36,7 @@ export class OmniPOSDatabase extends Dexie {
   users!: Table<UserAccount, string>;
   promotions!: Table<MemberPromotion, string>;
   couponUsages!: Table<CouponUsage, string>;
+  systemAuditLogs!: Table<SystemAuditLog, string>;
 
   constructor() {
     super('OmniPOS_Enterprise_DB');
@@ -71,6 +73,25 @@ export class OmniPOSDatabase extends Dexie {
       promotions: 'id, name, promotionType, isActive',
       couponUsages: 'id, orderId, couponCode',
     });
+    this.version(3).stores({
+      products: 'id, sku, category, price, stock, isAvailable',
+      coupons: 'id, code, isActive',
+      members: 'id, memberNo, phone, name',
+      orders: 'id, orderNo, status, createdAt, cashierId, memberId',
+      shifts: 'id, cashierId, status, openingTime',
+      drawerOpenLogs: 'id, cashierId, timestamp, reason',
+      shiftSchedules: 'id, employeeId, date, shiftType, status',
+      shiftSwaps: 'id, requesterId, recipientId, status',
+      proposedPOs: 'id, poNumber, status',
+      stockBatches: 'id, productId, batchNo',
+      roleRoutes: 'role',
+      attendance: 'id, employeeId, date',
+      leaves: 'id, employeeId, leaveType',
+      users: 'id, username, email, role',
+      promotions: 'id, name, promotionType, isActive',
+      couponUsages: 'id, orderId, couponCode',
+      systemAuditLogs: 'id, userId, action, createdAt',
+    });
   }
 }
 
@@ -84,6 +105,7 @@ export async function seedInitialDataIfNeeded() {
   await seedUsersIfNeeded();
   await seedRoleRoutesIfNeeded();
   await seedPromotionsIfNeeded();
+  await seedAuditLogsIfNeeded();
 
   const productCount = await db.products.count();
   if (productCount > 0) return;
@@ -583,7 +605,8 @@ export async function seedUsersIfNeeded() {
 export async function seedRoleRoutesIfNeeded() {
   const allRoutes = await db.roleRoutes.toArray();
   const hasMembers = allRoutes.some((r) => r.routes.includes('/admin/members'));
-  if (allRoutes.length < 7 || !hasMembers) {
+  const hasAuditLogs = allRoutes.some((r) => r.routes.includes('/admin/audit-logs'));
+  if (allRoutes.length < 7 || !hasMembers || !hasAuditLogs) {
     await db.roleRoutes.clear();
     const initialRoleRoutes: RoleRoutePermission[] = [
       {
@@ -623,6 +646,7 @@ export async function seedRoleRoutesIfNeeded() {
           '/admin/roles',
           '/admin/coupons',
           '/admin/members',
+          '/admin/audit-logs',
           '/profile',
         ],
       },
@@ -662,6 +686,31 @@ export async function seedPromotionsIfNeeded() {
       },
     ];
     await db.promotions.bulkAdd(initialPromotions);
+  }
+}
+
+export async function seedAuditLogsIfNeeded() {
+  const count = await db.systemAuditLogs.count();
+  if (count === 0) {
+    const initialLogs: SystemAuditLog[] = [
+      {
+        id: 'log-1',
+        userId: '99999999-9999-9999-9999-999999999999', // admin
+        action: 'USER_LOGIN',
+        description: 'System Administrator logged in successfully from 192.168.1.100.',
+        hmacSignature: '38a7852de9fbdf1890efd06371cf12c2864f19934273bb074900a69a08ebfa61', // arbitrary signature
+        createdAt: '2026-07-29T08:00:00Z',
+      },
+      {
+        id: 'log-2',
+        userId: '11111111-d111-d111-d111-d11111111111', // cashier
+        action: 'SUSPICIOUS_BEHAVIOR_FLAG',
+        description: 'ShiftId: s-101 - Significant Cash Shortage: Missing -250.00 THB.',
+        hmacSignature: '8ab4a0e28f14b2d18bc47e33527b1ee880cf5a7d6568b6ff9a34bc762b322a3d', // arbitrary signature
+        createdAt: '2026-07-29T09:15:30Z',
+      }
+    ];
+    await db.systemAuditLogs.bulkAdd(initialLogs);
   }
 }
 

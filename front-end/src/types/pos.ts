@@ -246,3 +246,15 @@ export interface CouponUsage {
   discountAmount: number;
   usedAt: string;
 }
+
+export interface SystemAuditLog {
+  id: string;
+  userId: string;
+  action: string;
+  description: string;
+  hmacSignature: string;
+  createdAt: string;
+  fullName?: string;
+  username?: string;
+  isVerified?: boolean;
+}
