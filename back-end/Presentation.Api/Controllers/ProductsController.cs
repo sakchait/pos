@@ -53,19 +53,19 @@ public class ProductsController : ControllerBase
             return NotFound(new { message = "Product not found." });
         }
 
-        if (updates.TryGetProperty("name", out var nameProp))
+        if (updates.TryGetProperty("name", out var nameProp) && nameProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.Name = nameProp.GetString() ?? "";
 
-        if (updates.TryGetProperty("price", out var priceProp))
+        if (updates.TryGetProperty("price", out var priceProp) && priceProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.Price = priceProp.GetDecimal();
 
-        if (updates.TryGetProperty("stock", out var stockProp))
+        if (updates.TryGetProperty("stock", out var stockProp) && stockProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.StockQuantity = stockProp.GetInt32();
 
-        if (updates.TryGetProperty("minStockThreshold", out var thresholdProp))
+        if (updates.TryGetProperty("minStockThreshold", out var thresholdProp) && thresholdProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.MinStockThreshold = thresholdProp.GetInt32();
 
-        if (updates.TryGetProperty("isAvailable", out var availableProp))
+        if (updates.TryGetProperty("isAvailable", out var availableProp) && availableProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.IsActive = availableProp.GetBoolean();
 
         product.UpdatedAt = DateTime.UtcNow;
