@@ -55,6 +55,7 @@ allowed-tools: Read Write
 ## 3. Product & Category Management
 - **Category Entity:** Category is managed via EF Core (`Category.cs`) supporting database-driven categories (Appetizers, Main Course, Beverages, Desserts).
 - **Product Entity:** Seeded products are linked to their respective `CategoryId` GUIDs. Products controller dynamically loads Category relations using EF `.Include(p => p.Category)` instead of hardcoded mapping logic.
+- **Product & Category CRUD dashboards:** Integrated dashboards allow authorized roles (`Admin`, `BranchManager`) to add, modify, search, filter, and delete active catalog products and categories with instant local-to-cloud synchronization.
 
 ---
 
@@ -112,4 +113,13 @@ const ROLE_ROUTES: Record<string, string[]> = {
   StockClerk: ['/inventory', '/restocking', '/profile'],
   Admin: ['/pos', '/shifts', '/shifts/schedule', '/vendor', '/restocking', '/inventory', '/reports', '/admin/roles', '/profile'],
 };
+```
+
+---
+
+## 8. Table & Report Pagination Rules
+
+- **Server-Side Pagination**: Backend controllers (`AdminUsersController`, `CategoriesController`, `CouponsController`, `MembersController`, `ProductsController`, `SystemAuditLogsController`) support optional `page` and `pageSize` parameters, returning a standardized `PaginatedResult<T>` envelope.
+- **Dynamic Paging Control Bar**: Visual pagination toolbars with page size selection and navigation buttons must be used across all admin and report tables (`UserManagementView`, `MemberManagementView`, `ProductManagementView`, `CategoryManagementView`, `CouponManagementView`, `SystemAuditLogManagementView`, `ReportsView`).
+- **Backward-Compatible API Services**: Methods in `apiService.ts` (`getProducts`, `getCategories`, `getCoupons`, `getMembers`, `getSystemAuditLogs`, and `getUsers`) must use TypeScript function overload signatures. They return a flat array when paging parameters are omitted, preventing breaking changes on existing pages.
 ```
