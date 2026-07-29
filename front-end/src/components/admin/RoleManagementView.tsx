@@ -125,9 +125,9 @@ export const RoleManagementView: React.FC<RoleManagementViewProps> = ({
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-bold text-[10px]">
               <tr>
-                <th className="p-4">System Role</th>
+                <th className="py-2 px-4">System Role</th>
                 {availableRoutes.map((rt) => (
-                  <th key={rt.path} className="p-4 text-center">
+                  <th key={rt.path} className="py-2 px-4 text-center">
                     {rt.label}
                   </th>
                 ))}
@@ -136,13 +136,13 @@ export const RoleManagementView: React.FC<RoleManagementViewProps> = ({
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {rolePermissions.map((rp) => (
                 <tr key={rp.role} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td className="p-4 font-extrabold text-sm text-slate-900 dark:text-slate-100">
+                  <td className="py-2 px-4 font-extrabold text-sm text-slate-900 dark:text-slate-100">
                     {rp.role}
                   </td>
                   {availableRoutes.map((rt) => {
                     const isAllowed = rp.routes.includes(rt.path);
                     return (
-                      <td key={rt.path} className="p-4 text-center">
+                      <td key={rt.path} className="py-2 px-4 text-center">
                         <input
                           type="checkbox"
                           checked={isAllowed}

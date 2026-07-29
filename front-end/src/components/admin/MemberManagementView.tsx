@@ -310,13 +310,13 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-450 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800/80">
-                  <th className="p-4 pl-6">Member ID / Tier</th>
-                  <th className="p-4">Full Name</th>
-                  <th className="p-4">Contact Info</th>
-                  <th className="p-4 text-center">Loyalty Points</th>
-                  <th className="p-4 text-right">Total Spent</th>
-                  <th className="p-4">Date Joined</th>
-                  {isManager && <th className="p-4 pr-6 text-center">Actions</th>}
+                  <th className="py-2 px-4 pl-6">Member ID / Tier</th>
+                  <th className="py-2 px-4">Full Name</th>
+                  <th className="py-2 px-4">Contact Info</th>
+                  <th className="py-2 px-4 text-center">Loyalty Points</th>
+                  <th className="py-2 px-4 text-right">Total Spent</th>
+                  <th className="py-2 px-4">Date Joined</th>
+                  {isManager && <th className="py-2 px-4 pr-6 text-center">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
@@ -329,14 +329,14 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
 
                   return (
                     <tr key={m.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-colors">
-                      <td className="p-4 pl-6">
+                      <td className="py-2 px-4 pl-6">
                         <p className="font-mono font-bold text-slate-700 dark:text-slate-300">{m.memberNo}</p>
                         <span className={`inline-block text-[9px] uppercase font-extrabold px-2 py-0.5 rounded-full mt-1.5 ${tierColor}`}>
                           {m.tier}
                         </span>
                       </td>
-                      <td className="p-4 font-bold text-slate-700 dark:text-slate-300">{m.name}</td>
-                      <td className="p-4 space-y-1">
+                      <td className="py-2 px-4 font-bold text-slate-700 dark:text-slate-300">{m.name}</td>
+                      <td className="py-2 px-4 space-y-1">
                         <div className="flex items-center gap-1.5 text-slate-500">
                           <Phone className="w-3.5 h-3.5" />
                           <span>{m.phone}</span>
@@ -348,15 +348,15 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
                           </div>
                         )}
                       </td>
-                      <td className="p-4 text-center font-mono font-bold text-amber-500 dark:text-amber-400">
+                      <td className="py-2 px-4 text-center font-mono font-bold text-amber-500 dark:text-amber-400">
                         {m.points.toLocaleString()} pts
                       </td>
-                      <td className="p-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-455">
+                      <td className="py-2 px-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-455">
                         ${(m.totalSpent || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
-                      <td className="p-4 text-slate-450">{m.joinDate}</td>
+                      <td className="py-2 px-4 text-slate-450">{m.joinDate}</td>
                       {isManager && (
-                        <td className="p-4 pr-6">
+                        <td className="py-2 px-4 pr-6">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => handleEditClick(m)}

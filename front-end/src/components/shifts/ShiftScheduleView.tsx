@@ -366,22 +366,22 @@ export const ShiftScheduleView: React.FC<ShiftScheduleViewProps> = ({
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-bold text-[10px]">
                 <tr>
-                  <th className="p-3">Requester</th>
-                  <th className="p-3">Target Recipient</th>
-                  <th className="p-3">Date & Shift</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3 text-right">Manager Action</th>
+                  <th className="py-1.5 px-3">Requester</th>
+                  <th className="py-1.5 px-3">Target Recipient</th>
+                  <th className="py-1.5 px-3">Date & Shift</th>
+                  <th className="py-1.5 px-3">Status</th>
+                  <th className="py-1.5 px-3 text-right">Manager Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {swaps.map((sw) => (
                   <tr key={sw.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{sw.requesterName}</td>
-                    <td className="p-3 font-bold text-purple-600">{sw.recipientName}</td>
-                    <td className="p-3 text-slate-600 dark:text-slate-300">
+                    <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-slate-100">{sw.requesterName}</td>
+                    <td className="py-1.5 px-3 font-bold text-purple-600">{sw.recipientName}</td>
+                    <td className="py-1.5 px-3 text-slate-600 dark:text-slate-300">
                       {sw.date} ({sw.shiftType})
                     </td>
-                    <td className="p-3">
+                    <td className="py-1.5 px-3">
                       <span
                         className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
                           sw.status === 'APPROVED'
@@ -394,7 +394,7 @@ export const ShiftScheduleView: React.FC<ShiftScheduleViewProps> = ({
                         {sw.status}
                       </span>
                     </td>
-                    <td className="p-3 text-right">
+                    <td className="py-1.5 px-3 text-right">
                       {sw.status === 'PENDING' ? (
                         <div className="flex justify-end gap-2">
                           <button

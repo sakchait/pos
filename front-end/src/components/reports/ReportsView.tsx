@@ -137,25 +137,25 @@ export const ReportsView: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-bold text-[10px]">
                 <tr>
-                  <th className="p-3">Employee</th>
-                  <th className="p-3">Date</th>
-                  <th className="p-3">Scheduled Shift</th>
-                  <th className="p-3">Actual Clock In</th>
-                  <th className="p-3">Clock Out</th>
-                  <th className="p-3">Late Status</th>
+                  <th className="py-1.5 px-3">Employee</th>
+                  <th className="py-1.5 px-3">Date</th>
+                  <th className="py-1.5 px-3">Scheduled Shift</th>
+                  <th className="py-1.5 px-3">Actual Clock In</th>
+                  <th className="py-1.5 px-3">Clock Out</th>
+                  <th className="py-1.5 px-3">Late Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {attendance.slice((attPage - 1) * pageSize, attPage * pageSize).map((att) => (
                   <tr key={att.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{att.employeeName}</td>
-                    <td className="p-3 text-slate-600 dark:text-slate-300">{att.date}</td>
-                    <td className="p-3 font-mono">
+                    <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-slate-100">{att.employeeName}</td>
+                    <td className="py-1.5 px-3 text-slate-600 dark:text-slate-300">{att.date}</td>
+                    <td className="py-1.5 px-3 font-mono">
                       {att.scheduledStart} - {att.scheduledEnd}
                     </td>
-                    <td className="p-3 font-mono font-bold">{att.actualClockIn}</td>
-                    <td className="p-3 font-mono">{att.actualClockOut}</td>
-                    <td className="p-3">
+                    <td className="py-1.5 px-3 font-mono font-bold">{att.actualClockIn}</td>
+                    <td className="py-1.5 px-3 font-mono">{att.actualClockOut}</td>
+                    <td className="py-1.5 px-3">
                       {att.lateMinutes > 5 ? (
                         <span className="px-2.5 py-1 bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 font-extrabold text-[10px] rounded-full flex items-center gap-1 w-fit">
                           <AlertTriangle className="w-3 h-3" /> LATE (+{att.lateMinutes} mins)
@@ -219,25 +219,25 @@ export const ReportsView: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-bold text-[10px]">
                 <tr>
-                  <th className="p-3">Employee</th>
-                  <th className="p-3">Date</th>
-                  <th className="p-3">Shift Type</th>
-                  <th className="p-3">Consecutive Shift Status</th>
-                  <th className="p-3">Manager Overtime Log</th>
+                  <th className="py-1.5 px-3">Employee</th>
+                  <th className="py-1.5 px-3">Date</th>
+                  <th className="py-1.5 px-3">Shift Type</th>
+                  <th className="py-1.5 px-3">Consecutive Shift Status</th>
+                  <th className="py-1.5 px-3">Manager Overtime Log</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {schedules.slice((otPage - 1) * pageSize, otPage * pageSize).map((sch) => (
                   <tr key={sch.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{sch.employeeName}</td>
-                    <td className="p-3">{sch.date}</td>
-                    <td className="p-3 font-semibold text-purple-600">{sch.shiftType}</td>
-                    <td className="p-3">
+                    <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-slate-100">{sch.employeeName}</td>
+                    <td className="py-1.5 px-3">{sch.date}</td>
+                    <td className="py-1.5 px-3 font-semibold text-purple-600">{sch.shiftType}</td>
+                    <td className="py-1.5 px-3">
                       <span className="px-2.5 py-1 bg-amber-100 text-amber-800 dark:bg-amber-950 font-extrabold text-[10px] rounded-full">
                         Double Shift Approved (16 hrs max)
                       </span>
                     </td>
-                    <td className="p-3 text-slate-500 font-mono text-[11px]">
+                    <td className="py-1.5 px-3 text-slate-500 font-mono text-[11px]">
                       Approved by Manager (PIN Verification Logged)
                     </td>
                   </tr>
@@ -291,23 +291,23 @@ export const ReportsView: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-bold text-[10px]">
                 <tr>
-                  <th className="p-3">Employee</th>
-                  <th className="p-3">Leave Type</th>
-                  <th className="p-3">Start Date</th>
-                  <th className="p-3">End Date</th>
-                  <th className="p-3">Total Days</th>
-                  <th className="p-3">Status</th>
+                  <th className="py-1.5 px-3">Employee</th>
+                  <th className="py-1.5 px-3">Leave Type</th>
+                  <th className="py-1.5 px-3">Start Date</th>
+                  <th className="py-1.5 px-3">End Date</th>
+                  <th className="py-1.5 px-3">Total Days</th>
+                  <th className="py-1.5 px-3">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {leaves.slice((leavePage - 1) * pageSize, leavePage * pageSize).map((lv) => (
                   <tr key={lv.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{lv.employeeName}</td>
-                    <td className="p-3 font-bold text-purple-600">{lv.leaveType} Leave</td>
-                    <td className="p-3">{lv.startDate}</td>
-                    <td className="p-3">{lv.endDate}</td>
-                    <td className="p-3 font-bold">{lv.daysCount} days</td>
-                    <td className="p-3">
+                    <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-slate-100">{lv.employeeName}</td>
+                    <td className="py-1.5 px-3 font-bold text-purple-600">{lv.leaveType} Leave</td>
+                    <td className="py-1.5 px-3">{lv.startDate}</td>
+                    <td className="py-1.5 px-3">{lv.endDate}</td>
+                    <td className="py-1.5 px-3 font-bold">{lv.daysCount} days</td>
+                    <td className="py-1.5 px-3">
                       <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-extrabold text-[10px] rounded-full">
                         {lv.status}
                       </span>
@@ -363,12 +363,12 @@ export const ReportsView: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-bold text-[10px]">
                 <tr>
-                  <th className="p-3">Employee</th>
-                  <th className="p-3">Date</th>
-                  <th className="p-3">Shift Type</th>
-                  <th className="p-3">Base Pay Rate</th>
-                  <th className="p-3">Holiday Multiplier</th>
-                  <th className="p-3">Calculated Holiday Earnings</th>
+                  <th className="py-1.5 px-3">Employee</th>
+                  <th className="py-1.5 px-3">Date</th>
+                  <th className="py-1.5 px-3">Shift Type</th>
+                  <th className="py-1.5 px-3">Base Pay Rate</th>
+                  <th className="py-1.5 px-3">Holiday Multiplier</th>
+                  <th className="py-1.5 px-3">Calculated Holiday Earnings</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -383,12 +383,12 @@ export const ReportsView: React.FC = () => {
 
                     return (
                       <tr key={sch.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                        <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{sch.employeeName}</td>
-                        <td className="p-3">{sch.date}</td>
-                        <td className="p-3 font-semibold">{sch.shiftType}</td>
-                        <td className="p-3 font-mono">{baseRate.toFixed(2)} บาท/ชม.</td>
-                        <td className="p-3 font-bold text-amber-600">2.0x Legal Holiday Rate</td>
-                        <td className="p-3 font-extrabold text-emerald-600 text-sm">
+                        <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-slate-100">{sch.employeeName}</td>
+                        <td className="py-1.5 px-3">{sch.date}</td>
+                        <td className="py-1.5 px-3 font-semibold">{sch.shiftType}</td>
+                        <td className="py-1.5 px-3 font-mono">{baseRate.toFixed(2)} บาท/ชม.</td>
+                        <td className="py-1.5 px-3 font-bold text-amber-600">2.0x Legal Holiday Rate</td>
+                        <td className="py-1.5 px-3 font-extrabold text-emerald-600 text-sm">
                           {totalHolidayPay.toFixed(2)} บาท
                         </td>
                       </tr>

@@ -334,21 +334,21 @@ export const VendorPortalView: React.FC<VendorPortalViewProps> = ({ userRole }) 
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-bold text-[10px]">
                 <tr>
-                  <th className="p-3">Batch No</th>
-                  <th className="p-3">Product</th>
-                  <th className="p-3">Qty Remaining</th>
-                  <th className="p-3">Unit Cost</th>
+                  <th className="py-1.5 px-3">Batch No</th>
+                  <th className="py-1.5 px-3">Product</th>
+                  <th className="py-1.5 px-3">Qty Remaining</th>
+                  <th className="py-1.5 px-3">Unit Cost</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {stockBatches.map((sb) => (
                   <tr key={sb.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-mono text-purple-600 font-bold">{sb.batchNo}</td>
-                    <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{sb.productName}</td>
-                    <td className="p-3 font-extrabold text-slate-800 dark:text-slate-200">
+                    <td className="py-1.5 px-3 font-mono text-purple-600 font-bold">{sb.batchNo}</td>
+                    <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-slate-100">{sb.productName}</td>
+                    <td className="py-1.5 px-3 font-extrabold text-slate-800 dark:text-slate-200">
                       {sb.qtyRemaining} / {sb.qtyReceived}
                     </td>
-                    <td className="p-3 font-mono">{sb.unitCost.toFixed(2)} บาท</td>
+                    <td className="py-1.5 px-3 font-mono">{sb.unitCost.toFixed(2)} บาท</td>
                   </tr>
                 ))}
               </tbody>

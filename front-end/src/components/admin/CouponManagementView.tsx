@@ -292,13 +292,13 @@ export const CouponManagementView: React.FC<CouponManagementViewProps> = ({ user
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
                     <tr className="bg-slate-50 dark:bg-slate-950 text-slate-500 border-b border-slate-100 dark:border-slate-800 uppercase font-bold tracking-wider">
-                      <th className="p-4">Code</th>
-                      <th className="p-4">Description</th>
-                      <th className="p-4">Discount</th>
-                      <th className="p-4">Validity</th>
-                      <th className="p-4 text-center">Used/Limit</th>
-                      <th className="p-4 text-center">Status</th>
-                      <th className="p-4 text-right">Actions</th>
+                      <th className="py-2 px-4">Code</th>
+                      <th className="py-2 px-4">Description</th>
+                      <th className="py-2 px-4">Discount</th>
+                      <th className="py-2 px-4">Validity</th>
+                      <th className="py-2 px-4 text-center">Used/Limit</th>
+                      <th className="py-2 px-4 text-center">Status</th>
+                      <th className="py-2 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -309,23 +309,23 @@ export const CouponManagementView: React.FC<CouponManagementViewProps> = ({ user
                           key={coupon.code}
                           className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
                         >
-                          <td className="p-4 font-mono font-bold text-slate-900 dark:text-slate-100">
+                          <td className="py-2 px-4 font-mono font-bold text-slate-900 dark:text-slate-100">
                             {coupon.code}
                           </td>
-                          <td className="p-4 text-slate-600 dark:text-slate-300">
+                          <td className="py-2 px-4 text-slate-600 dark:text-slate-300">
                             {coupon.description || '-'}
                           </td>
-                          <td className="p-4 font-bold text-orange-600">
+                          <td className="py-2 px-4 font-bold text-orange-600">
                             {coupon.discountValue}
                             {coupon.discountType === 'percentage' ? '%' : ' บาท'}
                           </td>
-                          <td className="p-4 text-slate-500 text-[11px]">
+                          <td className="py-2 px-4 text-slate-500 text-[11px]">
                             {coupon.startDate} to {coupon.endDate}
                           </td>
-                          <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">
+                          <td className="py-2 px-4 text-center font-bold text-slate-700 dark:text-slate-300">
                             {coupon.usedCount} / {coupon.usageLimit || '∞'}
                           </td>
-                          <td className="p-4 text-center">
+                          <td className="py-2 px-4 text-center">
                             <span
                               className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
                                 coupon.isActive && !isExpired
@@ -336,12 +336,12 @@ export const CouponManagementView: React.FC<CouponManagementViewProps> = ({ user
                               {coupon.isActive && !isExpired ? 'Active' : isExpired ? 'Expired' : 'Inactive'}
                             </span>
                           </td>
-                          <td className="p-4 text-right">
+                          <td className="py-2 px-4 text-right">
                             <div className="flex justify-end gap-2">
                               <button
                                 onClick={() => handleEditClick(coupon)}
                                 disabled={!isManager}
-                                className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40 rounded-lg transition-colors disabled:opacity-40"
+                                className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-955/40 rounded-lg transition-colors disabled:opacity-40"
                                 title="Edit Coupon"
                               >
                                 <Edit3 className="w-4 h-4" />

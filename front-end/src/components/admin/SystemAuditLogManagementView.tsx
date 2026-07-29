@@ -286,26 +286,26 @@ export const SystemAuditLogManagementView: React.FC<SystemAuditLogManagementView
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-450 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800/80">
-                <th className="p-4 pl-6">Timestamp</th>
-                <th className="p-4">User</th>
-                <th className="p-4">Action</th>
-                <th className="p-4">Description</th>
-                <th className="p-4">Integrity Status</th>
-                <th className="p-4 pr-6 text-center">Details</th>
+              <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-455 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800/80">
+                <th className="py-2 px-4 pl-6">Timestamp</th>
+                <th className="py-2 px-4">User</th>
+                <th className="py-2 px-4">Action</th>
+                <th className="py-2 px-4">Description</th>
+                <th className="py-2 px-4">Integrity Status</th>
+                <th className="py-2 px-4 pr-6 text-center">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-slate-400">
+                  <td colSpan={6} className="py-2 px-4 text-center text-slate-400">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-slate-400" />
                     Fetching audit event records...
                   </td>
                 </tr>
               ) : filteredLogs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-slate-400 font-medium">
+                  <td colSpan={6} className="py-2 px-4 text-center text-slate-400 font-medium">
                     No matching audit records found.
                   </td>
                 </tr>
@@ -315,10 +315,10 @@ export const SystemAuditLogManagementView: React.FC<SystemAuditLogManagementView
                   return (
                     <tr
                       key={log.id}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-colors"
+                      className="hover:bg-slate-50/50 dark:hover:bg-slate-955/20 transition-colors"
                     >
                       {/* Timestamp */}
-                      <td className="p-4 pl-6 text-slate-500 font-mono text-[11px] whitespace-nowrap">
+                      <td className="py-2 px-4 pl-6 text-slate-500 font-mono text-[11px] whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           <Calendar className="w-3.5 h-3.5 text-slate-400" />
                           {new Date(log.createdAt).toLocaleString()}
@@ -326,19 +326,19 @@ export const SystemAuditLogManagementView: React.FC<SystemAuditLogManagementView
                       </td>
 
                       {/* User */}
-                      <td className="p-4 font-medium text-slate-700 dark:text-slate-300">
+                      <td className="py-2 px-4 font-medium text-slate-700 dark:text-slate-300">
                         <div>{log.fullName || 'System'}</div>
                         <div className="text-[10px] text-slate-400">@{log.username || 'system'}</div>
                       </td>
 
                       {/* Action */}
-                      <td className="p-4">
+                      <td className="py-2 px-4">
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             isThreat
                               ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900'
                               : log.action.includes('LOGIN')
-                              ? 'bg-indigo-55/70 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300'
+                              ? 'bg-indigo-55/70 dark:bg-indigo-955/40 text-indigo-700 dark:text-indigo-300'
                               : 'bg-slate-100 dark:bg-slate-800 text-slate-650 dark:text-slate-350'
                           }`}
                         >
@@ -347,12 +347,12 @@ export const SystemAuditLogManagementView: React.FC<SystemAuditLogManagementView
                       </td>
 
                       {/* Description */}
-                      <td className="p-4 text-slate-600 dark:text-slate-305 max-w-sm truncate">
+                      <td className="py-2 px-4 text-slate-600 dark:text-slate-305 max-w-sm truncate">
                         {log.description}
                       </td>
 
                       {/* Integrity Status */}
-                      <td className="p-4">
+                      <td className="py-2 px-4">
                         {log.isVerified ? (
                           <div className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-455 font-bold">
                             <ShieldCheck className="w-4 h-4 shrink-0" />
@@ -367,7 +367,7 @@ export const SystemAuditLogManagementView: React.FC<SystemAuditLogManagementView
                       </td>
 
                       {/* Actions */}
-                      <td className="p-4 pr-6 text-center">
+                      <td className="py-2 px-4 pr-6 text-center">
                         <button
                           onClick={() => setSelectedLog(log)}
                           className="p-1.5 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-lg transition-colors"

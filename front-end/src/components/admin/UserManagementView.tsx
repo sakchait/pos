@@ -294,26 +294,26 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-455 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800">
-                <th className="p-4 pl-6">Staff Member</th>
-                <th className="p-4">Username</th>
-                <th className="p-4">Assigned Role</th>
-                <th className="p-4">Assigned Unit / Branch</th>
-                <th className="p-4">Hourly Rate</th>
-                <th className="p-4">Status</th>
-                {isAuthorized && <th className="p-4 pr-6 text-right">Actions</th>}
+                <th className="py-2 px-4 pl-6">Staff Member</th>
+                <th className="py-2 px-4">Username</th>
+                <th className="py-2 px-4">Assigned Role</th>
+                <th className="py-2 px-4">Assigned Unit / Branch</th>
+                <th className="py-2 px-4">Hourly Rate</th>
+                <th className="py-2 px-4">Status</th>
+                {isAuthorized && <th className="py-2 px-4 pr-6 text-right">Actions</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-400">
+                  <td colSpan={7} className="py-2 px-4 text-center text-slate-400">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-slate-400" />
                     Fetching employee database...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-450 font-medium">
+                  <td colSpan={7} className="py-2 px-4 text-center text-slate-450 font-medium">
                     No users found matching query.
                   </td>
                 </tr>
@@ -326,7 +326,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
                       className="hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-colors"
                     >
                       {/* Staff Member */}
-                      <td className="p-4 pl-6">
+                      <td className="py-2 px-4 pl-6">
                         <div className="flex items-center gap-3">
                           <img
                             src={u.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=60'}
@@ -345,12 +345,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
                       </td>
 
                       {/* Username */}
-                      <td className="p-4 text-slate-650 dark:text-slate-350 font-mono text-[11px]">
+                      <td className="py-2 px-4 text-slate-650 dark:text-slate-350 font-mono text-[11px]">
                         {u.username}
                       </td>
 
                       {/* Role */}
-                      <td className="p-4">
+                      <td className="py-2 px-4">
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                             (u.roleName || u.role) === 'Admin'
@@ -365,7 +365,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
                       </td>
 
                       {/* Unit / Branch */}
-                      <td className="p-4 text-slate-500 font-medium">
+                      <td className="py-2 px-4 text-slate-500 font-medium">
                         <div className="flex items-center gap-1 text-[11px]">
                           {u.branchId ? (
                             <>
@@ -384,12 +384,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
                       </td>
 
                       {/* Hourly Rate */}
-                      <td className="p-4 font-mono font-bold text-slate-600 dark:text-slate-350">
+                      <td className="py-2 px-4 font-mono font-bold text-slate-600 dark:text-slate-350">
                         {u.hourlyRate || 50.00} THB/hr
                       </td>
 
                       {/* Status */}
-                      <td className="p-4">
+                      <td className="py-2 px-4">
                         {isActiveUser ? (
                           <span className="inline-flex items-center gap-1 text-emerald-600 font-bold text-[10px]">
                             <CheckCircle className="w-3.5 h-3.5" /> Active
@@ -403,7 +403,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
 
                       {/* Actions */}
                       {isAuthorized && (
-                        <td className="p-4 pr-6 text-right">
+                        <td className="py-2 px-4 pr-6 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleOpenEditModal(u)}

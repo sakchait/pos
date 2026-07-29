@@ -317,12 +317,12 @@ export const RestockingView: React.FC<RestockingViewProps> = ({ userRole }) => {
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 font-bold">
-                      <th className="py-3 px-2">PO Number</th>
-                      <th className="py-3 px-2">Date / Supplier</th>
-                      <th className="py-3 px-2">Restock Items</th>
-                      <th className="py-3 px-2">Total Amount</th>
-                      <th className="py-3 px-2">Status</th>
-                      <th className="py-3 px-2 text-right">Actions</th>
+                      <th className="py-1.5 px-2">PO Number</th>
+                      <th className="py-1.5 px-2">Date / Supplier</th>
+                      <th className="py-1.5 px-2">Restock Items</th>
+                      <th className="py-1.5 px-2">Total Amount</th>
+                      <th className="py-1.5 px-2">Status</th>
+                      <th className="py-1.5 px-2 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -333,14 +333,14 @@ export const RestockingView: React.FC<RestockingViewProps> = ({ userRole }) => {
 
                       return (
                         <tr key={po.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                          <td className="py-4 px-2 font-mono font-bold text-slate-700 dark:text-slate-300">
+                          <td className="py-2 px-2 font-mono font-bold text-slate-700 dark:text-slate-300">
                             {po.poNumber}
                           </td>
-                          <td className="py-4 px-2 space-y-0.5">
+                          <td className="py-2 px-2 space-y-0.5">
                             <span className="font-semibold block text-slate-900 dark:text-slate-100">{po.vendorName}</span>
                             <span className="text-[10px] text-slate-400 block">{po.createdAt}</span>
                           </td>
-                          <td className="py-4 px-2 space-y-1">
+                          <td className="py-2 px-2 space-y-1">
                             {po.items.map((item, index) => (
                               <div key={index} className="text-slate-600 dark:text-slate-400">
                                 {item.productName}{' '}
@@ -348,10 +348,10 @@ export const RestockingView: React.FC<RestockingViewProps> = ({ userRole }) => {
                               </div>
                             ))}
                           </td>
-                          <td className="py-4 px-2 font-mono font-bold text-slate-950 dark:text-slate-50">
+                          <td className="py-2 px-2 font-mono font-bold text-slate-955 dark:text-slate-50">
                             ฿{(po.totalCost || 0).toFixed(2)}
                           </td>
-                          <td className="py-4 px-2">
+                          <td className="py-2 px-2">
                             <span
                               className={`px-2 py-1 rounded-full text-[10px] font-black tracking-wider uppercase inline-flex items-center gap-1 ${
                                 isApproved
@@ -371,7 +371,7 @@ export const RestockingView: React.FC<RestockingViewProps> = ({ userRole }) => {
                               {po.status}
                             </span>
                           </td>
-                          <td className="py-4 px-2 text-right">
+                          <td className="py-2 px-2 text-right">
                             {isProposed && (userRole === 'BranchManager' || userRole === 'Admin') ? (
                               <button
                                 onClick={() => handleReceiveStock(po)}

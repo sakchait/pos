@@ -307,14 +307,14 @@ export const ProductManagementView: React.FC<ProductManagementViewProps> = ({ us
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-450 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800">
-                  <th className="p-4 pl-6">SKU / Code</th>
-                  <th className="p-4">Product Name</th>
-                  <th className="p-4">Category</th>
-                  <th className="p-4 text-right">Price</th>
-                  <th className="p-4 text-center">Stock Count</th>
-                  <th className="p-4 text-center">Status</th>
-                  {isManager && <th className="p-4 pr-6 text-center">Actions</th>}
+                <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-455 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800">
+                  <th className="py-2 px-4 pl-6">SKU / Code</th>
+                  <th className="py-2 px-4">Product Name</th>
+                  <th className="py-2 px-4">Category</th>
+                  <th className="py-2 px-4 text-right">Price</th>
+                  <th className="py-2 px-4 text-center">Stock Count</th>
+                  <th className="py-2 px-4 text-center">Status</th>
+                  {isManager && <th className="py-2 px-4 pr-6 text-center">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
@@ -324,8 +324,8 @@ export const ProductManagementView: React.FC<ProductManagementViewProps> = ({ us
 
                   return (
                     <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-colors">
-                      <td className="p-4 pl-6 font-mono font-bold text-slate-700 dark:text-slate-300">{p.sku}</td>
-                      <td className="p-4">
+                      <td className="py-2 px-4 pl-6 font-mono font-bold text-slate-700 dark:text-slate-300">{p.sku}</td>
+                      <td className="py-2 px-4">
                         <div className="flex items-center gap-3">
                           {p.imageUrl ? (
                             <img src={p.imageUrl} className="w-8 h-8 rounded-lg object-cover" alt="" />
@@ -337,15 +337,15 @@ export const ProductManagementView: React.FC<ProductManagementViewProps> = ({ us
                           <span className="font-bold text-slate-800 dark:text-slate-100">{p.name}</span>
                         </div>
                       </td>
-                      <td className="p-4">
+                      <td className="py-2 px-4">
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-150 dark:bg-slate-800 text-slate-600 dark:text-slate-350">
                           {p.category}
                         </span>
                       </td>
-                      <td className="p-4 text-right font-mono font-extrabold text-orange-655 dark:text-orange-500">
+                      <td className="py-2 px-4 text-right font-mono font-extrabold text-orange-655 dark:text-orange-500">
                         ${p.price.toFixed(2)}
                       </td>
-                      <td className="p-4 text-center">
+                      <td className="py-2 px-4 text-center">
                         <div className="inline-flex flex-col items-center">
                           <span className={`font-mono font-bold ${isOut ? 'text-rose-600' : isLow ? 'text-yellow-600' : 'text-slate-700 dark:text-slate-300'}`}>
                             {p.stock} units
@@ -354,7 +354,7 @@ export const ProductManagementView: React.FC<ProductManagementViewProps> = ({ us
                           {isLow && <span className="text-[8px] uppercase font-bold text-yellow-550">Low Stock Alert</span>}
                         </div>
                       </td>
-                      <td className="p-4 text-center">
+                      <td className="py-2 px-4 text-center">
                         <span className={`inline-flex items-center gap-1 text-[10px] font-bold ${p.isAvailable !== false ? 'text-emerald-600' : 'text-rose-500'}`}>
                           {p.isAvailable !== false ? (
                             <>
@@ -370,7 +370,7 @@ export const ProductManagementView: React.FC<ProductManagementViewProps> = ({ us
                         </span>
                       </td>
                       {isManager && (
-                        <td className="p-4 pr-6">
+                        <td className="py-2 px-4 pr-6">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => handleEditClick(p)}

@@ -170,24 +170,24 @@ export const InventoryView: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-850 text-slate-500 uppercase font-bold text-[10px]">
                 <tr>
-                  <th className="p-3">SKU</th>
-                  <th className="p-3">Product Name</th>
-                  <th className="p-3">Category</th>
-                  <th className="p-3">Unit Price</th>
-                  <th className="p-3">Current Stock</th>
-                  <th className="p-3 text-center">Status</th>
+                  <th className="py-1.5 px-3">SKU</th>
+                  <th className="py-1.5 px-3">Product Name</th>
+                  <th className="py-1.5 px-3">Category</th>
+                  <th className="py-1.5 px-3">Unit Price</th>
+                  <th className="py-1.5 px-3">Current Stock</th>
+                  <th className="py-1.5 px-3 text-center">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-400">
+                    <td colSpan={6} className="py-1.5 px-3 text-center text-slate-400">
                       Loading products...
                     </td>
                   </tr>
                 ) : filteredProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-400">
+                    <td colSpan={6} className="py-1.5 px-3 text-center text-slate-400">
                       No products found matching the criteria.
                     </td>
                   </tr>
@@ -209,14 +209,14 @@ export const InventoryView: React.FC = () => {
 
                     return (
                       <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                        <td className="p-3 font-mono font-bold text-slate-500">{p.sku}</td>
-                        <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{p.name}</td>
-                        <td className="p-3 text-slate-500 font-medium">{p.category}</td>
-                        <td className="p-3 font-mono font-semibold">{p.price.toFixed(2)} บาท</td>
-                        <td className="p-3 font-mono font-extrabold text-sm text-slate-800 dark:text-slate-200">
+                        <td className="py-1.5 px-3 font-mono font-bold text-slate-500">{p.sku}</td>
+                        <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-slate-100">{p.name}</td>
+                        <td className="py-1.5 px-3 text-slate-500 font-medium">{p.category}</td>
+                        <td className="py-1.5 px-3 font-mono font-semibold">{p.price.toFixed(2)} บาท</td>
+                        <td className="py-1.5 px-3 font-mono font-extrabold text-sm text-slate-800 dark:text-slate-200">
                           {p.stock} <span className="text-[10px] text-slate-400 font-normal">units</span>
                         </td>
-                        <td className="p-3 text-center">
+                        <td className="py-1.5 px-3 text-center">
                           <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold inline-flex items-center gap-1 ${statusClass}`}>
                             <Icon className="w-3 h-3" />
                             {statusLabel}

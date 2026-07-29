@@ -230,19 +230,19 @@ export const CategoryManagementView: React.FC<CategoryManagementViewProps> = ({ 
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-450 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800">
-                  <th className="p-4 pl-6">Category Code</th>
-                  <th className="p-4">Category Name</th>
-                  {isManager && <th className="p-4 pr-6 text-center">Actions</th>}
+                <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-455 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800">
+                  <th className="py-2 px-4 pl-6">Category Code</th>
+                  <th className="py-2 px-4">Category Name</th>
+                  {isManager && <th className="py-2 px-4 pr-6 text-center">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                 {displayedCategories.map((c) => (
                   <tr key={c.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-955/20 transition-colors">
-                    <td className="p-4 pl-6 font-mono font-bold text-slate-700 dark:text-slate-300">{c.code}</td>
-                    <td className="p-4 font-bold text-slate-800 dark:text-slate-100">{c.name}</td>
+                    <td className="py-2 px-4 pl-6 font-mono font-bold text-slate-700 dark:text-slate-300">{c.code}</td>
+                    <td className="py-2 px-4 font-bold text-slate-800 dark:text-slate-100">{c.name}</td>
                     {isManager && (
-                      <td className="p-4 pr-6">
+                      <td className="py-2 px-4 pr-6">
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleEditClick(c)}
