@@ -1,7 +1,7 @@
 import { 
   Product, Coupon, Member, Order, Shift, DrawerOpenLog, 
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch, 
-  RoleRoutePermission, AttendanceRecord, LeaveRecord 
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage 
 } from './src/types/pos';
 
 export let products: Product[] = [
@@ -379,3 +379,33 @@ export let leaves: LeaveRecord[] = [
 export let orders: Order[] = [];
 export let shifts: Shift[] = [];
 export let drawerOpenLogs: DrawerOpenLog[] = [];
+
+export let promotions: MemberPromotion[] = [
+  {
+    id: 'promo-1',
+    name: 'Gold Member Welcome Discount',
+    promotionType: 'MinSpentDiscount',
+    minSpentAmount: 100,
+    minQuantity: 0,
+    discountAmount: 10,
+    freeQuantity: 0,
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    isActive: true,
+  },
+  {
+    id: 'promo-2',
+    name: 'Latte Buy 2 Get 1 Free',
+    promotionType: 'BuyXGetY',
+    minSpentAmount: 0,
+    minQuantity: 2,
+    discountAmount: 0,
+    freeProductId: 'p3', // Artisan Latte
+    freeQuantity: 1,
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    isActive: true,
+  },
+];
+
+export let couponUsages: CouponUsage[] = [];

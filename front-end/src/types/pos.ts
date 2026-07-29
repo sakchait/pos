@@ -224,3 +224,25 @@ export interface UserAccount {
   selectedTerminalId?: string;
   selectedTerminalDbId?: string;
 }
+
+export interface MemberPromotion {
+  id: string;
+  name: string;
+  promotionType: 'MinSpentDiscount' | 'BuyXGetY' | string;
+  minSpentAmount: number;
+  minQuantity: number;
+  discountAmount: number;
+  freeProductId?: string | null;
+  freeQuantity: number;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+}
+
+export interface CouponUsage {
+  id: string;
+  orderId: string;
+  couponCode: string;
+  discountAmount: number;
+  usedAt: string;
+}

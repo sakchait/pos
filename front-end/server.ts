@@ -166,6 +166,10 @@ async function startServer() {
     res.json({ success: true });
   });
 
+  app.get('/api/promotions', (req, res) => {
+    res.json(serverDb.promotions);
+  });
+
   app.get('/api/shifts/active', (req, res) => {
     const cashierId = req.query.cashierId as string;
     const active = serverDb.shifts.find(s => s.cashierId === cashierId && s.status === 'OPEN');

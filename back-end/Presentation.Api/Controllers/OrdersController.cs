@@ -254,6 +254,18 @@ public class OrdersController : ControllerBase
             SyncedAt = DateTime.UtcNow
         };
 
+        if (!string.IsNullOrEmpty(request.CouponCode))
+        {
+            order.CouponUsage = new CouponUsage
+            {
+                Id = Guid.NewGuid(),
+                OrderId = order.Id,
+                CouponCode = request.CouponCode,
+                DiscountAmount = request.DiscountAmount,
+                UsedAt = order.CreatedAt
+            };
+        }
+
         foreach (var item in request.Items)
         {
             decimal rawSubtotal = item.Quantity * item.Product.Price - item.ItemDiscount;

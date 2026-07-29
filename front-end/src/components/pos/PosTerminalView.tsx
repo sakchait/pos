@@ -19,7 +19,7 @@ import {
   Banknote,
 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
-import { Product, CartItem, Member, Coupon, Order } from '../../types/pos';
+import { Product, CartItem, Member, Coupon, Order, MemberPromotion } from '../../types/pos';
 import { GeminiAiSmartUpsell } from './GeminiAiSmartUpsell';
 import { SplitPaymentModal } from './SplitPaymentModal';
 import { db } from '@/src/db/dexieDb';
@@ -68,11 +68,23 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
 
   useEffect(() => {
     loadProducts();
+    loadPromotions();
   }, []);
+
+  const [promotions, setPromotions] = useState<MemberPromotion[]>([]);
 
   const loadProducts = async () => {
     const list = await apiService.getProducts();
     setProducts(list);
+  };
+
+  const loadPromotions = async () => {
+    try {
+      const list = await apiService.getPromotions();
+      setPromotions(list);
+    } catch (e) {
+      console.error('Failed to load promotions:', e);
+    }
   };
 
   const categories = ['All Items', 'Beverages', 'Appetizers', 'Main Course', 'Desserts'];
@@ -162,11 +174,43 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
     vatAmount = subtotal * vatRate;
   }
 
+  // Promotions calculations
+  let promotionDiscount = 0;
+  let appliedPromotion: MemberPromotion | null = null;
+
+  if (selectedMember) {
+    for (const promo of promotions) {
+      if (!promo.isActive) continue;
+
+      const today = new Date().toISOString().split('T')[0];
+      const start = promo.startDate ? new Date(promo.startDate).toISOString().split('T')[0] : '';
+      const end = promo.endDate ? new Date(promo.endDate).toISOString().split('T')[0] : '';
+      if (start && today < start) continue;
+      if (end && today > end) continue;
+
+      if (promo.promotionType === 'MinSpentDiscount') {
+        if (rawSubtotal >= promo.minSpentAmount) {
+          promotionDiscount = promo.discountAmount;
+          appliedPromotion = promo;
+          break; // apply only one promotion
+        }
+      }
+      else if (promo.promotionType === 'BuyXGetY') {
+        const targetItem = cart.find(item => item.product.id === promo.freeProductId);
+        if (targetItem && targetItem.quantity >= promo.minQuantity) {
+          promotionDiscount = targetItem.product.price * promo.freeQuantity;
+          appliedPromotion = promo;
+          break; // apply only one promotion
+        }
+      }
+    }
+  }
+
   const grandTotal = Math.max(
     0,
     isVatInclusive
-      ? (subtotal + vatAmount) - couponDiscount
-      : subtotal + vatAmount - couponDiscount
+      ? (subtotal + vatAmount) - couponDiscount - promotionDiscount
+      : subtotal + vatAmount - couponDiscount - promotionDiscount
   );
 
   // Offline Coupon Validation against Dexie / API
@@ -312,8 +356,8 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
       vatRate,
       vatAmount,
       isVatInclusive,
-      couponCode: appliedCoupon?.code,
-      discountAmount: couponDiscount,
+      couponCode: appliedCoupon?.code || undefined,
+      discountAmount: couponDiscount + promotionDiscount,
       grandTotal,
       payments,
       status: 'COMPLETED',
@@ -342,6 +386,19 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
       await apiService.updateCoupon(appliedCoupon.id, {
         usedCount: appliedCoupon.usedCount + 1,
       });
+      // Save local CouponUsage log in Dexie DB
+      try {
+        const usage = {
+          id: `usage-${Date.now()}`,
+          orderId: finalOrderId,
+          couponCode: appliedCoupon.code,
+          discountAmount: couponDiscount,
+          usedAt: finalCreatedAt
+        };
+        await db.couponUsages.add(usage);
+      } catch (e) {
+        console.error('Failed to log coupon usage locally:', e);
+      }
     }
 
     // Award member points if member attached (e.g. 1 point per $1)
@@ -362,6 +419,9 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
     setCouponDiscount(0);
     setCouponCode('');
     setCouponSuccess('');
+    setSelectedMember(null);
+    setMemberSearch('');
+    setMemberMessage('');
   };
 
   return (
@@ -702,6 +762,16 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
               <div className="flex justify-between text-emerald-600 font-bold">
                 <span>Coupon Discount ({appliedCoupon?.code})</span>
                 <span className="font-mono">-{couponDiscount.toFixed(2)} บาท</span>
+              </div>
+            )}
+
+            {promotionDiscount > 0 && (
+              <div className="flex justify-between text-amber-500 font-bold">
+                <span>Promo Discount ({appliedPromotion?.name})</span>
+                <span className="font-mono flex items-center gap-1 justify-end">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  -{promotionDiscount.toFixed(2)} บาท
+                </span>
               </div>
             )}
 

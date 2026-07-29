@@ -14,6 +14,8 @@ import {
   AttendanceRecord,
   LeaveRecord,
   UserAccount,
+  MemberPromotion,
+  CouponUsage,
 } from '../types/pos';
 
 export class OmniPOSDatabase extends Dexie {
@@ -31,6 +33,8 @@ export class OmniPOSDatabase extends Dexie {
   attendance!: Table<AttendanceRecord, string>;
   leaves!: Table<LeaveRecord, string>;
   users!: Table<UserAccount, string>;
+  promotions!: Table<MemberPromotion, string>;
+  couponUsages!: Table<CouponUsage, string>;
 
   constructor() {
     super('OmniPOS_Enterprise_DB');
@@ -48,7 +52,24 @@ export class OmniPOSDatabase extends Dexie {
       roleRoutes: 'role',
       attendance: 'id, employeeId, date',
       leaves: 'id, employeeId, leaveType',
+    });
+    this.version(2).stores({
+      products: 'id, sku, category, price, stock, isAvailable',
+      coupons: 'id, code, isActive',
+      members: 'id, memberNo, phone, name',
+      orders: 'id, orderNo, status, createdAt, cashierId, memberId',
+      shifts: 'id, cashierId, status, openingTime',
+      drawerOpenLogs: 'id, cashierId, timestamp, reason',
+      shiftSchedules: 'id, employeeId, date, shiftType, status',
+      shiftSwaps: 'id, requesterId, recipientId, status',
+      proposedPOs: 'id, poNumber, status',
+      stockBatches: 'id, productId, batchNo',
+      roleRoutes: 'role',
+      attendance: 'id, employeeId, date',
+      leaves: 'id, employeeId, leaveType',
       users: 'id, username, email, role',
+      promotions: 'id, name, promotionType, isActive',
+      couponUsages: 'id, orderId, couponCode',
     });
   }
 }
@@ -62,6 +83,7 @@ export async function seedInitialDataIfNeeded() {
   // Enforce user and role route seeding check even if other data already exists
   await seedUsersIfNeeded();
   await seedRoleRoutesIfNeeded();
+  await seedPromotionsIfNeeded();
 
   const productCount = await db.products.count();
   if (productCount > 0) return;
@@ -606,6 +628,40 @@ export async function seedRoleRoutesIfNeeded() {
       },
     ];
     await db.roleRoutes.bulkAdd(initialRoleRoutes);
+  }
+}
+
+export async function seedPromotionsIfNeeded() {
+  const promoCount = await db.promotions.count();
+  if (promoCount === 0) {
+    const initialPromotions: MemberPromotion[] = [
+      {
+        id: 'promo-1',
+        name: 'Gold Member Welcome Discount',
+        promotionType: 'MinSpentDiscount',
+        minSpentAmount: 100,
+        minQuantity: 0,
+        discountAmount: 10,
+        freeQuantity: 0,
+        startDate: '2026-01-01',
+        endDate: '2026-12-31',
+        isActive: true,
+      },
+      {
+        id: 'promo-2',
+        name: 'Latte Buy 2 Get 1 Free',
+        promotionType: 'BuyXGetY',
+        minSpentAmount: 0,
+        minQuantity: 2,
+        discountAmount: 0,
+        freeProductId: 'p3', // Artisan Latte
+        freeQuantity: 1,
+        startDate: '2026-01-01',
+        endDate: '2026-12-31',
+        isActive: true,
+      },
+    ];
+    await db.promotions.bulkAdd(initialPromotions);
   }
 }
 

@@ -4,7 +4,7 @@ import { db, validateCouponCode } from '../db/dexieDb';
 import {
   Product, Coupon, Member, Order, Shift, DrawerOpenLog,
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch,
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount, MemberPromotion
 } from '../types/pos';
 
 const USE_SERVICES = import.meta.env.VITE_USE_SERVICES === 'true';
@@ -215,6 +215,8 @@ export const apiService = {
             totalAmount: order.grandTotal,
             paymentMethod: order.payments[0]?.method || 'Cash',
             createdAt: new Date(order.createdAt).toISOString(),
+            couponCode: order.couponCode,
+            discountAmount: order.discountAmount,
             items: order.items.map(item => ({
               productId: item.product.id,
               unitPrice: item.product.price,
@@ -570,6 +572,14 @@ export const apiService = {
       passwordHash: '',
       lastLoginAt: new Date().toISOString()
     };
+  },
+
+  async getPromotions(): Promise<MemberPromotion[]> {
+    if (USE_SERVICES) {
+      return apiFetch<MemberPromotion[]>('/promotions');
+    } else {
+      return db.promotions.toArray();
+    }
   },
 
   async loginPin(pin: string): Promise<UserAccount> {

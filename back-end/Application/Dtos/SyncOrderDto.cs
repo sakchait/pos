@@ -18,7 +18,9 @@ public record CreateOrderDto(
     string PaymentMethod,
     DateTime CreatedAt,
     List<CreateOrderItemDto> Items,
-    string? BranchId = null
+    string? BranchId = null,
+    string? CouponCode = null,
+    decimal? DiscountAmount = null
 );
 
 public record SyncResultDto(

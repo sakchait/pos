@@ -29,7 +29,7 @@ public class SyncService : ISyncService
         }
 
         // Map parsed order representations
-        var mappedOrders = new List<(Guid OrderGuid, string OrderNo, decimal TotalAmount, string PaymentMethod, DateTime CreatedAt, List<(Guid ProductGuid, decimal UnitPrice, int Quantity, decimal? SubTotal, decimal? VatAmount, decimal? ItemDiscount)> Items, string? BranchId, string? PosTerminalId)>();
+        var mappedOrders = new List<(Guid OrderGuid, string OrderNo, decimal TotalAmount, string PaymentMethod, DateTime CreatedAt, List<(Guid ProductGuid, decimal UnitPrice, int Quantity, decimal? SubTotal, decimal? VatAmount, decimal? ItemDiscount)> Items, string? BranchId, string? PosTerminalId, string? CouponCode, decimal? DiscountAmount)>();
 
         foreach (var dto in offlineOrders)
         {
@@ -50,7 +50,7 @@ public class SyncService : ISyncService
                 items.Add((productGuid, itemDto.UnitPrice, itemDto.Quantity, itemDto.SubTotal, itemDto.VatAmount, itemDto.ItemDiscount));
             }
 
-            mappedOrders.Add((orderGuid, dto.OrderNo, dto.TotalAmount, dto.PaymentMethod, dto.CreatedAt, items, dto.BranchId, dto.PosTerminalId));
+            mappedOrders.Add((orderGuid, dto.OrderNo, dto.TotalAmount, dto.PaymentMethod, dto.CreatedAt, items, dto.BranchId, dto.PosTerminalId, dto.CouponCode, dto.DiscountAmount));
         }
 
         // ดึง ExecutionStrategy เพื่อรองรับ EF Core Resilient Connections
@@ -139,7 +139,9 @@ public class SyncService : ISyncService
                         TotalAmount = orderTuple.TotalAmount,
                         GrandTotal = orderTuple.TotalAmount,
                         SubTotal = subTotal,
-                        AmountBeforeVat = subTotal,
+                        AmountBeforeVat = subTotal - (orderTuple.DiscountAmount ?? 0m),
+                        TotalItemDiscount = string.IsNullOrEmpty(orderTuple.CouponCode) ? (orderTuple.DiscountAmount ?? 0m) : 0m,
+                        CouponDiscount = !string.IsNullOrEmpty(orderTuple.CouponCode) ? (orderTuple.DiscountAmount ?? 0m) : 0m,
                         VatAmount = vatAmount,
                         PaymentMethod = orderTuple.PaymentMethod,
                         CreatedAt = orderTuple.CreatedAt,
@@ -149,6 +151,18 @@ public class SyncService : ISyncService
                         CashierId = Guid.Parse("99999999-9999-9999-9999-999999999999"), // System Admin
                         SyncStatus = "Synced"
                     };
+ 
+                    if (!string.IsNullOrEmpty(orderTuple.CouponCode))
+                    {
+                        newOrder.CouponUsage = new CouponUsage
+                        {
+                            Id = Guid.NewGuid(),
+                            OrderId = newOrder.Id,
+                            CouponCode = orderTuple.CouponCode,
+                            DiscountAmount = orderTuple.DiscountAmount ?? 0m,
+                            UsedAt = newOrder.CreatedAt
+                        };
+                    }
 
                     foreach (var itemTuple in orderTuple.Items)
                     {
