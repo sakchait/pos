@@ -344,14 +344,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({ userRole
                       <td className="p-4">
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            u.role === 'Admin'
+                            (u.roleName || u.role) === 'Admin'
                               ? 'bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
-                              : u.role === 'BranchManager'
+                              : (u.roleName || u.role) === 'BranchManager'
                               ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
                               : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                           }`}
                         >
-                          {u.role}
+                          {u.roleName || u.role}
                         </span>
                       </td>
 

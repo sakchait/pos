@@ -212,6 +212,7 @@ export interface UserAccount {
   email: string;
   phone?: string;
   role: UserRole | string;
+  roleName?: string;
   passwordHash: string;
   pin: string;
   avatarUrl?: string;
