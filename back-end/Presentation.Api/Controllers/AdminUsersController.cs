@@ -37,10 +37,11 @@ public class AdminUsersController : ControllerBase
                 u.Id,
                 u.Username,
                 u.FullName,
-                RoleName = u.Role.Name,
+                RoleName = u.Role != null ? u.Role.Name : "",
                 u.RoleId,
                 u.BranchId,
                 u.VendorId,
+                u.HourlyRate,
                 u.IsAdmin,
                 u.IsActive,
                 u.CreatedAt
@@ -65,12 +66,53 @@ public class AdminUsersController : ControllerBase
             BranchId = dto.BranchId,
             VendorId = dto.VendorId,
             IsAdmin = dto.IsAdmin,
+            HourlyRate = dto.HourlyRate,
+            PinHash = !string.IsNullOrEmpty(dto.Pin) ? BCrypt.Net.BCrypt.HashPassword(dto.Pin) : null,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
         };
 
         await _usersRepo.AddAsync(newUser);
         return Ok(new { message = "สร้างผู้ใช้งานสำเร็จ", userId = newUser.Id });
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
+    {
+        var targetUser = await _usersRepo.GetAll().FirstOrDefaultAsync(u => u.Id == id);
+        if (targetUser == null)
+            return NotFound(new { message = "ไม่พบผู้ใช้งาน" });
+
+        targetUser.FullName = dto.FullName;
+        targetUser.Username = dto.Username;
+        targetUser.RoleId = dto.RoleId;
+        targetUser.BranchId = dto.BranchId;
+        targetUser.VendorId = dto.VendorId;
+        targetUser.HourlyRate = dto.HourlyRate;
+        targetUser.IsAdmin = dto.IsAdmin;
+        targetUser.IsActive = dto.IsActive;
+
+        if (!string.IsNullOrEmpty(dto.Password))
+        {
+            targetUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        }
+        if (!string.IsNullOrEmpty(dto.Pin))
+        {
+            targetUser.PinHash = BCrypt.Net.BCrypt.HashPassword(dto.Pin);
+        }
+
+        await _usersRepo.UpdateAsync(targetUser);
+        return Ok(new { message = "อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว" });
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(Guid id)
+    {
+        var user = await _usersRepo.GetAll().FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null) return NotFound();
+
+        await _usersRepo.DeleteAsync(user);
+        return Ok(new { message = "ลบผู้ใช้งานเรียบร้อยแล้ว" });
     }
 
     [HttpPut("update-role")]

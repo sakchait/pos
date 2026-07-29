@@ -609,6 +609,53 @@ export const apiService = {
     }
   },
 
+  async getUsers(): Promise<UserAccount[]> {
+    if (USE_SERVICES) {
+      return apiFetch<UserAccount[]>('/admin/adminusers');
+    } else {
+      return db.users.toArray();
+    }
+  },
+
+  async createUser(user: Omit<UserAccount, 'id'>): Promise<any> {
+    if (USE_SERVICES) {
+      return apiFetch<any>('/admin/adminusers', {
+        method: 'POST',
+        body: JSON.stringify(user)
+      });
+    } else {
+      const newUser = {
+        ...user,
+        id: `emp-${Date.now()}`
+      } as UserAccount;
+      await db.users.add(newUser);
+      return { message: "สร้างผู้ใช้งานสำเร็จ", userId: newUser.id };
+    }
+  },
+
+  async updateUser(id: string, user: Partial<UserAccount>): Promise<any> {
+    if (USE_SERVICES) {
+      return apiFetch<any>(`/admin/adminusers/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(user)
+      });
+    } else {
+      await db.users.update(id, user);
+      return { message: "อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว" };
+    }
+  },
+
+  async deleteUser(id: string): Promise<any> {
+    if (USE_SERVICES) {
+      return apiFetch<any>(`/admin/adminusers/${id}`, {
+        method: 'DELETE'
+      });
+    } else {
+      await db.users.delete(id);
+      return { message: "ลบผู้ใช้งานเรียบร้อยแล้ว" };
+    }
+  },
+
   async loginPin(pin: string): Promise<UserAccount> {
     const res = await apiFetch<any>('/Auth/login-pin', {
       method: 'POST',

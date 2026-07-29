@@ -14,6 +14,7 @@ import {
   XCircle,
   TrendingUp,
   X,
+  RefreshCw,
 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
 import { Member } from '../../types/pos';
@@ -180,15 +181,15 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
   const avgSpent = totalCount > 0 ? totalRevenue / totalCount : 0;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6 text-slate-100 font-sans">
+    <div className="flex-1 p-6 space-y-6 overflow-y-auto max-w-7xl mx-auto w-full">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight flex items-center gap-2.5">
-            <Users className="w-7 h-7 text-orange-500" />
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Users className="w-6 h-6 text-orange-600" />
             <span>Loyalty Member Management</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-slate-500 text-xs mt-1">
             Register new customers, view loyalty points, configure membership tiers, and inspect purchase statistics.
           </p>
         </div>
@@ -199,9 +200,9 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
               handleClearForm();
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-2 bg-orange-600 hover:bg-orange-500 active:scale-95 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-orange-600/30 cursor-pointer"
+            className="px-4 py-2 bg-slate-900 dark:bg-slate-100 hover:opacity-90 text-white dark:text-slate-900 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md self-start sm:self-auto"
           >
-            <Plus className="w-4.5 h-4.5" />
+            <Plus className="w-4 h-4" />
             <span>Add Loyalty Member</span>
           </button>
         )}
@@ -209,76 +210,76 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
 
       {/* Success/Error Banners */}
       {success && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-sm text-emerald-400 font-semibold flex items-center gap-2 animate-in fade-in">
-          <CheckCircle className="w-5 h-5 shrink-0" />
+        <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-250 dark:border-emerald-900 p-3.5 rounded-2xl text-xs text-emerald-800 dark:text-emerald-400 font-medium flex items-center gap-2 animate-in fade-in">
+          <CheckCircle className="w-4 h-4 shrink-0" />
           <span>{success}</span>
         </div>
       )}
       {error && (
-        <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-sm text-rose-400 font-semibold flex items-center gap-2 animate-in fade-in">
-          <XCircle className="w-5 h-5 shrink-0" />
+        <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 p-3 rounded-2xl text-xs text-rose-800 dark:text-rose-400 font-medium flex items-center gap-2 animate-in fade-in">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Analytics Widgets Dashboard */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex items-center justify-between shadow-md">
-          <div>
-            <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Total Members</p>
-            <p className="text-3xl font-black text-white mt-1">{totalCount}</p>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div className="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800/80 p-5 rounded-2xl flex items-center gap-4 shadow-sm">
+          <div className="p-3.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 rounded-xl shrink-0">
+            <Users className="w-5 h-5" />
           </div>
-          <div className="w-12 h-12 bg-orange-500/10 text-orange-500 rounded-2xl flex items-center justify-center">
-            <Users className="w-6 h-6" />
+          <div>
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Members</p>
+            <p className="text-2xl font-extrabold mt-1 text-slate-800 dark:text-slate-100">{totalCount}</p>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex items-center justify-between shadow-md">
-          <div>
-            <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Platinum Tiers</p>
-            <p className="text-3xl font-black text-cyan-400 mt-1">{platinumCount}</p>
+        <div className="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800/80 p-5 rounded-2xl flex items-center gap-4 shadow-sm">
+          <div className="p-3.5 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-550 rounded-xl shrink-0">
+            <Award className="w-5 h-5" />
           </div>
-          <div className="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center">
-            <Award className="w-6 h-6" />
+          <div>
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Platinum Tiers</p>
+            <p className="text-2xl font-extrabold mt-1 text-slate-800 dark:text-slate-100">{platinumCount}</p>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex items-center justify-between shadow-md">
-          <div>
-            <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Gold Tiers</p>
-            <p className="text-3xl font-black text-yellow-500 mt-1">{goldCount}</p>
+        <div className="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800/80 p-5 rounded-2xl flex items-center gap-4 shadow-sm">
+          <div className="p-3.5 bg-yellow-50 dark:bg-yellow-950/40 text-yellow-500 rounded-xl shrink-0">
+            <Award className="w-5 h-5" />
           </div>
-          <div className="w-12 h-12 bg-yellow-500/10 text-yellow-500 rounded-2xl flex items-center justify-center">
-            <Award className="w-6 h-6" />
+          <div>
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Gold Tiers</p>
+            <p className="text-2xl font-extrabold mt-1 text-slate-800 dark:text-slate-100">{goldCount}</p>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex items-center justify-between shadow-md">
-          <div>
-            <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Avg Customer Spend</p>
-            <p className="text-3xl font-black text-emerald-400 mt-1">${avgSpent.toFixed(2)}</p>
+        <div className="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800/80 p-5 rounded-2xl flex items-center gap-4 shadow-sm">
+          <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 rounded-xl shrink-0">
+            <DollarSign className="w-5 h-5" />
           </div>
-          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center">
-            <DollarSign className="w-6 h-6" />
+          <div>
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Avg Customer Spend</p>
+            <p className="text-2xl font-extrabold mt-1 text-slate-800 dark:text-slate-100">${avgSpent.toFixed(2)}</p>
           </div>
         </div>
       </div>
 
       {/* Main Members Grid/Table Container */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800/80 rounded-2xl shadow-sm overflow-hidden">
         {/* Table Controls */}
-        <div className="p-5 border-b border-slate-800 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="p-4 border-b border-slate-150 dark:border-slate-800 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:max-w-md">
-            <Search className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-450 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search by name, phone number, or member number..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-850 rounded-2xl pl-11 pr-4 py-2.5 text-xs text-white placeholder:text-slate-650 focus:outline-none focus:border-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-slate-200 dark:border-slate-800 bg-transparent rounded-xl text-xs focus:ring-1 focus:ring-orange-500 outline-none transition-all"
             />
           </div>
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-slate-450">
             Showing {filteredMembers.length} of {totalCount} registered accounts
           </div>
         </div>
@@ -286,81 +287,81 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
         {/* Data Table */}
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-400">
-              <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
-              <span className="text-xs font-semibold">Loading Member Registry...</span>
+            <div className="p-10 text-center text-slate-400">
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-slate-400" />
+              Loading Member Registry...
             </div>
           ) : filteredMembers.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-2">
-              <Users className="w-12 h-12 text-slate-700" />
+            <div className="p-10 text-center text-slate-400">
+              <Users className="w-12 h-12 text-slate-300 mx-auto mb-2" />
               <p className="text-sm font-semibold">No loyalty members found.</p>
-              <p className="text-xs text-slate-600">Try matching different search terms or register a new customer.</p>
+              <p className="text-xs text-slate-400">Try matching different search terms or register a new customer.</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-950/40 text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-slate-850">
-                  <th className="py-4 px-6">Member ID / Tier</th>
-                  <th className="py-4 px-6">Full Name</th>
-                  <th className="py-4 px-6">Contact Info</th>
-                  <th className="py-4 px-6 text-center">Loyalty Points</th>
-                  <th className="py-4 px-6 text-right">Total Spent</th>
-                  <th className="py-4 px-6">Date Joined</th>
-                  {isManager && <th className="py-4 px-6 text-center">Actions</th>}
+                <tr className="bg-slate-50 dark:bg-slate-950/40 text-[10px] font-bold text-slate-450 uppercase tracking-wider border-b border-slate-150 dark:border-slate-800/80">
+                  <th className="p-4 pl-6">Member ID / Tier</th>
+                  <th className="p-4">Full Name</th>
+                  <th className="p-4">Contact Info</th>
+                  <th className="p-4 text-center">Loyalty Points</th>
+                  <th className="p-4 text-right">Total Spent</th>
+                  <th className="p-4">Date Joined</th>
+                  {isManager && <th className="p-4 pr-6 text-center">Actions</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-850 text-xs">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                 {filteredMembers.map((m) => {
-                  let tierColor = 'bg-slate-800 text-slate-400';
-                  if (m.tier.toLowerCase() === 'gold') tierColor = 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20';
-                  else if (m.tier.toLowerCase() === 'platinum') tierColor = 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20';
-                  else if (m.tier.toLowerCase() === 'silver') tierColor = 'bg-slate-300/10 text-slate-300 border border-slate-300/20';
-                  else if (m.tier.toLowerCase() === 'bronze') tierColor = 'bg-amber-800/10 text-amber-500 border border-amber-800/20';
+                  let tierColor = 'bg-slate-100 text-slate-655 dark:bg-slate-800 dark:text-slate-400';
+                  if (m.tier.toLowerCase() === 'gold') tierColor = 'bg-yellow-100/70 text-yellow-700 dark:bg-yellow-950/40 dark:text-yellow-500 border border-yellow-250 dark:border-yellow-900';
+                  else if (m.tier.toLowerCase() === 'platinum') tierColor = 'bg-cyan-100/70 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900';
+                  else if (m.tier.toLowerCase() === 'silver') tierColor = 'bg-slate-100 text-slate-655 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
+                  else if (m.tier.toLowerCase() === 'bronze') tierColor = 'bg-orange-100/70 text-orange-700 dark:bg-orange-950/40 dark:text-orange-500 border border-orange-200 dark:border-orange-900';
 
                   return (
-                    <tr key={m.id} className="hover:bg-slate-950/20 transition-all">
-                      <td className="py-4.5 px-6">
-                        <p className="font-mono font-bold text-white">{m.memberNo}</p>
+                    <tr key={m.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-colors">
+                      <td className="p-4 pl-6">
+                        <p className="font-mono font-bold text-slate-700 dark:text-slate-300">{m.memberNo}</p>
                         <span className={`inline-block text-[9px] uppercase font-extrabold px-2 py-0.5 rounded-full mt-1.5 ${tierColor}`}>
                           {m.tier}
                         </span>
                       </td>
-                      <td className="py-4.5 px-6 font-bold text-slate-100">{m.name}</td>
-                      <td className="py-4.5 px-6 space-y-1">
-                        <div className="flex items-center gap-1.5 text-slate-400">
+                      <td className="p-4 font-bold text-slate-700 dark:text-slate-300">{m.name}</td>
+                      <td className="p-4 space-y-1">
+                        <div className="flex items-center gap-1.5 text-slate-500">
                           <Phone className="w-3.5 h-3.5" />
                           <span>{m.phone}</span>
                         </div>
                         {m.email && (
-                          <div className="flex items-center gap-1.5 text-slate-500">
+                          <div className="flex items-center gap-1.5 text-slate-400">
                             <Mail className="w-3.5 h-3.5" />
                             <span>{m.email}</span>
                           </div>
                         )}
                       </td>
-                      <td className="py-4.5 px-6 text-center font-mono font-black text-amber-400">
+                      <td className="p-4 text-center font-mono font-bold text-amber-500 dark:text-amber-400">
                         {m.points.toLocaleString()} pts
                       </td>
-                      <td className="py-4.5 px-6 text-right font-mono font-bold text-emerald-400">
+                      <td className="p-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-455">
                         ${(m.totalSpent || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
-                      <td className="py-4.5 px-6 text-slate-400">{m.joinDate}</td>
+                      <td className="p-4 text-slate-450">{m.joinDate}</td>
                       {isManager && (
-                        <td className="py-4.5 px-6">
+                        <td className="p-4 pr-6">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => handleEditClick(m)}
-                              className="p-2 bg-slate-800 hover:bg-slate-755 text-slate-300 rounded-xl hover:text-white transition-all cursor-pointer"
+                              className="p-1.5 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-lg transition-colors"
                               title="Edit Member Details"
                             >
-                              <Edit3 className="w-4 h-4" />
+                              <Edit3 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleDeleteClick(m)}
-                              className="p-2 bg-slate-800 hover:bg-rose-950/40 text-slate-400 rounded-xl hover:text-rose-400 transition-all cursor-pointer"
+                              className="p-1.5 border border-slate-200 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-650 rounded-lg transition-colors"
                               title="Delete Member"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </td>
@@ -376,31 +377,31 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
 
       {/* Register/Edit Member Form Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800 p-6 rounded-3xl w-full max-w-lg shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-black text-white">
+                <h3 className="text-base font-bold text-slate-850 dark:text-slate-100">
                   {isEditing ? 'Update Loyalty Member' : 'Register New Loyalty Member'}
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-[10px] text-slate-450 mt-0.5">
                   {isEditing ? 'Modify account details, points balances, or tier settings.' : 'Fill in client contact information to initiate membership.'}
                 </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+                className="p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-850 rounded-full transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Body / Form */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
                     Customer Full Name
                   </label>
                   <input
@@ -409,12 +410,12 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. John Doe"
-                    className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-650 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
                     Phone Number
                   </label>
                   <input
@@ -423,30 +424,30 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="e.g. 0812345678"
-                    className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-650 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-600 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="e.g. customer@example.com"
-                    className="w-full bg-slate-950 border border-slate-850 rounded-xl pl-11 pr-4 py-2.5 text-xs text-white placeholder:text-slate-650 focus:outline-none focus:border-orange-500"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-455 uppercase tracking-wider">
                     Points Balance
                   </label>
                   <input
@@ -454,12 +455,12 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
                     min="0"
                     value={points}
                     onChange={(e) => setPoints(Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl font-mono text-[11px]"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-455 uppercase tracking-wider">
                     Total Spent ($)
                   </label>
                   <input
@@ -468,18 +469,18 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
                     min="0"
                     value={totalSpent}
                     onChange={(e) => setTotalSpent(Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl font-mono text-[11px]"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-455 uppercase tracking-wider">
                     Loyalty Tier
                   </label>
                   <select
                     value={tier}
                     onChange={(e) => setTier(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-850 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer"
                   >
                     <option value="Standard">Standard</option>
                     <option value="Bronze">Bronze</option>
@@ -491,17 +492,17 @@ export const MemberManagementView: React.FC<MemberManagementViewProps> = ({ user
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 justify-end pt-4 border-t border-slate-800">
+              <div className="flex gap-3 justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 bg-slate-800 hover:bg-slate-750 text-slate-300 font-bold text-xs rounded-xl transition-all cursor-pointer"
+                  className="px-4 py-2 border border-slate-200 dark:border-slate-800 text-slate-650 dark:text-slate-350 rounded-xl font-bold text-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/30 transition-all cursor-pointer"
+                  className="px-4 py-2 bg-slate-900 dark:bg-slate-100 hover:opacity-90 text-white dark:text-slate-900 rounded-xl font-bold text-xs shadow-md"
                 >
                   {isEditing ? 'Save Changes' : 'Register Customer'}
                 </button>

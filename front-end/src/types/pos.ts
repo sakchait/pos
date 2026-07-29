@@ -223,6 +223,11 @@ export interface UserAccount {
   selectedBranchName?: string;
   selectedTerminalId?: string;
   selectedTerminalDbId?: string;
+  hourlyRate?: number;
+  isActive?: boolean;
+  branchId?: string;
+  vendorId?: string;
+  isAdmin?: boolean;
 }
 
 export interface MemberPromotion {

@@ -32,6 +32,7 @@ import { RoleManagementView } from './components/admin/RoleManagementView';
 import { CouponManagementView } from './components/admin/CouponManagementView';
 import { MemberManagementView } from './components/admin/MemberManagementView';
 import { SystemAuditLogManagementView } from './components/admin/SystemAuditLogManagementView';
+import { UserManagementView } from './components/admin/UserManagementView';
 import { LoginView } from './components/auth/LoginView';
 import { ProfileView } from './components/auth/ProfileView';
 import { ManagerPinModal } from './components/common/ManagerPinModal';
@@ -67,6 +68,7 @@ export function App() {
     '/admin/coupons',
     '/admin/members',
     '/admin/audit-logs',
+    '/admin/users',
     '/profile',
   ]);
 
@@ -207,6 +209,7 @@ export function App() {
     { path: '/inventory', label: 'Inventory Stock', icon: Layers },
     { path: '/admin/coupons', label: 'Coupon Management', icon: Tag },
     { path: '/admin/members', label: 'Member Management', icon: Users },
+    { path: '/admin/users', label: 'User Management', icon: UserCircle },
     { path: '/reports', label: 'Audit & HR Reports', icon: FileSpreadsheet },
     { path: '/admin/audit-logs', label: 'Audit Log Management', icon: ShieldAlert },
     { path: '/admin/roles', label: 'Access Control', icon: UserCog },
@@ -419,6 +422,10 @@ export function App() {
 
         {activeRoute === '/admin/audit-logs' && (
           <SystemAuditLogManagementView currentUser={currentUser} />
+        )}
+
+        {activeRoute === '/admin/users' && (
+          <UserManagementView userRole={activeRole} />
         )}
 
         {activeRoute === '/profile' && (

@@ -198,6 +198,48 @@ async function startServer() {
     });
   });
 
+  app.get('/api/admin/adminusers', (req, res) => {
+    const list = serverDb.users.map(u => ({
+      ...u,
+      roleName: u.role
+    }));
+    res.json(list);
+  });
+
+  app.post('/api/admin/adminusers', (req, res) => {
+    const newUser = {
+      ...req.body,
+      id: `emp-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      isActive: true
+    };
+    serverDb.users.push(newUser);
+    res.json({ message: "สร้างผู้ใช้งานสำเร็จ", userId: newUser.id });
+  });
+
+  app.put('/api/admin/adminusers/:id', (req, res) => {
+    const idx = serverDb.users.findIndex(u => u.id === req.params.id);
+    if (idx !== -1) {
+      serverDb.users[idx] = {
+        ...serverDb.users[idx],
+        ...req.body
+      };
+      res.json({ message: "อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว" });
+    } else {
+      res.status(404).json({ message: "ไม่พบผู้ใช้งาน" });
+    }
+  });
+
+  app.delete('/api/admin/adminusers/:id', (req, res) => {
+    const idx = serverDb.users.findIndex(u => u.id === req.params.id);
+    if (idx !== -1) {
+      serverDb.users.splice(idx, 1);
+      res.json({ message: "ลบผู้ใช้งานเรียบร้อยแล้ว" });
+    } else {
+      res.status(404).json({ message: "ไม่พบผู้ใช้งาน" });
+    }
+  });
+
   app.get('/api/shifts/active', (req, res) => {
     const cashierId = req.query.cashierId as string;
     const active = serverDb.shifts.find(s => s.cashierId === cashierId && s.status === 'OPEN');

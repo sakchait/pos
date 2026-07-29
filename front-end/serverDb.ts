@@ -1,7 +1,7 @@
 import { 
   Product, Coupon, Member, Order, Shift, DrawerOpenLog, 
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch, 
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage, SystemAuditLog 
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage, SystemAuditLog, UserAccount 
 } from './src/types/pos';
 
 export let products: Product[] = [
@@ -429,5 +429,73 @@ export let systemAuditLogs: SystemAuditLog[] = [
     description: 'ShiftId: s-101 - Significant Cash Shortage: Missing -250.00 THB.',
     hmacSignature: '8ab4a0e28f14b2d18bc47e33527b1ee880cf5a7d6568b6ff9a34bc762b322a3d',
     createdAt: '2026-07-29T09:15:30Z',
+  }
+];
+
+export let users: UserAccount[] = [
+  {
+    id: 'emp-101',
+    username: 'sarah',
+    fullName: 'Sarah Jenkins',
+    email: 'sarah@omnipos.com',
+    phone: '+1 (555) 123-4567',
+    role: 'Cashier',
+    passwordHash: 'Cashier@1234',
+    pin: '1234',
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+    lastLoginAt: new Date().toISOString(),
+    department: 'Operations',
+    employeeCode: 'EMP-101',
+    hourlyRate: 50.00,
+    isActive: true,
+  },
+  {
+    id: 'emp-102',
+    username: 'john',
+    fullName: 'John Doe',
+    email: 'john@omnipos.com',
+    phone: '+1 (555) 234-5678',
+    role: 'BranchManager',
+    passwordHash: 'Manager@1234',
+    pin: '5678',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    lastLoginAt: new Date().toISOString(),
+    department: 'Management',
+    employeeCode: 'EMP-102',
+    hourlyRate: 85.00,
+    isActive: true,
+  },
+  {
+    id: 'emp-103',
+    username: 'mark',
+    fullName: 'Mark Tanaka',
+    email: 'mark@omnipos.com',
+    phone: '+1 (555) 345-6789',
+    role: 'StockClerk',
+    passwordHash: 'Stock@1234',
+    pin: '4321',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    lastLoginAt: new Date().toISOString(),
+    department: 'Inventory & Receiving',
+    employeeCode: 'EMP-103',
+    hourlyRate: 55.00,
+    isActive: true,
+  },
+  {
+    id: 'emp-105',
+    username: 'admin',
+    fullName: 'System Administrator',
+    email: 'admin@omnipos.com',
+    phone: '+1 (555) 999-0000',
+    role: 'Admin',
+    passwordHash: 'Admin@1234',
+    pin: '9999',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    lastLoginAt: new Date().toISOString(),
+    department: 'IT Security & Admin',
+    employeeCode: 'EMP-00001',
+    hourlyRate: 120.00,
+    isActive: true,
+    isAdmin: true,
   }
 ];

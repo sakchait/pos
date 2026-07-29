@@ -606,7 +606,8 @@ export async function seedRoleRoutesIfNeeded() {
   const allRoutes = await db.roleRoutes.toArray();
   const hasMembers = allRoutes.some((r) => r.routes.includes('/admin/members'));
   const hasAuditLogs = allRoutes.some((r) => r.routes.includes('/admin/audit-logs'));
-  if (allRoutes.length < 7 || !hasMembers || !hasAuditLogs) {
+  const hasUsers = allRoutes.some((r) => r.routes.includes('/admin/users'));
+  if (allRoutes.length < 7 || !hasMembers || !hasAuditLogs || !hasUsers) {
     await db.roleRoutes.clear();
     const initialRoleRoutes: RoleRoutePermission[] = [
       {
@@ -647,6 +648,7 @@ export async function seedRoleRoutesIfNeeded() {
           '/admin/coupons',
           '/admin/members',
           '/admin/audit-logs',
+          '/admin/users',
           '/profile',
         ],
       },

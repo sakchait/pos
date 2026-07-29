@@ -1,4 +1,4 @@
-﻿// Application/DTOs/UserManagementDtos.cs
+// Application/DTOs/UserManagementDtos.cs
 namespace Pos.Application.DTOs;
 
 // DTO สำหรับ Admin จัดการ User อื่นๆ
@@ -9,7 +9,22 @@ public record CreateUserDto(
     Guid RoleId,
     Guid? BranchId,
     Guid? VendorId,
-    bool IsAdmin
+    bool IsAdmin,
+    string? Pin = null,
+    decimal HourlyRate = 50.00m
+);
+
+public record UpdateUserDto(
+    string Username,
+    string? Password,
+    string FullName,
+    Guid RoleId,
+    Guid? BranchId,
+    Guid? VendorId,
+    decimal HourlyRate,
+    bool IsAdmin,
+    bool IsActive,
+    string? Pin = null
 );
 
 public record UpdateUserRoleDto(
