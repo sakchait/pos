@@ -24,6 +24,8 @@ export interface CartItem {
   quantity: number;
   selectedModifiers: string[];
   itemDiscount: number; // percentage or fixed amount
+  subtotal?: number;  // Price before VAT 7%
+  vatAmount?: number; // VAT 7% amount
 }
 
 export type PaymentMethod = 'Cash' | 'CreditCard' | 'PromptPayQR' | 'GiftCard';

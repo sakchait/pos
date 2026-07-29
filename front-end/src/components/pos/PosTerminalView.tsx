@@ -284,10 +284,30 @@ export const PosTerminalView: React.FC<PosTerminalViewProps> = ({
     const finalOrderNo = customOrderNo || currentOrderNo;
     const finalCreatedAt = customCreatedAt || new Date().toISOString();
 
+    const mappedItems = cart.map(item => {
+      const itemRawSubtotal = item.product.price * item.quantity - item.itemDiscount;
+      let itemVat = 0;
+      let itemSubtotalBeforeVat = itemRawSubtotal;
+
+      if (isVatInclusive) {
+        itemVat = itemRawSubtotal - itemRawSubtotal / (1 + vatRate);
+        itemSubtotalBeforeVat = itemRawSubtotal - itemVat;
+      } else {
+        itemVat = itemRawSubtotal * vatRate;
+        itemSubtotalBeforeVat = itemRawSubtotal;
+      }
+
+      return {
+        ...item,
+        subtotal: Number(itemSubtotalBeforeVat.toFixed(2)),
+        vatAmount: Number(itemVat.toFixed(2))
+      };
+    });
+
     const newOrder: Order = {
       id: finalOrderId,
       orderNo: finalOrderNo,
-      items: cart,
+      items: mappedItems,
       subtotal,
       vatRate,
       vatAmount,

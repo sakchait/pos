@@ -119,6 +119,8 @@ public class OrdersController : ControllerBase
         public ProductDto Product { get; set; } = new();
         public int Quantity { get; set; }
         public decimal ItemDiscount { get; set; }
+        public decimal? SubTotal { get; set; }
+        public decimal? VatAmount { get; set; }
     }
 
     public class PaymentDto
@@ -254,6 +256,10 @@ public class OrdersController : ControllerBase
 
         foreach (var item in request.Items)
         {
+            decimal rawSubtotal = item.Quantity * item.Product.Price - item.ItemDiscount;
+            decimal itemVat = Math.Round(rawSubtotal - (rawSubtotal / 1.07m), 2, MidpointRounding.AwayFromZero);
+            decimal itemSubTotal = rawSubtotal - itemVat;
+
             order.Items.Add(new OrderItem
             {
                 Id = Guid.NewGuid(),
@@ -262,7 +268,8 @@ public class OrdersController : ControllerBase
                 UnitPrice = item.Product.Price,
                 Quantity = item.Quantity,
                 ItemDiscount = item.ItemDiscount,
-                SubTotal = item.Quantity * item.Product.Price - item.ItemDiscount
+                SubTotal = item.SubTotal ?? itemSubTotal,
+                VatAmount = item.VatAmount ?? itemVat
             });
         }
 

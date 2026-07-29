@@ -4,7 +4,10 @@ namespace Pos.Application.DTOs;
 public record CreateOrderItemDto(
     string ProductId,
     decimal UnitPrice,
-    int Quantity
+    int Quantity,
+    decimal? SubTotal = null,
+    decimal? VatAmount = null,
+    decimal? ItemDiscount = null
 );
 
 public record CreateOrderDto(

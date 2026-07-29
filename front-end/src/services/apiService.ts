@@ -218,7 +218,10 @@ export const apiService = {
             items: order.items.map(item => ({
               productId: item.product.id,
               unitPrice: item.product.price,
-              quantity: item.quantity
+              quantity: item.quantity,
+              subTotal: item.subtotal,
+              vatAmount: item.vatAmount,
+              itemDiscount: item.itemDiscount
             }))
           }])
         });

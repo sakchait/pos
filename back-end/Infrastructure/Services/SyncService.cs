@@ -29,12 +29,12 @@ public class SyncService : ISyncService
         }
 
         // Map parsed order representations
-        var mappedOrders = new List<(Guid OrderGuid, string OrderNo, decimal TotalAmount, string PaymentMethod, DateTime CreatedAt, List<(Guid ProductGuid, decimal UnitPrice, int Quantity)> Items, string? BranchId, string? PosTerminalId)>();
+        var mappedOrders = new List<(Guid OrderGuid, string OrderNo, decimal TotalAmount, string PaymentMethod, DateTime CreatedAt, List<(Guid ProductGuid, decimal UnitPrice, int Quantity, decimal? SubTotal, decimal? VatAmount, decimal? ItemDiscount)> Items, string? BranchId, string? PosTerminalId)>();
 
         foreach (var dto in offlineOrders)
         {
             var orderGuid = Guid.TryParse(dto.Id, out var parsedOrderId) ? parsedOrderId : Guid.NewGuid();
-            var items = new List<(Guid ProductGuid, decimal UnitPrice, int Quantity)>();
+            var items = new List<(Guid ProductGuid, decimal UnitPrice, int Quantity, decimal? SubTotal, decimal? VatAmount, decimal? ItemDiscount)>();
 
             foreach (var itemDto in dto.Items)
             {
@@ -47,7 +47,7 @@ public class SyncService : ISyncService
                 {
                     productGuid = Guid.Parse($"11111111-1111-1111-1111-1111111111{index:D2}");
                 }
-                items.Add((productGuid, itemDto.UnitPrice, itemDto.Quantity));
+                items.Add((productGuid, itemDto.UnitPrice, itemDto.Quantity, itemDto.SubTotal, itemDto.VatAmount, itemDto.ItemDiscount));
             }
 
             mappedOrders.Add((orderGuid, dto.OrderNo, dto.TotalAmount, dto.PaymentMethod, dto.CreatedAt, items, dto.BranchId, dto.PosTerminalId));
@@ -158,6 +158,12 @@ public class SyncService : ISyncService
                             continue;
                         }
 
+                        // Calculate item-level VAT (7% inclusive as fallback) if not provided by client
+                        decimal itemDiscount = itemTuple.ItemDiscount ?? 0m;
+                        decimal rawSubtotal = itemTuple.Quantity * itemTuple.UnitPrice - itemDiscount;
+                        decimal calculatedVat = Math.Round(rawSubtotal - (rawSubtotal / 1.07m), 2, MidpointRounding.AwayFromZero);
+                        decimal calculatedSubtotalBeforeVat = rawSubtotal - calculatedVat;
+ 
                         // สร้าง OrderItem
                         newOrder.Items.Add(new OrderItem
                         {
@@ -166,7 +172,9 @@ public class SyncService : ISyncService
                             ProductId = itemTuple.ProductGuid,
                             UnitPrice = itemTuple.UnitPrice,
                             Quantity = itemTuple.Quantity,
-                            SubTotal = itemTuple.Quantity * itemTuple.UnitPrice
+                            ItemDiscount = itemDiscount,
+                            SubTotal = itemTuple.SubTotal ?? calculatedSubtotalBeforeVat,
+                            VatAmount = itemTuple.VatAmount ?? calculatedVat
                         });
 
                         // ตัดสต็อก

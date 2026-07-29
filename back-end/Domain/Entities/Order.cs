@@ -1,4 +1,4 @@
-﻿namespace Pos.Domain.Entities;
+namespace Pos.Domain.Entities;
 
 public class Order
 {
@@ -39,7 +39,8 @@ public class OrderItem
     public decimal UnitPrice { get; set; }
     public int Quantity { get; set; }
     public decimal ItemDiscount { get; set; }
-    public decimal SubTotal { get; set; }
+    public decimal SubTotal { get; set; } // Price before VAT 7%
+    public decimal VatAmount { get; set; }
 
     public Product? Product { get; set; }
 }
