@@ -28,6 +28,24 @@ async function startServer() {
   app.get('/api/products', (req, res) => {
     res.json(serverDb.products);
   });
+  app.post('/api/products', (req, res) => {
+    const { sku, name, price, stock, minStockThreshold, category } = req.body;
+    if (!sku || !name) return res.status(400).json({ error: 'Sku and Name are required' });
+    const existing = serverDb.products.some(p => p.sku.toLowerCase() === sku.toLowerCase());
+    if (existing) return res.status(400).json({ error: `Product with SKU '${sku}' already exists.` });
+    const newProduct = {
+      id: `p-${Date.now()}`,
+      sku,
+      name,
+      price: Number(price) || 0,
+      stock: Number(stock) || 0,
+      minStockThreshold: Number(minStockThreshold) || 10,
+      category: category || 'General',
+      isAvailable: true
+    };
+    serverDb.products.push(newProduct);
+    res.json({ message: 'Product created successfully.', id: newProduct.id });
+  });
   app.put('/api/products/:id', (req, res) => {
     const idx = serverDb.products.findIndex(p => p.id === req.params.id);
     if (idx !== -1) {
@@ -35,6 +53,55 @@ async function startServer() {
       res.json({ success: true, product: serverDb.products[idx] });
     } else {
       res.status(404).json({ error: 'Product not found' });
+    }
+  });
+  app.delete('/api/products/:id', (req, res) => {
+    const idx = serverDb.products.findIndex(p => p.id === req.params.id);
+    if (idx !== -1) {
+      serverDb.products[idx].isAvailable = false;
+      res.json({ message: 'Product deleted successfully.' });
+    } else {
+      res.status(404).json({ error: 'Product not found' });
+    }
+  });
+
+  // Category Mock APIs
+  app.get('/api/categories', (req, res) => {
+    res.json(serverDb.categories);
+  });
+  app.post('/api/categories', (req, res) => {
+    const { name, code } = req.body;
+    if (!name || !code) return res.status(400).json({ error: 'Name and Code are required' });
+    const existing = serverDb.categories.some(c => c.code.toLowerCase() === code.toLowerCase());
+    if (existing) return res.status(400).json({ error: `Category with code '${code}' already exists.` });
+    const newCategory = { id: `cat-${Date.now()}`, name, code };
+    serverDb.categories.push(newCategory);
+    res.json({ message: 'Category created successfully.', id: newCategory.id });
+  });
+  app.put('/api/categories/:id', (req, res) => {
+    const idx = serverDb.categories.findIndex(c => c.id === req.params.id);
+    if (idx !== -1) {
+      const { name, code } = req.body;
+      if (name) serverDb.categories[idx].name = name;
+      if (code) {
+        if (serverDb.categories[idx].code.toLowerCase() !== code.toLowerCase()) {
+          const existing = serverDb.categories.some(c => c.code.toLowerCase() === code.toLowerCase());
+          if (existing) return res.status(400).json({ error: `Category with code '${code}' already exists.` });
+        }
+        serverDb.categories[idx].code = code;
+      }
+      res.json({ message: 'Category updated successfully.' });
+    } else {
+      res.status(404).json({ error: 'Category not found' });
+    }
+  });
+  app.delete('/api/categories/:id', (req, res) => {
+    const idx = serverDb.categories.findIndex(c => c.id === req.params.id);
+    if (idx !== -1) {
+      serverDb.categories.splice(idx, 1);
+      res.json({ message: 'Category deleted successfully.' });
+    } else {
+      res.status(404).json({ error: 'Category not found' });
     }
   });
 

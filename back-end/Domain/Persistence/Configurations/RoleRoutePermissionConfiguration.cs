@@ -43,6 +43,8 @@ public class RoleRoutePermissionConfiguration : IEntityTypeConfiguration<RoleRou
             new RoleRoutePermission { Id = Guid.Parse("aa111111-1111-1111-1111-111111111123"), RoleId = new Guid("11111111-1111-1111-1111-111111111111"), RoutePath = "/admin/roles", IsAllowed = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
             new RoleRoutePermission { Id = Guid.Parse("aa111111-1111-1111-1111-111111111127"), RoleId = new Guid("11111111-1111-1111-1111-111111111111"), RoutePath = "/admin/audit-logs", IsAllowed = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
             new RoleRoutePermission { Id = Guid.Parse("aa111111-1111-1111-1111-111111111128"), RoleId = new Guid("11111111-1111-1111-1111-111111111111"), RoutePath = "/admin/users", IsAllowed = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new RoleRoutePermission { Id = Guid.Parse("aa111111-1111-1111-1111-111111111129"), RoleId = new Guid("11111111-1111-1111-1111-111111111111"), RoutePath = "/admin/products", IsAllowed = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new RoleRoutePermission { Id = Guid.Parse("aa111111-1111-1111-1111-111111111130"), RoleId = new Guid("11111111-1111-1111-1111-111111111111"), RoutePath = "/admin/categories", IsAllowed = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
             new RoleRoutePermission { Id = Guid.Parse("aa111111-1111-1111-1111-111111111124"), RoleId = new Guid("11111111-1111-1111-1111-111111111111"), RoutePath = "/profile", IsAllowed = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
         );
     }

@@ -20,6 +20,7 @@ import {
   Layers,
   Tag,
   Users,
+  Package,
 } from 'lucide-react';
 
 import { PosTerminalView } from './components/pos/PosTerminalView';
@@ -33,6 +34,8 @@ import { CouponManagementView } from './components/admin/CouponManagementView';
 import { MemberManagementView } from './components/admin/MemberManagementView';
 import { SystemAuditLogManagementView } from './components/admin/SystemAuditLogManagementView';
 import { UserManagementView } from './components/admin/UserManagementView';
+import { ProductManagementView } from './components/admin/ProductManagementView';
+import { CategoryManagementView } from './components/admin/CategoryManagementView';
 import { LoginView } from './components/auth/LoginView';
 import { ProfileView } from './components/auth/ProfileView';
 import { ManagerPinModal } from './components/common/ManagerPinModal';
@@ -129,7 +132,7 @@ export function App() {
     if (rp) {
       setAllowedRoutes([...rp.routes, '/profile']);
     } else {
-      setAllowedRoutes(['/pos', '/shifts', '/shifts/schedule', '/vendor', '/restocking', '/inventory', '/reports', '/admin/roles', '/profile']);
+      setAllowedRoutes(['/pos', '/shifts', '/shifts/schedule', '/vendor', '/restocking', '/inventory', '/reports', '/admin/roles', '/admin/products', '/admin/categories', '/profile']);
     }
   };
 
@@ -220,6 +223,8 @@ export function App() {
     { path: '/admin/coupons', label: 'Coupon Management', icon: Tag },
     { path: '/admin/members', label: 'Member Management', icon: Users },
     { path: '/admin/users', label: 'User Management', icon: UserCircle },
+    { path: '/admin/products', label: 'Product Catalog', icon: Package },
+    { path: '/admin/categories', label: 'Product Categories', icon: Tag },
     { path: '/reports', label: 'Audit & HR Reports', icon: FileSpreadsheet },
     { path: '/admin/audit-logs', label: 'Audit Log Management', icon: ShieldAlert },
     { path: '/admin/roles', label: 'Access Control', icon: UserCog },
@@ -436,6 +441,14 @@ export function App() {
 
         {activeRoute === '/admin/users' && (
           <UserManagementView userRole={activeRole} />
+        )}
+
+        {activeRoute === '/admin/products' && (
+          <ProductManagementView userRole={activeRole} />
+        )}
+
+        {activeRoute === '/admin/categories' && (
+          <CategoryManagementView userRole={activeRole} />
         )}
 
         {activeRoute === '/profile' && (

@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Pos.Application.Repositories;
 using Pos.Domain.Entities;
 using Presentation.Api.Authorization;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pos.Api.Controllers;
 
@@ -12,13 +16,15 @@ namespace Pos.Api.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IRepository<Product> _productsRepo;
+    private readonly IRepository<Category> _categoriesRepo;
 
-    public ProductsController(IRepository<Product> productsRepo)
+    public ProductsController(IRepository<Product> productsRepo, IRepository<Category> categoriesRepo)
     {
         _productsRepo = productsRepo;
+        _categoriesRepo = categoriesRepo;
     }
 
-    // 1. GET /api/products - Retrieves all products mapped to frontend Product structure
+    // 1. GET /api/products - Retrieves all products
     [HttpGet]
     public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
     {
@@ -43,7 +49,41 @@ public class ProductsController : ControllerBase
         return Ok(result);
     }
 
-    // 2. PUT /api/products/{id} - Updates product details (e.g., inventory levels)
+    // 2. POST /api/products - Creates a new product
+    [HttpPost]
+    public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Sku) || string.IsNullOrWhiteSpace(dto.Name))
+            return BadRequest(new { message = "Sku and Name are required." });
+
+        var existing = await _productsRepo.GetAll().AnyAsync(p => p.Code.ToLower() == dto.Sku.ToLower(), cancellationToken);
+        if (existing)
+            return BadRequest(new { message = $"Product with SKU '{dto.Sku}' already exists." });
+
+        var category = await _categoriesRepo.GetAll()
+            .FirstOrDefaultAsync(c => c.Name.ToLower() == dto.Category.ToLower() && c.IsActive, cancellationToken);
+
+        var product = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = dto.Sku,
+            Name = dto.Name,
+            Price = dto.Price,
+            StockQuantity = dto.Stock,
+            MinStockThreshold = dto.MinStockThreshold,
+            CategoryId = category?.Id,
+            IsActive = true,
+            Version = 1,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _productsRepo.AddAsync(product);
+        await _productsRepo.SaveChangesAsync(cancellationToken);
+
+        return Ok(new { message = "Product created successfully.", id = product.Id });
+    }
+
+    // 3. PUT /api/products/{id} - Updates product details
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] System.Text.Json.JsonElement updates, CancellationToken cancellationToken)
     {
@@ -55,6 +95,9 @@ public class ProductsController : ControllerBase
 
         if (updates.TryGetProperty("name", out var nameProp) && nameProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.Name = nameProp.GetString() ?? "";
+
+        if (updates.TryGetProperty("sku", out var skuProp) && skuProp.ValueKind != System.Text.Json.JsonValueKind.Null)
+            product.Code = skuProp.GetString() ?? "";
 
         if (updates.TryGetProperty("price", out var priceProp) && priceProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.Price = priceProp.GetDecimal();
@@ -68,12 +111,35 @@ public class ProductsController : ControllerBase
         if (updates.TryGetProperty("isAvailable", out var availableProp) && availableProp.ValueKind != System.Text.Json.JsonValueKind.Null)
             product.IsActive = availableProp.GetBoolean();
 
+        if (updates.TryGetProperty("category", out var categoryProp) && categoryProp.ValueKind != System.Text.Json.JsonValueKind.Null)
+        {
+            var categoryName = categoryProp.GetString() ?? "";
+            var category = await _categoriesRepo.GetAll()
+                .FirstOrDefaultAsync(c => c.Name.ToLower() == categoryName.ToLower() && c.IsActive, cancellationToken);
+            product.CategoryId = category?.Id;
+        }
+
         product.UpdatedAt = DateTime.UtcNow;
         product.Version += 1;
 
         await _productsRepo.UpdateAsync(product);
+        await _productsRepo.SaveChangesAsync(cancellationToken);
 
         return Ok(new { message = "Product updated successfully." });
+    }
+
+    // 4. DELETE /api/products/{id} - Soft deletes a product
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProduct(Guid id, CancellationToken cancellationToken)
+    {
+        var product = await _productsRepo.GetAll().FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        if (product == null)
+            return NotFound(new { message = "Product not found." });
+
+        product.IsActive = false;
+        await _productsRepo.SaveChangesAsync(cancellationToken);
+
+        return Ok(new { message = "Product deleted successfully." });
     }
 
     private static string GetDefaultImageUrl(string code)
@@ -91,4 +157,14 @@ public class ProductsController : ControllerBase
             _ => ""
         };
     }
+}
+
+public class CreateProductDto
+{
+    public string Sku { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public decimal Price { get; set; }
+    public int Stock { get; set; }
+    public int MinStockThreshold { get; set; } = 10;
+    public string Category { get; set; } = string.Empty;
 }

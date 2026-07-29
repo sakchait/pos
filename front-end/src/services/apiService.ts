@@ -5,7 +5,7 @@ import { computeAuditLogSignature } from '../utils/crypto';
 import {
   Product, Coupon, Member, Order, Shift, DrawerOpenLog,
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch,
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount, MemberPromotion, SystemAuditLog
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, UserRole, UserAccount, MemberPromotion, SystemAuditLog, Category
 } from '../types/pos';
 
 const USE_SERVICES = import.meta.env.VITE_USE_SERVICES === 'true';
@@ -56,11 +56,65 @@ export const apiService = {
       return db.products.toArray();
     }
   },
+  async createProduct(product: Omit<Product, 'id'>): Promise<any> {
+    if (USE_SERVICES) {
+      return apiFetch<any>('/products', { method: 'POST', body: JSON.stringify(product) });
+    } else {
+      const newProduct: Product = {
+        ...product,
+        id: `p-${Date.now()}`
+      };
+      await db.products.add(newProduct);
+      return { message: 'Product created successfully.', id: newProduct.id };
+    }
+  },
   async updateProduct(id: string, updates: Partial<Product>): Promise<void> {
     if (USE_SERVICES) {
       await apiFetch(`/products/${id}`, { method: 'PUT', body: JSON.stringify(updates) });
     } else {
       await db.products.update(id, updates);
+    }
+  },
+  async deleteProduct(id: string): Promise<void> {
+    if (USE_SERVICES) {
+      await apiFetch(`/products/${id}`, { method: 'DELETE' });
+    } else {
+      await db.products.update(id, { isAvailable: false });
+    }
+  },
+
+  // Categories
+  async getCategories(): Promise<Category[]> {
+    if (USE_SERVICES) {
+      return apiFetch<Category[]>('/categories');
+    } else {
+      return db.categories.toArray();
+    }
+  },
+  async createCategory(category: Omit<Category, 'id'>): Promise<Category> {
+    if (USE_SERVICES) {
+      return apiFetch<Category>('/categories', { method: 'POST', body: JSON.stringify(category) });
+    } else {
+      const newCat: Category = {
+        ...category,
+        id: `cat-${Date.now()}`
+      };
+      await db.categories.add(newCat);
+      return newCat;
+    }
+  },
+  async updateCategory(id: string, updates: Partial<Category>): Promise<void> {
+    if (USE_SERVICES) {
+      await apiFetch(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(updates) });
+    } else {
+      await db.categories.update(id, updates);
+    }
+  },
+  async deleteCategory(id: string): Promise<void> {
+    if (USE_SERVICES) {
+      await apiFetch(`/categories/${id}`, { method: 'DELETE' });
+    } else {
+      await db.categories.delete(id);
     }
   },
 

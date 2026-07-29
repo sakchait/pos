@@ -19,6 +19,12 @@ export interface Product {
   isAvailable: boolean;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  code: string;
+}
+
 export interface CartItem {
   product: Product;
   quantity: number;

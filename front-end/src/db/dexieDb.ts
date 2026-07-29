@@ -17,6 +17,7 @@ import {
   MemberPromotion,
   CouponUsage,
   SystemAuditLog,
+  Category,
 } from '../types/pos';
 
 export class OmniPOSDatabase extends Dexie {
@@ -37,6 +38,7 @@ export class OmniPOSDatabase extends Dexie {
   promotions!: Table<MemberPromotion, string>;
   couponUsages!: Table<CouponUsage, string>;
   systemAuditLogs!: Table<SystemAuditLog, string>;
+  categories!: Table<Category, string>;
 
   constructor() {
     super('OmniPOS_Enterprise_DB');
@@ -92,6 +94,26 @@ export class OmniPOSDatabase extends Dexie {
       couponUsages: 'id, orderId, couponCode',
       systemAuditLogs: 'id, userId, action, createdAt',
     });
+    this.version(4).stores({
+      products: 'id, sku, category, price, stock, isAvailable',
+      coupons: 'id, code, isActive',
+      members: 'id, memberNo, phone, name',
+      orders: 'id, orderNo, status, createdAt, cashierId, memberId',
+      shifts: 'id, cashierId, status, openingTime',
+      drawerOpenLogs: 'id, cashierId, timestamp, reason',
+      shiftSchedules: 'id, employeeId, date, shiftType, status',
+      shiftSwaps: 'id, requesterId, recipientId, status',
+      proposedPOs: 'id, poNumber, status',
+      stockBatches: 'id, productId, batchNo',
+      roleRoutes: 'role',
+      attendance: 'id, employeeId, date',
+      leaves: 'id, employeeId, leaveType',
+      users: 'id, username, email, role',
+      promotions: 'id, name, promotionType, isActive',
+      couponUsages: 'id, orderId, couponCode',
+      systemAuditLogs: 'id, userId, action, createdAt',
+      categories: 'id, name, code',
+    });
   }
 }
 
@@ -106,6 +128,7 @@ export async function seedInitialDataIfNeeded() {
   await seedRoleRoutesIfNeeded();
   await seedPromotionsIfNeeded();
   await seedAuditLogsIfNeeded();
+  await seedCategoriesIfNeeded();
 
   const productCount = await db.products.count();
   if (productCount > 0) return;
@@ -607,7 +630,9 @@ export async function seedRoleRoutesIfNeeded() {
   const hasMembers = allRoutes.some((r) => r.routes.includes('/admin/members'));
   const hasAuditLogs = allRoutes.some((r) => r.routes.includes('/admin/audit-logs'));
   const hasUsers = allRoutes.some((r) => r.routes.includes('/admin/users'));
-  if (allRoutes.length < 7 || !hasMembers || !hasAuditLogs || !hasUsers) {
+  const hasProducts = allRoutes.some((r) => r.routes.includes('/admin/products'));
+  const hasCategories = allRoutes.some((r) => r.routes.includes('/admin/categories'));
+  if (allRoutes.length < 7 || !hasMembers || !hasAuditLogs || !hasUsers || !hasProducts || !hasCategories) {
     await db.roleRoutes.clear();
     const initialRoleRoutes: RoleRoutePermission[] = [
       {
@@ -616,7 +641,7 @@ export async function seedRoleRoutesIfNeeded() {
       },
       {
         role: 'BranchManager',
-        routes: ['/pos', '/shifts', '/restocking', '/reports', '/admin/coupons', '/admin/members', '/profile'],
+        routes: ['/pos', '/shifts', '/restocking', '/reports', '/admin/coupons', '/admin/members', '/admin/products', '/admin/categories', '/profile'],
       },
       {
         role: 'Accountant',
@@ -649,6 +674,8 @@ export async function seedRoleRoutesIfNeeded() {
           '/admin/members',
           '/admin/audit-logs',
           '/admin/users',
+          '/admin/products',
+          '/admin/categories',
           '/profile',
         ],
       },
@@ -806,4 +833,17 @@ export async function validateCouponCode(
     calculatedDiscount: Math.min(discount, subtotal),
     message: `Coupon ${coupon.code} applied successfully!`,
   };
+}
+
+export async function seedCategoriesIfNeeded() {
+  const count = await db.categories.count();
+  if (count === 0) {
+    const initialCategories: Category[] = [
+      { id: 'cat-1', name: 'Coffee', code: 'COF' },
+      { id: 'cat-2', name: 'Tea', code: 'TEA' },
+      { id: 'cat-3', name: 'Bakery', code: 'BAK' },
+      { id: 'cat-4', name: 'Sandwich', code: 'SND' }
+    ];
+    await db.categories.bulkAdd(initialCategories);
+  }
 }

@@ -1,7 +1,7 @@
 import { 
   Product, Coupon, Member, Order, Shift, DrawerOpenLog, 
   ShiftSchedule, ShiftSwapRequest, ProposedPO, StockBatch, 
-  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage, SystemAuditLog, UserAccount 
+  RoleRoutePermission, AttendanceRecord, LeaveRecord, MemberPromotion, CouponUsage, SystemAuditLog, UserAccount, Category 
 } from './src/types/pos';
 
 export let products: Product[] = [
@@ -498,4 +498,11 @@ export let users: UserAccount[] = [
     isActive: true,
     isAdmin: true,
   }
+];
+
+export let categories: Category[] = [
+  { id: 'cat-1', name: 'Appetizers', code: 'APP' },
+  { id: 'cat-2', name: 'Main Course', code: 'MNC' },
+  { id: 'cat-3', name: 'Beverages', code: 'BEV' },
+  { id: 'cat-4', name: 'Desserts', code: 'DES' }
 ];
