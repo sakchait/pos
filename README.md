@@ -99,10 +99,16 @@ The application is split into two major component layers:
 ### 4. Database Category Entity (EF Core)
 - Products are linked via the SQL Server database Category entity (`Category.cs`) rather than hardcoded string types.
 - Product controllers use Entity Framework's `.Include(p => p.Category)` to dynamically construct category structures.
+- **Product & Category CRUD Management**: Fully interactive dashboards allowing authorized roles (`Admin`, `BranchManager`) to add, modify, search, filter, and delete active catalog products and categories with instant synchronization.
 
 ### 5. Branch Restocking Page
 - Enforces dynamic access control on the `/restocking` route for `BranchManager`, `StockClerk`, and `Admin`.
 - The Branch Restocking view allows managers to request POs from suppliers and perform direct stock intake, incrementing local stock levels and generating new FIFO `StockBatch` lot entries.
+
+### 6. Table & Report Pagination
+- **Server-Side Pagination**: Implemented a generic `PaginatedResult<T>` container on the .NET backend to return page-sliced queries for Products, Categories, Members, Coupons, Users, and System Audit Logs when `page` and `pageSize` query params are passed.
+- **Client-Side Slicing**: Replicated pagination locally within the Dexie.js offline store and mock Express router when offline mode is toggled.
+- **Dynamic Paging Control Bar**: Displays items-per-page selectors and page navigation buttons, integrated seamlessly across all admin grids (Users, Members, Products, Categories, Coupons, Audit Logs) and the HR/Audit Reports panels (Attendance, Overtime, Leaves, Holidays).
 
 ---
 
