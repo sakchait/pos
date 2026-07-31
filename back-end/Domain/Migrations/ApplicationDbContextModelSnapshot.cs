@@ -260,6 +260,13 @@ namespace Pos.Domain.Migrations
                             Code = "DES",
                             IsActive = true,
                             Name = "Desserts"
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "APP-CLOTH",
+                            IsActive = true,
+                            Name = "Apparel"
                         });
                 });
 
@@ -950,6 +957,34 @@ namespace Pos.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ColorsJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("DiscountPercentage")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DressStyle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GalleryJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -966,6 +1001,14 @@ namespace Pos.Domain.Migrations
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Rating")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SizesJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("StandardCost")
                         .HasPrecision(18, 2)
@@ -995,11 +1038,20 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111101"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222201"),
                             Code = "0012",
+                            ColorsJson = "[]",
+                            Description = "Fresh organic greens, cherry tomatoes, kalamata olives, feta cheese, and cucumber tossed in our house vinaigrette.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 10,
                             Name = "Mediterranean Salad",
                             Price = 14.50m,
+                            Rating = 4.8m,
+                            SizesJson = "[\"Standard\"]",
                             StandardCost = 5.00m,
                             StockQuantity = 35,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1010,11 +1062,20 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111102"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222202"),
                             Code = "0054",
+                            ColorsJson = "[]",
+                            Description = "Premium hand-pressed beef patty, sharp cheddar cheese, caramelized onions, crisp lettuce, tomato, and signature house sauce on a toasted brioche bun.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 15,
                             Name = "Signature Burger",
                             Price = 18.00m,
+                            Rating = 4.9m,
+                            SizesJson = "[\"Standard\", \"Double Patty\"]",
                             StandardCost = 6.50m,
                             StockQuantity = 42,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1025,11 +1086,20 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111103"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222203"),
                             Code = "0098",
+                            ColorsJson = "[]",
+                            Description = "Rich double-shot espresso layered with steamed whole milk and topped with delicate micro-foam art.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1534778101976-62847782c213?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1534778101976-62847782c213?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 20,
                             Name = "Artisan Latte",
                             Price = 5.25m,
+                            Rating = 4.7m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\"]",
                             StandardCost = 1.50m,
                             StockQuantity = 80,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1040,11 +1110,20 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111104"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222204"),
                             Code = "0112",
+                            ColorsJson = "[]",
+                            Description = "Light and fluffy ring donut dipped in a sweet sugar glaze that melts in your mouth.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 12,
                             Name = "Glazed Donut",
                             Price = 3.50m,
+                            Rating = 4.6m,
+                            SizesJson = "[\"Standard\"]",
                             StandardCost = 1.00m,
                             StockQuantity = 50,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1055,11 +1134,20 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111105"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222202"),
                             Code = "0087",
+                            ColorsJson = "[]",
+                            Description = "A meat lover's platter featuring grilled steak slices, lamb chop, chicken breast, and grilled vegetables served with a peppercorn sauce.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 8,
                             Name = "Mixed Grill",
                             Price = 24.00m,
+                            Rating = 4.9m,
+                            SizesJson = "[\"Standard\"]",
                             StandardCost = 9.00m,
                             StockQuantity = 3,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1070,11 +1158,20 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111106"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222201"),
                             Code = "0041",
+                            ColorsJson = "[]",
+                            Description = "Crispy golden french fries tossed in aromatic white truffle oil, salt, and freshly grated parmesan cheese, served with garlic aioli.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 15,
                             Name = "Truffle Fries",
                             Price = 8.50m,
+                            Rating = 4.8m,
+                            SizesJson = "[\"Standard\"]",
                             StandardCost = 2.50m,
                             StockQuantity = 65,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1085,11 +1182,20 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111107"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222203"),
                             Code = "0203",
+                            ColorsJson = "[]",
+                            Description = "Premium Japanese ceremonial Uji matcha whisked and poured over cold milk and ice.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 10,
                             Name = "Iced Matcha Latte",
                             Price = 6.00m,
+                            Rating = 4.7m,
+                            SizesJson = "[\"Standard\"]",
                             StandardCost = 2.00m,
                             StockQuantity = 2,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1100,13 +1206,310 @@ namespace Pos.Domain.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111108"),
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222202"),
                             Code = "0319",
+                            ColorsJson = "[]",
+                            Description = "USDA Prime Ribeye steak grilled to your liking, seasoned with sea salt and black pepper, served with a side of garlic butter.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "",
+                            GalleryJson = "[\"https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80\"]",
+                            ImageUrl = "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80",
                             IsActive = true,
                             IsVatInclusive = true,
                             MinStockThreshold = 12,
                             Name = "Ribeye Steak 300g",
                             Price = 38.00m,
+                            Rating = 4.9m,
+                            SizesJson = "[\"Standard\"]",
                             StandardCost = 15.00m,
                             StockQuantity = 4,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111201"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C001",
+                            ColorsJson = "[{\"name\":\"Brown\",\"code\":\"bg-[#4F4631]\"},{\"name\":\"Blue\",\"code\":\"bg-[#31344F]\"},{\"name\":\"Green\",\"code\":\"bg-[#314F36]\"}]",
+                            Description = "Minimalist cotton t-shirt featuring distinct contrast tape details along the shoulders and sleeves. Comfortable fit for everyday wear.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic1.png\", \"/images/pic10.png\", \"/images/pic11.png\"]",
+                            ImageUrl = "/images/pic1.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 10,
+                            Name = "T-shirt with Tape Details",
+                            Price = 120.00m,
+                            Rating = 4.5m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\", \"X-Large\"]",
+                            StandardCost = 30.00m,
+                            StockQuantity = 100,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111202"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C002",
+                            ColorsJson = "[{\"name\":\"Black\",\"code\":\"bg-[#000000]\"},{\"name\":\"Blue\",\"code\":\"bg-[#31344F]\"}]",
+                            Description = "Classic denim skinny jeans with a bit of stretch for maximum comfort. Features a five-pocket design and zip fly with button closure.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 20m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic2.png\"]",
+                            ImageUrl = "/images/pic2.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 5,
+                            Name = "Skinny Fit Jeans",
+                            Price = 260.00m,
+                            Rating = 3.5m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\"]",
+                            StandardCost = 80.00m,
+                            StockQuantity = 75,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111203"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C003",
+                            ColorsJson = "[{\"name\":\"Red\",\"code\":\"bg-[#ff0000]\"},{\"name\":\"White\",\"code\":\"bg-[#ffffff]\"}]",
+                            Description = "Stylish long-sleeve checkered button-down shirt. Perfect for layering over a graphic tee or wearing on its own.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic3.png\"]",
+                            ImageUrl = "/images/pic3.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 10,
+                            Name = "Checkered Shirt",
+                            Price = 180.00m,
+                            Rating = 4.5m,
+                            SizesJson = "[\"Medium\", \"Large\"]",
+                            StandardCost = 50.00m,
+                            StockQuantity = 45,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111204"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C004",
+                            ColorsJson = "[{\"name\":\"Black\",\"code\":\"bg-[#000000]\"},{\"name\":\"White\",\"code\":\"bg-[#ffffff]\"}]",
+                            Description = "Breathable athletic-style crewneck t-shirt with signature dual stripes around the sleeves.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 30m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic4.png\", \"/images/pic10.png\", \"/images/pic11.png\"]",
+                            ImageUrl = "/images/pic4.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 10,
+                            Name = "Sleeve Striped T-shirt",
+                            Price = 160.00m,
+                            Rating = 4.5m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\", \"X-Large\"]",
+                            StandardCost = 35.00m,
+                            StockQuantity = 110,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111205"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C005",
+                            ColorsJson = "[{\"name\":\"White\",\"code\":\"bg-[#ffffff]\"},{\"name\":\"Blue\",\"code\":\"bg-[#31344F]\"}]",
+                            Description = "Breathable linen shirt with thin vertical stripes. Roll up the sleeves for a summer-ready casual resort look.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 20m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic5.png\", \"/images/pic10.png\", \"/images/pic11.png\"]",
+                            ImageUrl = "/images/pic5.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 8,
+                            Name = "Vertical Striped Shirt",
+                            Price = 232.00m,
+                            Rating = 5.0m,
+                            SizesJson = "[\"Medium\", \"Large\", \"X-Large\"]",
+                            StandardCost = 70.00m,
+                            StockQuantity = 30,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111206"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C006",
+                            ColorsJson = "[{\"name\":\"Orange\",\"code\":\"bg-[#ffa500]\"},{\"name\":\"Black\",\"code\":\"bg-[#000000]\"}]",
+                            Description = "Premium heavyweight cotton t-shirt with a bold graphic print on the chest reading 'Courage'.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic6.png\", \"/images/pic10.png\", \"/images/pic11.png\"]",
+                            ImageUrl = "/images/pic6.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 15,
+                            Name = "Courage Graphic T-shirt",
+                            Price = 145.00m,
+                            Rating = 4.0m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\"]",
+                            StandardCost = 30.00m,
+                            StockQuantity = 90,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111207"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C007",
+                            ColorsJson = "[{\"name\":\"Blue\",\"code\":\"bg-[#0000ff]\"},{\"name\":\"Brown\",\"code\":\"bg-[#a52a2a]\"}]",
+                            Description = "Relaxed-fit shorts sitting just above the knee, crafted in durable twill cotton with comfortable wide leg openings.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic7.png\"]",
+                            ImageUrl = "/images/pic7.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 10,
+                            Name = "Loose Fit Bermuda Shorts",
+                            Price = 80.00m,
+                            Rating = 3.0m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\"]",
+                            StandardCost = 20.00m,
+                            StockQuantity = 40,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111208"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C008",
+                            ColorsJson = "[{\"name\":\"Grey\",\"code\":\"bg-[#808080]\"},{\"name\":\"Blue\",\"code\":\"bg-[#31344F]\"}]",
+                            Description = "Distressed skinny jeans with character-rich faded washes at the thighs and knees.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic8.png\"]",
+                            ImageUrl = "/images/pic8.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 5,
+                            Name = "Faded Skinny Jeans",
+                            Price = 210.00m,
+                            Rating = 4.5m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\", \"X-Large\"]",
+                            StandardCost = 65.00m,
+                            StockQuantity = 60,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111212"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C012",
+                            ColorsJson = "[{\"name\":\"Black\",\"code\":\"bg-[#000000]\"},{\"name\":\"White\",\"code\":\"bg-[#ffffff]\"}]",
+                            Description = "Classic pique polo shirt detailed with refined contrast piping on the collar and sleeve cuffs.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 20m,
+                            DressStyle = "Formal",
+                            GalleryJson = "[\"/images/pic12.png\", \"/images/pic10.png\", \"/images/pic11.png\"]",
+                            ImageUrl = "/images/pic12.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 8,
+                            Name = "Polo with Contrast Trims",
+                            Price = 242.00m,
+                            Rating = 4.0m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\"]",
+                            StandardCost = 75.00m,
+                            StockQuantity = 35,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111213"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C013",
+                            ColorsJson = "[{\"name\":\"Pink\",\"code\":\"bg-[#ffc0cb]\"},{\"name\":\"Purple\",\"code\":\"bg-[#800080]\"}]",
+                            Description = "Cotton crewneck styled with an eye-catching soft gradient color blend fading down the body.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "Gym",
+                            GalleryJson = "[\"/images/pic13.png\", \"/images/pic10.png\", \"/images/pic11.png\"]",
+                            ImageUrl = "/images/pic13.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 15,
+                            Name = "Gradient Graphic T-shirt",
+                            Price = 145.00m,
+                            Rating = 3.5m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\", \"X-Large\"]",
+                            StandardCost = 30.00m,
+                            StockQuantity = 85,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111214"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C014",
+                            ColorsJson = "[{\"name\":\"Green\",\"code\":\"bg-[#008000]\"},{\"name\":\"White\",\"code\":\"bg-[#ffffff]\"}]",
+                            Description = "Slim-fit collared polo shirt featuring contrast colored tipping bands around the edges.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 0m,
+                            DressStyle = "Formal",
+                            GalleryJson = "[\"/images/pic14.png\"]",
+                            ImageUrl = "/images/pic14.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 10,
+                            Name = "Polo with Tipping Details",
+                            Price = 180.00m,
+                            Rating = 4.5m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\"]",
+                            StandardCost = 50.00m,
+                            StockQuantity = 40,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Version = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111215"),
+                            CategoryId = new Guid("22222222-2222-2222-2222-222222222205"),
+                            Code = "C015",
+                            ColorsJson = "[{\"name\":\"Black\",\"code\":\"bg-[#000000]\"}]",
+                            Description = "Classic black t-shirt printed with horizontal white stripes. Easy to dress up under a blazer or dress down with shorts.",
+                            DiscountAmount = 0m,
+                            DiscountPercentage = 30m,
+                            DressStyle = "Casual",
+                            GalleryJson = "[\"/images/pic15.png\"]",
+                            ImageUrl = "/images/pic15.png",
+                            IsActive = true,
+                            IsVatInclusive = true,
+                            MinStockThreshold = 12,
+                            Name = "Black Striped T-shirt",
+                            Price = 150.00m,
+                            Rating = 5.0m,
+                            SizesJson = "[\"Small\", \"Medium\", \"Large\", \"X-Large\"]",
+                            StandardCost = 35.00m,
+                            StockQuantity = 95,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Version = 1
                         });
@@ -1138,6 +1541,65 @@ namespace Pos.Domain.Migrations
                     b.HasIndex("RecommendedProductId");
 
                     b.ToTable("ProductAssociations");
+                });
+
+            modelBuilder.Entity("Pos.Domain.Entities.ProductReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductReviews");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333001"),
+                            Content = "Finding clothes that align with my personal style used to be a challenge until I discovered this. The range of options they offer is truly remarkable, catering to a variety of tastes and occasions.",
+                            CreatedAt = new DateTime(2023, 8, 14, 12, 0, 0, 0, DateTimeKind.Utc),
+                            CustomerName = "Alex K.",
+                            ProductId = new Guid("11111111-1111-1111-1111-111111111201"),
+                            Rating = 5
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333002"),
+                            Content = "I'm blown away by the quality and style of the clothes I received. Every piece I've bought has exceeded my expectations.",
+                            CreatedAt = new DateTime(2023, 8, 15, 14, 30, 0, 0, DateTimeKind.Utc),
+                            CustomerName = "Sarah M.",
+                            ProductId = new Guid("11111111-1111-1111-1111-111111111202"),
+                            Rating = 4
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333003"),
+                            Content = "This shirt is a must-have for anyone who appreciates good design. The minimalistic yet stylish pattern caught my eye, and the fit is perfect.",
+                            CreatedAt = new DateTime(2023, 8, 16, 9, 15, 0, 0, DateTimeKind.Utc),
+                            CustomerName = "Ethan R.",
+                            ProductId = new Guid("11111111-1111-1111-1111-111111111203"),
+                            Rating = 5
+                        });
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.PublicHoliday", b =>
@@ -2256,6 +2718,17 @@ namespace Pos.Domain.Migrations
                     b.Navigation("PrimaryProduct");
 
                     b.Navigation("RecommendedProduct");
+                });
+
+            modelBuilder.Entity("Pos.Domain.Entities.ProductReview", b =>
+                {
+                    b.HasOne("Pos.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Pos.Domain.Entities.PurchaseOrder", b =>

@@ -49,6 +49,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Coupon> Coupons => Set<Coupon>();
     public DbSet<MemberPromotion> MemberPromotions => Set<MemberPromotion>();
     public DbSet<ProductAssociation> ProductAssociations => Set<ProductAssociation>();
+    public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
     public DbSet<MemberAiRecommendation> MemberAiRecommendations => Set<MemberAiRecommendation>();
 
     // Auth & Access Control

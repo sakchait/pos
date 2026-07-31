@@ -16,4 +16,14 @@ public class Product
 
     public Guid? CategoryId { get; set; }
     public Category? Category { get; set; }
+
+    public string Description { get; set; } = string.Empty;
+    public decimal Rating { get; set; } = 5.0m;
+    public string ImageUrl { get; set; } = string.Empty;
+    public string GalleryJson { get; set; } = "[]";
+    public string SizesJson { get; set; } = "[]";
+    public string ColorsJson { get; set; } = "[]";
+    public decimal DiscountPercentage { get; set; } = 0m;
+    public decimal DiscountAmount { get; set; } = 0m;
+    public string DressStyle { get; set; } = string.Empty;
 }

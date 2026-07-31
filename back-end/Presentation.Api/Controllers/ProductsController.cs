@@ -26,11 +26,91 @@ public class ProductsController : ControllerBase
 
     // 1. GET /api/products - Retrieves all products
     [HttpGet]
-    public async Task<IActionResult> GetProducts([FromQuery] int? page, [FromQuery] int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProducts(
+        [FromQuery] string? category,
+        [FromQuery] string? dressStyle,
+        [FromQuery] string? color,
+        [FromQuery] string? size,
+        [FromQuery] decimal? priceMin,
+        [FromQuery] decimal? priceMax,
+        [FromQuery] string? sortBy,
+        [FromQuery] int? page,
+        [FromQuery] int? pageSize,
+        CancellationToken cancellationToken)
     {
         var query = _productsRepo.GetAll()
             .Include(p => p.Category)
             .AsNoTracking();
+
+        if (!string.IsNullOrEmpty(category))
+        {
+            var categoryLower = category.ToLower();
+            var matchingCategoryExists = await _categoriesRepo.GetAll().AnyAsync(c => c.Name.ToLower() == categoryLower, cancellationToken);
+            if (matchingCategoryExists)
+            {
+                query = query.Where(p => p.Category != null && p.Category.Name.ToLower() == categoryLower);
+            }
+            else
+            {
+                if (categoryLower == "t-shirts")
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains("t-shirt") || p.Name.ToLower().Contains("polo"));
+                }
+                else if (categoryLower == "shirts")
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains("shirt") && !p.Name.ToLower().Contains("t-shirt"));
+                }
+                else if (categoryLower == "shorts")
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains("shorts"));
+                }
+                else if (categoryLower == "jeans")
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains("jeans"));
+                }
+                else
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains(categoryLower));
+                }
+            }
+        }
+
+        if (!string.IsNullOrEmpty(dressStyle))
+        {
+            query = query.Where(p => p.DressStyle.ToLower() == dressStyle.ToLower());
+        }
+
+        if (!string.IsNullOrEmpty(color))
+        {
+            query = query.Where(p => p.ColorsJson.ToLower().Contains(color.ToLower()));
+        }
+
+        if (!string.IsNullOrEmpty(size))
+        {
+            query = query.Where(p => p.SizesJson.ToLower().Contains(size.ToLower()));
+        }
+
+        if (priceMin.HasValue)
+        {
+            query = query.Where(p => p.Price >= priceMin.Value);
+        }
+
+        if (priceMax.HasValue)
+        {
+            query = query.Where(p => p.Price <= priceMax.Value);
+        }
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortBy.ToLower() switch
+            {
+                "low-price" => query.OrderBy(p => p.Price),
+                "high-price" => query.OrderByDescending(p => p.Price),
+                "new-arrivals" => query.OrderByDescending(p => p.UpdatedAt),
+                "most-popular" => query.OrderByDescending(p => p.Rating),
+                _ => query
+            };
+        }
 
         if (page.HasValue && pageSize.HasValue)
         {
@@ -45,12 +125,25 @@ public class ProductsController : ControllerBase
                 id = p.Id.ToString(),
                 sku = p.Code,
                 name = p.Name,
+                title = p.Name,
                 price = p.Price,
                 category = p.Category != null ? p.Category.Name : "General",
                 stock = p.StockQuantity,
                 minStockThreshold = p.MinStockThreshold,
-                imageUrl = GetDefaultImageUrl(p.Code),
-                isAvailable = p.IsActive
+                imageUrl = string.IsNullOrEmpty(p.ImageUrl) ? GetDefaultImageUrl(p.Code) : p.ImageUrl,
+                srcUrl = string.IsNullOrEmpty(p.ImageUrl) ? GetDefaultImageUrl(p.Code) : p.ImageUrl,
+                isAvailable = p.IsActive,
+                description = p.Description,
+                rating = p.Rating,
+                gallery = ParseStringList(p.GalleryJson),
+                sizes = ParseStringList(p.SizesJson),
+                colors = ParseColorList(p.ColorsJson),
+                discount = new
+                {
+                    amount = p.DiscountAmount,
+                    percentage = p.DiscountPercentage
+                },
+                dressStyle = p.DressStyle
             }).ToList();
 
             return Ok(new Pos.Application.DTOs.PaginatedResult<object>
@@ -69,12 +162,25 @@ public class ProductsController : ControllerBase
                 id = p.Id.ToString(),
                 sku = p.Code,
                 name = p.Name,
+                title = p.Name,
                 price = p.Price,
                 category = p.Category != null ? p.Category.Name : "General",
                 stock = p.StockQuantity,
                 minStockThreshold = p.MinStockThreshold,
-                imageUrl = GetDefaultImageUrl(p.Code),
-                isAvailable = p.IsActive
+                imageUrl = string.IsNullOrEmpty(p.ImageUrl) ? GetDefaultImageUrl(p.Code) : p.ImageUrl,
+                srcUrl = string.IsNullOrEmpty(p.ImageUrl) ? GetDefaultImageUrl(p.Code) : p.ImageUrl,
+                isAvailable = p.IsActive,
+                description = p.Description,
+                rating = p.Rating,
+                gallery = ParseStringList(p.GalleryJson),
+                sizes = ParseStringList(p.SizesJson),
+                colors = ParseColorList(p.ColorsJson),
+                discount = new
+                {
+                    amount = p.DiscountAmount,
+                    percentage = p.DiscountPercentage
+                },
+                dressStyle = p.DressStyle
             }).ToList();
 
             return Ok(result);
@@ -188,6 +294,78 @@ public class ProductsController : ControllerBase
             "0319" => "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80",
             _ => ""
         };
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetProductById(Guid id, CancellationToken cancellationToken)
+    {
+        var p = await _productsRepo.GetAll()
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        if (p == null)
+            return NotFound(new { message = "Product not found." });
+
+        var result = new
+        {
+            id = p.Id.ToString(),
+            sku = p.Code,
+            name = p.Name,
+            title = p.Name,
+            price = p.Price,
+            category = p.Category != null ? p.Category.Name : "General",
+            stock = p.StockQuantity,
+            minStockThreshold = p.MinStockThreshold,
+            imageUrl = string.IsNullOrEmpty(p.ImageUrl) ? GetDefaultImageUrl(p.Code) : p.ImageUrl,
+            srcUrl = string.IsNullOrEmpty(p.ImageUrl) ? GetDefaultImageUrl(p.Code) : p.ImageUrl,
+            isAvailable = p.IsActive,
+            description = p.Description,
+            rating = p.Rating,
+            gallery = ParseStringList(p.GalleryJson),
+            sizes = ParseStringList(p.SizesJson),
+            colors = ParseColorList(p.ColorsJson),
+            discount = new
+            {
+                amount = p.DiscountAmount,
+                percentage = p.DiscountPercentage
+            },
+            dressStyle = p.DressStyle
+        };
+
+        return Ok(result);
+    }
+
+    private static List<string> ParseStringList(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return new List<string>();
+        try
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
+        }
+        catch
+        {
+            return new List<string>();
+        }
+    }
+
+    private static List<ColorDto> ParseColorList(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return new List<ColorDto>();
+        try
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<List<ColorDto>>(json) ?? new List<ColorDto>();
+        }
+        catch
+        {
+            return new List<ColorDto>();
+        }
+    }
+
+    public class ColorDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
     }
 }
 

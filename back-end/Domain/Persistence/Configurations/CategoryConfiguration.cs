@@ -39,6 +39,13 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
                 Name = "Desserts",
                 Code = "DES",
                 IsActive = true
+            },
+            new Category
+            {
+                Id = Guid.Parse("22222222-2222-2222-2222-222222222205"),
+                Name = "Apparel",
+                Code = "APP-CLOTH",
+                IsActive = true
             }
         );
     }
