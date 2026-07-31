@@ -460,7 +460,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://opens
 ```
 MIT License
 
-Copyright (c) 2024 Nafis Rayan
+Copyright (c) 2026 Sakchai Thanasamut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -475,20 +475,14 @@ copies or substantial portions of the Software.
 
 ## Contact
 
-**Nafis Rayan**
-- 📧 Email: [nafisrayan123@gmail.com](mailto:nafisrayan123@gmail.com)
-- 🐙 GitHub: [https://github.com/NafisRayan](https://github.com/NafisRayan)
-- 🌐 Website: [Portfolio](https://nafisrayan.vercel.app)
-
+**Sakchai Thanasamut**
+- 📧 Email: [th.sakchai@gmail.com](mailto:th.sakchai@gmail.com)
+- 🐙 GitHub: [https://github.com/sakchait](https://github.com/sakchait)
 ---
 
 ## Acknowledgments
 
-- **Design Credit**: [Hamza Naeem](https://www.figma.com/@hamzauix) for the original Figma design
-- **Figma File**: [E-commerce Website Template](https://www.figma.com/community/file/1273571982885059508/e-commerce-website-template-freebie)
 - **Community**: Thanks to all contributors and users
-
----
 
 **⭐ If you found this project helpful, please give it a star!**
 
