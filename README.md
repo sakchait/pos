@@ -9,53 +9,58 @@ A modern, hybrid enterprise Point-of-Sale (POS) system featuring an offline-firs
 The application is split into two major component layers:
 
 ```
-                  ┌──────────────────────────────────────────────┐
-                  │                 Web Browser                  │
-                  │  ┌───────────────┐        ┌───────────────┐  │
-                  │  │   React App   │───────>│   Dexie.js    │  │
-                  │  │ (UI & Layout) │        │ (Local DB)    │  │
-                  │  └───────────────┘        └───────────────┘  │
-                  └─────────┬────────────────────────────────────┘
-                            │ (HTTP / API Calls)
-                            ▼
-                  ┌──────────────────────────────────────────────┐
-                  │            Express Proxy Server              │
-                  │  ┌───────────────┐        ┌───────────────┐  │
-                  │  │ Mock Local    │        │  Gemini AI    │  │
-                  │  │ Database APIs │        │  Integration  │  │
-                  │  └───────────────┘        └───────────────┘  │
-                  └─────────┬────────────────────────────────────┘
+                  ┌────────────────────────────────────────────────────────┐
+                  │                      Web Browser                       │
+                  │  ┌───────────────┐  ┌───────────────┐  ┌────────────┐  │
+                  │  │    POS App    │  │ Ecommerce App │  │  Dexie.js  │  │
+                  │  │ (UI & Layout) │  │ (UI & Layout) │  │ (Local DB) │  │
+                  │  └───────────────┘  └───────────────┘  └────────────┘  │
+                  └─────────┬───────────────────┬──────────────────────────┘
+                            │                   │ (HTTP / API Calls)
+                            ▼                   ▼
+                  ┌────────────────────────────────────────────────────────┐
+                  │                 Express Proxy Server                   │
+                  │  ┌────────────────────────┐  ┌──────────────────────┐  │
+                  │  │  Mock Local DB APIs    │  │ Gemini AI Upselling  │  │
+                  │  └────────────────────────┘  └──────────────────────┘  │
+                  └─────────┬──────────────────────────────────────────────┘
                             │ (Proxy External API Calls)
                             ▼
-                  ┌──────────────────────────────────────────────┐
-                  │            C# .NET 10.0 Backend              │
-                  │        (Clean Architecture / Web API)        │
-                  │  ┌────────────────────────────────────────┐  │
-                  │  │ Pos.Api (Presentation Endpoints)       │  │
-                  │  └──────────────────┬─────────────────────┘  │
-                  │                     ▼                        │
-                  │  ┌────────────────────────────────────────┐  │
-                  │  │ Pos.Application (CQRS / Business Logic)│  │
-                  │  └──────────────────┬─────────────────────┘  │
-                  │                     ▼                        │
-                  │  ┌────────────────────────────────────────┐  │
-                  │  │ Pos.Infrastructure (EF Core / Services)│  │
-                  │  └──────────────────┬─────────────────────┘  │
-                  │                     ▼                        │
-                  │  ┌────────────────────────────────────────┐  │
-                  │  │ Pos.Domain (Entities & Core Abstraction│  │
-                  │  └────────────────────────────────────────┘  │
-                  └──────────────────────────────────────────────┘
+                  ┌────────────────────────────────────────────────────────┐
+                  │                 C# .NET 10.0 Backend                   │
+                  │            (Clean Architecture / Web API)              │
+                  │  ┌──────────────────────────────────────────────────┐  │
+                  │  │ Pos.Api (Presentation Endpoints)                 │  │
+                  │  └──────────────────┬───────────────────────────────┘  │
+                  │                     ▼                                  │
+                  │  ┌──────────────────────────────────────────────────┐  │
+                  │  │ Pos.Application (CQRS / Business Logic)          │  │
+                  │  └──────────────────┬───────────────────────────────┘  │
+                  │                     ▼                                  │
+                  │  ┌──────────────────────────────────────────────────┐  │
+                  │  │ Pos.Infrastructure (EF Core / Services)          │  │
+                  │  └──────────────────┬───────────────────────────────┘  │
+                  │                     ▼                                  │
+                  │  ┌──────────────────────────────────────────────────┐  │
+                  │  │ Pos.Domain (Entities & Core Abstractions)        │  │
+                  │  └──────────────────────────────────────────────────┘  │
+                  └────────────────────────────────────────────────────────┘
 ```
 
-1. **Front-End (`/front-end`)**:
+1. **POS Front-End (`/pos-front-end`)**:
    - **User Interface**: React 19, Vite, TypeScript, and Tailwind CSS.
    - **Local Storage / Offline Mode**: Dexie.js (wrapper for IndexedDB) providing full offline cashier capability.
    - **Express Server**: Acts as a developer server, a mock database server for offline capability, and a proxy to relay requests to the C# backend and Google's Gemini API.
    - **AI Integrations**: Uses `@google/genai` to connect to `gemini-3.6-flash` for cashier upselling recommendations.
    - **Animations**: Fluid transitions using Framer Motion (via `motion` package).
 
-2. **Back-End (`/back-end`)**:
+2. **E-Commerce Front-End (`/ecommerce-front-end`)**:
+   - **User Interface**: Next.js 14 App Router, TypeScript, and Tailwind CSS.
+   - **Performance**: High‑efficiency dev tooling runtimes using `bun` and Next.js Turbopack mode (`bun run dev`).
+   - **API Integration**: Linked directly with the C# backend API (port `62491`) to display dynamic products, detail views, and handle cart checkouts.
+   - **Design Parity**: Updated with the orange-and-slate design system to align branding with the POS terminal front-end.
+
+3. **Back-End (`/back-end`)**:
    - A C# .NET 10.0 Web API structured using **Clean Architecture** patterns:
      - **`Pos.Domain`**: Core entities, composite keys, database schemas, and default seed data.
      - **`Pos.Application`**: Business rules, CQRS commands, queries, and repositories.
@@ -122,7 +127,7 @@ pos/
 │   ├── Infrastructure/       # Services (FIFO, Reports, Sync, Anti-fraud)
 │   ├── Presentation.Api/     # ASP.NET Core API Controllers & Program.cs
 │   └── pos.slnx              # Modern XML Solution File
-├── front-end/
+├── pos-front-end/            # Cashier Terminal POS Application
 │   ├── src/
 │   │   ├── components/       # Component Library (pos, admin, shifts, vendor, reports)
 │   │   ├── db/               # Dexie.js DB config and offline rules
@@ -132,6 +137,15 @@ pos/
 │   ├── server.ts             # Express Server & Proxy API
 │   ├── package.json          # Node dependencies and scripts
 │   └── .env.example          # Sample environment configurations
+├── ecommerce-front-end/      # Customer-Facing Storefront Web Application
+│   ├── src/
+│   │   ├── app/              # Next.js App Router Pages & API Routes
+│   │   ├── components/       # Component Library (product-page, cart-page, common)
+│   │   ├── lib/              # State management (Redux slices), API helpers
+│   │   ├── styles/           # Tailwind globals, color system, custom typography
+│   │   └── types/            # Domain interfaces (Products, Reviews, Cart)
+│   ├── package.json          # Bun dependencies and scripts
+│   └── .env.local            # Environment configuration (Backend endpoints)
 ├── LICENSE                   # MIT License
 └── README.md                 # Project Documentation
 ```
@@ -142,6 +156,7 @@ pos/
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18.0 or later)
+- [Bun](https://bun.sh/) runtime (recommended for E-commerce)
 - [.NET 10.0 SDK](https://dotnet.microsoft.com/download)
 - SQL Server (if connecting to the live database backend)
 
@@ -182,11 +197,11 @@ pos/
 
 ---
 
-### 2. Setting up the Front-End
+### 2. Setting up the POS Front-End
 
-1. **Navigate to the frontend directory:**
+1. **Navigate to the POS frontend directory:**
    ```bash
-   cd ../front-end
+   cd ../pos-front-end
    ```
 
 2. **Configure Environment Variables:**
@@ -201,18 +216,45 @@ pos/
 
 3. **Install Dependencies:**
    ```bash
-   npm install
-   # or using Bun
    bun install
+   # or
+   npm install
    ```
 
 4. **Start the Express & Vite Development Server:**
    ```bash
-   npm run dev
-   # or
    bun dev
+   # or
+   npm run dev
    ```
    Open `http://localhost:3000` in your browser.
+
+---
+
+### 3. Setting up the E-Commerce Storefront
+
+1. **Navigate to the E-commerce directory:**
+   ```bash
+   cd ../ecommerce-front-end
+   ```
+
+2. **Configure Environment Variables:**
+   Create a `.env.local` file:
+   ```env
+   NEXT_PUBLIC_BACKEND_URL=https://localhost:62491
+   NEXT_PUBLIC_API_KEY=YOUR_AZURE_FUNCTION_KEY_PLACEHOLDER
+   ```
+
+3. **Install Dependencies:**
+   ```bash
+   bun install
+   ```
+
+4. **Start the Next.js Development Server (with Turbopack):**
+   ```bash
+   bun dev
+   ```
+   Open `http://localhost:3001` in your browser.
 
 ---
 

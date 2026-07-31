@@ -2,12 +2,11 @@
 
 # Fashion Ecommerce - Next.js E-commerce Application
 
-Fashion Ecommerce is an open-source, modern e-commerce front-end application built with **Next.js 14 App Router**, **TypeScript**, **Tailwind CSS**, **Redux Toolkit**, **Framer Motion**, and **ShadCN UI**. This project converts a Figma design into a fully responsive, production-ready application following industry best practices for performance, SEO, and accessibility.
+Fashion Ecommerce is a modern, high-performance e-commerce front-end application built with **Next.js 14 App Router**, **TypeScript**, **Tailwind CSS**, **Redux Toolkit**, **Framer Motion**, and **ShadCN UI**. It has been integrated directly with a local POS backend API and updated with an orange/slate design system to match the POS system styling.
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [Demo](#demo)
 - [Features](#features)
 - [Technologies](#technologies)
 - [Installation](#installation)
@@ -29,126 +28,83 @@ Fashion Ecommerce is an open-source, modern e-commerce front-end application bui
 
 ## Overview
 
-Fashion Ecommerce is a comprehensive e-commerce solution that demonstrates modern web development practices. The project showcases:
+Fashion Ecommerce is a comprehensive e-commerce solution integrated directly with the store's backend API. The project showcases:
 
-- **Design-to-Code Implementation**: Converting Figma designs to production-ready React components
-- **Modern Architecture**: Using Next.js 14 App Router with TypeScript for type safety
-- **State Management**: Redux Toolkit for managing shopping cart and application state
-- **Performance**: Optimized for Core Web Vitals and user experience
-- **Accessibility**: WCAG 2.1 compliant components and navigation
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-
-## Demo
-
-🚀 **Live Demo**: [https://fashion-ecommerce-gilt.vercel.app/](https://fashion-ecommerce-gilt.vercel.app/)
+- **Unified Design System**: Styling updated with an orange‑and‑slate design palette for visual parity with the POS terminal front-end.
+- **Backend Integration**: Configured to consume real-time endpoints for products, reviews, coupons, and orders instead of mock datasets.
+- **Modern Architecture**: Built using Next.js 14 App Router and TypeScript with Turbopack dev tooling support.
+- **Performance**: High‑efficiency dev tooling runtimes using `bun` and Next.js Turbopack mode (`bun run dev`).
 
 ## Features
 
 ### Core Features
-- ✅ **Product Catalog**: Browse products with filtering and search
-- ✅ **Shopping Cart**: Add, remove, and manage cart items with Redux
-- ✅ **Product Details**: Detailed product pages with image galleries
-- ✅ **Responsive Design**: Optimized for all device sizes
-- ✅ **Search & Filter**: Advanced product filtering capabilities
-- ✅ **User Reviews**: Product rating and review system
+- ✅ **Product Catalog**: Live product search, sorting, and category filters retrieved from backend API endpoints.
+- ✅ **Shopping Cart**: Fully managed cart items and state synced across page navigations using Redux.
+- ✅ **Product Details**: Dynmamic, real‑time details and customer review systems fetched per product ID.
+- ✅ **Order Placement**: Complete checkout flow posting directly to `/api/ecommerce/orders`.
+- ✅ **Promotion Codes**: Live validation of discount coupons on checkout.
 
 ### Technical Features
-- ✅ **Server-Side Rendering (SSR)**: Fast page loads and SEO optimization
-- ✅ **Static Site Generation (SSG)**: Pre-rendered pages for better performance
-- ✅ **TypeScript**: Full type safety across the application
-- ✅ **Redux Toolkit**: Modern state management with RTK Query
-- ✅ **Framer Motion**: Smooth animations and micro-interactions
-- ✅ **ShadCN UI**: Accessible and customizable component library
-- ✅ **Chrome DevTools Integration**: Enhanced debugging experience
-- ✅ **Hot Module Replacement**: Fast development workflow
-- ✅ **Code Splitting**: Optimized bundle sizes
+- ✅ **Server-Side Rendering (SSR)**: Fast page loads and SEO optimization.
+- ✅ **TypeScript**: Strict type definitions for core domain resources (Products, Reviews, Orders).
+- ✅ **Turbopack Dev Tools**: Supercharged HMR compilation speeds.
+- ✅ **Redux Toolkit**: Reliable application state manager.
 
 ## Technologies
 
 | Category | Technology | Version | Purpose |
 |----------|------------|---------|---------|
-| **Framework** | Next.js | 14.2.30 | React framework with SSR/SSG |
+| **Framework** | Next.js | 14.2.35 | React framework with SSR/SSG |
+| **Runtime** | Bun | Latest | Fast JavaScript all-in-one toolkit |
 | **Language** | TypeScript | 5.x | Type-safe JavaScript |
 | **Styling** | Tailwind CSS | 3.4.1 | Utility-first CSS framework |
 | **State Management** | Redux Toolkit | 2.2.7 | Predictable state container |
 | **UI Library** | ShadCN UI | Latest | Accessible component library |
-| **Animations** | Framer Motion | 11.5.4 | Motion library for React |
-| **Icons** | Lucide React | 0.438.0 | Beautiful icon library |
-| **Build Tool** | Webpack | Built-in | Module bundler |
-
-### Development Dependencies
-- **ESLint**: Code linting and formatting
-- **PostCSS**: CSS processing
-- **Autoprefixer**: CSS vendor prefixing
 
 ## Installation
 
 ### Prerequisites
-- Node.js 18.17 or later
-- npm, yarn, or pnpm package manager
-- Git
+- [Bun](https://bun.sh/) runtime installed locally.
+- Backend API running locally (defaults to `https://localhost:62491`).
 
 ### Step-by-Step Installation
 
-1. **Clone the repository:**
+1. **Install dependencies:**
    ```bash
-   git clone https://github.com/NafisRayan/Fashion-Ecommerce.git
-   cd Fashion-Ecommerce
+   bun install
    ```
 
-2. **Install dependencies:**
-   ```bash
-   # Using npm
-   npm install
-
-   # Using yarn
-   yarn install
-
-   # Using pnpm
-   pnpm install
+2. **Configure Environment Variables:**
+   Ensure a `.env.local` file exists in the root directory:
+   ```env
+   NEXT_PUBLIC_BACKEND_URL=https://localhost:62491
+   NEXT_PUBLIC_API_KEY=YOUR_AZURE_FUNCTION_KEY_PLACEHOLDER
    ```
 
-3. **Run the development server:**
+3. **Run the development server (with Turbopack):**
    ```bash
-   # Using npm
-   npm run dev
-
-   # Using yarn
-   yarn dev
-
-   # Using pnpm
-   pnpm dev
+   bun dev
    ```
 
 4. **Open your browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [http://localhost:3001](http://localhost:3001) (or the port specified in your console output).
 
 ## Usage
 
 ### Development Commands
 
 ```bash
-# Start development server
-npm run dev
+# Start development server with Turbopack
+bun dev
 
 # Build for production
-npm run build
+bun run build
 
 # Start production server
-npm run start
+bun run start
 
 # Run linting
-npm run lint
-```
-
-### Environment Setup
-
-Create a `.env.local` file in the root directory:
-
-```env
-# Add your environment variables here
-NEXT_PUBLIC_API_URL=your_api_url
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+bun run lint
 ```
 
 ## Development
