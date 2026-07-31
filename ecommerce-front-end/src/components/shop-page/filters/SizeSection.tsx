@@ -52,7 +52,7 @@ const SizeSection = () => {
                 type="button"
                 className={cn([
                   "bg-[#F0F0F0] m-1 flex items-center justify-center px-5 py-2.5 text-sm rounded-full max-h-[39px] text-black/60",
-                  selectedSize === size && "bg-black font-medium text-white",
+                  selectedSize === size && "bg-orange-600 font-medium text-white shadow-md shadow-orange-600/10",
                 ])}
                 onClick={() => handleSizeClick(size)}
               >

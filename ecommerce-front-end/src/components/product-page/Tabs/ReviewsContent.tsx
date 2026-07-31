@@ -73,7 +73,7 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
           <Button
             type="button"
             onClick={() => setShowForm(!showForm)}
-            className="sm:min-w-[166px] px-4 py-3 sm:px-5 sm:py-4 rounded-full bg-black font-medium text-xs sm:text-base h-12 text-white hover:bg-neutral-800"
+            className="sm:min-w-[166px] px-4 py-3 sm:px-5 sm:py-4 rounded-full bg-orange-600 font-medium text-xs sm:text-base h-12 text-white hover:bg-orange-700 shadow-md shadow-orange-600/10"
           >
             {showForm ? "Cancel Review" : "Write a Review"}
           </Button>
@@ -104,7 +104,7 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
                   type="button"
                   onClick={() => setRating(val)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center border text-sm font-semibold transition-all ${
-                    rating === val ? "bg-black text-white border-black" : "bg-white text-black border-neutral-300"
+                    rating === val ? "bg-orange-600 text-white border-orange-600 shadow-sm" : "bg-white text-black border-neutral-300"
                   }`}
                 >
                   {val} ⭐
@@ -132,7 +132,7 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
           <Button
             type="submit"
             disabled={submitting}
-            className="bg-black hover:bg-neutral-800 text-white rounded-full px-6 py-2.5 font-medium text-sm disabled:opacity-50"
+            className="bg-orange-600 hover:bg-orange-700 text-white rounded-full px-6 py-2.5 font-medium text-sm disabled:opacity-50 shadow-md shadow-orange-600/15"
           >
             {submitting ? "Submitting..." : "Submit Review"}
           </Button>

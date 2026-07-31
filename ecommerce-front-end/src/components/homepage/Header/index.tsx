@@ -43,7 +43,7 @@ const Header = () => {
           >
             <Link
               href="/shop"
-              className="w-full md:w-52 mb-5 md:mb-12 inline-block text-center bg-black hover:bg-black/80 transition-all text-white px-14 py-4 rounded-full hover:animate-pulse"
+              className="w-full md:w-52 mb-5 md:mb-12 inline-block text-center bg-orange-600 hover:bg-orange-700 transition-all text-white px-14 py-4 rounded-full hover:animate-pulse shadow-lg shadow-orange-600/30 font-medium"
             >
               Shop Now
             </Link>

@@ -15,7 +15,7 @@ const AddToCartBtn = ({ data }: { data: Product & { quantity: number } }) => {
   return (
     <button
       type="button"
-      className="bg-black w-full ml-3 sm:ml-5 rounded-full h-11 md:h-[52px] text-sm sm:text-base text-white hover:bg-black/80 transition-all"
+      className="bg-orange-600 w-full ml-3 sm:ml-5 rounded-full h-11 md:h-[52px] text-sm sm:text-base text-white hover:bg-orange-700 transition-all shadow-lg shadow-orange-600/25 font-medium"
       onClick={() =>
         dispatch(
           addToCart({

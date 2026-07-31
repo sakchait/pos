@@ -128,7 +128,7 @@ export default function CartPage() {
               <span className="text-green-600 font-medium">Processing (Synced to POS)</span>
             </div>
           </div>
-          <Button asChild className="rounded-full w-full py-4 h-12 bg-black text-white hover:bg-neutral-800">
+          <Button asChild className="rounded-full w-full py-4 h-12 bg-orange-600 text-white hover:bg-orange-700 shadow-md shadow-orange-600/20">
             <Link href="/shop">Continue Shopping</Link>
           </Button>
         </div>
@@ -179,7 +179,7 @@ export default function CartPage() {
                         )}
                         %)
                       </span>
-                      <span className="md:text-xl font-bold text-red-600">
+                      <span className="md:text-xl font-bold text-orange-600">
                         -${Math.round(totalPrice - adjustedTotalPrice)}
                       </span>
                     </div>
@@ -217,7 +217,7 @@ export default function CartPage() {
                     <Button
                       type="button"
                       onClick={handleApplyPromo}
-                      className="bg-black text-white hover:bg-neutral-800 rounded-full w-full max-w-[119px] h-[48px]"
+                      className="bg-orange-600 text-white hover:bg-orange-700 rounded-full w-full max-w-[119px] h-[48px] shadow-md shadow-orange-600/10"
                     >
                       Apply
                     </Button>
@@ -289,7 +289,7 @@ export default function CartPage() {
                       handleCheckoutSubmit();
                     }
                   }}
-                  className="text-sm md:text-base font-medium bg-black text-white hover:bg-neutral-800 rounded-full w-full py-4 h-[54px] md:h-[60px] group disabled:opacity-50"
+                  className="text-sm md:text-base font-medium bg-orange-600 text-white hover:bg-orange-700 rounded-full w-full py-4 h-[54px] md:h-[60px] group disabled:opacity-50 shadow-lg shadow-orange-600/20"
                 >
                   {!showCheckoutForm ? (
                     <>
